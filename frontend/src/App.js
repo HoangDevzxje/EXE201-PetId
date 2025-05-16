@@ -61,15 +61,8 @@ const App = () => {
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/movies" element={<Movies />} />
-            <Route path="/detail/:movieId" element={<MovieDetail />} />
-            <Route path="/showtime/:movieId" element={<Showtime />} />
-            <Route
-              path="/showtime-detail/:showtimeId"
-              element={<ShowtimeDetail />}
-            />
-            <Route path="/promotion" element={<Promotion />} />
-            <Route path="/promotion/:id" element={<PromotionDetail />} />
+           
+         
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<SignUp />} />
             <Route path="/verify-otp" element={<VerifyOtp />} />
@@ -83,47 +76,24 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
-            <Route
+            {/* <Route
               path="/admin"
               element={
                 <ProtectedRoute role="admin">
                   <AdminPanel />
                 </ProtectedRoute>
               }
-            />
-            <Route path="/admin/events" element={<AdminEvents />} />
-            <Route
+            /> */}
+           
+            {/* <Route
               path="/admin/manageUser"
               element={
                 <ProtectedRoute role="admin">
                   <ManageUser />
                 </ProtectedRoute>
               }
-            />
-            <Route
-              path="/admin/movies"
-              element={
-                <ProtectedRoute role="admin">
-                  <AdminMovies />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/showTime"
-              element={
-                <ProtectedRoute role="admin">
-                  <AdminShowTime />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/detail/:movieId"
-              element={
-                <ProtectedRoute role="admin">
-                  <MovieDetailAdmin />
-                </ProtectedRoute>
-              }
-            />
+            /> */}
+           
           </Routes>
         </Layout>
       </Router>

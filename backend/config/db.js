@@ -5,6 +5,7 @@ const Category = require("../models/Category");
 const NotificationLog = require("../models/NotificationLog");
 const Pet = require("../models/Pet");
 const Product = require("../models/Product");
+const Reminder = require("../models/Reminder");
 const DB = {};
 DB.user = User;
 DB.order = Order;
@@ -12,7 +13,7 @@ DB.category = Category;
 DB.notificationLog = NotificationLog;
 DB.pet = Pet;
 DB.product = Product;
-
+DB.reminder = Reminder;
 
 DB.connectDB = async () => {
   try {
