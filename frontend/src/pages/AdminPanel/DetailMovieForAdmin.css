@@ -1,0 +1,82 @@
+.admin-movie-detail {
+    background-color: #f8f9fa;
+    padding: 20px;
+  }
+  
+  .admin-header {
+    background-color: #343a40;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  .admin-container {
+    max-width: 1200px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .movie-poster {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .movie-info {
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .showtime-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .showtime-table th, .showtime-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .showtime-table th {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .action-buttons button {
+    margin-right: 10px;
+  }
+  
+  .btn-edit {
+    background-color: #ffc107;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn-delete {
+    background-color: #dc3545;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn-edit:hover {
+    background-color: #e0a800;
+  }
+  
+  .btn-delete:hover {
+    background-color: #c82333;
+  }
+  

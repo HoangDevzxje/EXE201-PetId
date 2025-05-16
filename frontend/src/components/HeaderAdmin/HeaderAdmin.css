@@ -1,0 +1,6 @@
+.dropdown-menu {
+  position: absolute !important;
+  right: 0;
+  top: 100%;
+  z-index: 1050;
+}
