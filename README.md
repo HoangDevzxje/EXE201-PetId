@@ -1,3 +1,2 @@
-Default password : passSDN302@
+acc: root, pass: 123
 
-hoangocdog
