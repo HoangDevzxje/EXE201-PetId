@@ -11,32 +11,18 @@ import Header from "./components/Header/Header";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
 //import Dashboard from "./pages/Dashboard/Dashboard";
-import AdminPanel from "./pages/AdminPanel/AdminPanel";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Footer from "./components/Footer/Footer";
-
-import Promotion from "./pages/Promotion/Promotion";
-import PromotionDetail from "./pages/Promotion/PromotionDetail";
-
-import MovieDetail from "./pages/Movie/DetailMovie";
-
+import SearchPage from "./pages/Product/SearchPage";
 import SignUp from "./pages/Login/Signup";
 import VerifyOtp from "./pages/Login/verifyOtp";
-import Showtime from "./pages/Movie/Showtime";
 import HeaderAdmin from "./components/HeaderAdmin/HeaderAdmin";
 import FooterAdmin from "./components/FooterAdmin/FooterAdmin";
-import AdminEvents from "./pages/AdminPanel/AdminEvents";
-import AdminMovies from "./pages/AdminPanel/AdminMovies";
-import Movies from "./pages/Movie/Movies";
-import AdminShowTime from "./pages/AdminPanel/AdminShowTime";
-import MovieDetailAdmin from "./pages/AdminPanel/DetailMovieForAdmin";
 import ForgotPassword from "./pages/Login/forgotPassword";
 import Profile from "./pages/Login/profile";
 import SideBarAdmin from "./components/SideBarAdmin/SideBarAdmin";
-import ManageUser from "./pages/AdminPanel/ManageUser";
-import ShowtimeDetail from "./pages/Movie/ShowtimeDetail";
-import PaymentSusses from "./pages/Movie/PaymentSusses";
+import ProductDetail from "./pages/Product/ProductDetail";
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -61,13 +47,12 @@ const App = () => {
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
-           
-         
+            <Route path="/product/:productId" element={<ProductDetail />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<SignUp />} />
             <Route path="/verify-otp" element={<VerifyOtp />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
-            <Route path="/payment-success" element={<PaymentSusses />} />
+            <Route path="/search" element={<SearchPage />} />
             <Route
               path="/me"
               element={
@@ -84,7 +69,7 @@ const App = () => {
                 </ProtectedRoute>
               }
             /> */}
-           
+
             {/* <Route
               path="/admin/manageUser"
               element={
@@ -93,7 +78,6 @@ const App = () => {
                 </ProtectedRoute>
               }
             /> */}
-           
           </Routes>
         </Layout>
       </Router>

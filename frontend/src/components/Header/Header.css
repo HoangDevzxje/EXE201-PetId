@@ -1,0 +1,137 @@
+/* Header.css */
+
+/* Navigation styles */
+.petid-navbar {
+  padding: 12px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Brand logo and name */
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  background: #fff;
+  padding: 2px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.brand-name {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.brand-container:hover .brand-logo {
+  transform: scale(1.05);
+}
+
+/* Search container and form */
+.search-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 15px;
+}
+
+.search-form {
+  width: 100%;
+  max-width: 450px;
+}
+
+.search-input {
+  border-top-left-radius: 25px !important;
+  border-bottom-left-radius: 25px !important;
+  border: none !important;
+  background-color: #f8f9fa !important;
+  padding: 12px 20px;
+  font-size: 15px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+  height: 46px;
+}
+
+.search-button {
+  border-top-right-radius: 25px !important;
+  border-bottom-right-radius: 25px !important;
+  border: none !important;
+  background-color: #fff !important;
+  color: #c49a6c;
+  width: 56px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-button:hover {
+  background-color: #f3f3f3 !important;
+}
+
+/* Nav links */
+.navbar-nav .nav-link {
+  font-weight: 600;
+  font-size: 16px;
+  padding: 8px 16px !important;
+  color: white !important;
+  opacity: 0.9;
+  transition: all 0.2s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+/* Shopping cart */
+.cart-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+  padding: 8px 16px !important;
+  margin-left: 8px;
+}
+
+.cart-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive styles */
+@media (max-width: 991px) {
+  .search-container {
+    margin: 15px 0;
+    order: 1;
+  }
+
+  .navbar-nav {
+    margin-top: 10px;
+  }
+
+  .brand-logo {
+    width: 46px;
+    height: 46px;
+  }
+
+  .brand-name {
+    font-size: 24px;
+  }
+}
+
+@media (min-width: 992px) {
+  .search-container {
+    margin: 0 20px;
+    max-width: 40%;
+  }
+}

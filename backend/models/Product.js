@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const productSchema = new mongoose.Schema(
   {
     name: String,
@@ -7,6 +8,7 @@ const productSchema = new mongoose.Schema(
     stock: { type: Number, default: 0 },
     imageUrl: String,
     isActive: { type: Boolean, default: true },
+    isFeatured: { type: Boolean, default: false },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
