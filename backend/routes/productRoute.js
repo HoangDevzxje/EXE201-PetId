@@ -7,4 +7,6 @@ router.get("/main", productController.getAllProductCards);
 // GET /api/products/detail/:productId → chi tiết 1 sản phẩm
 router.get("/detail/:productId", productController.getProductDetailById);
 
+router.get("/search", productController.searchProductsByName);
+router.get("/featured", productController.getFeaturedProducts);
 module.exports = router;
