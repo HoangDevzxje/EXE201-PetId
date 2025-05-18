@@ -50,101 +50,123 @@ const SignUp = () => {
 
 
     return (
-        <div className="d-flex align-items-center justify-content-center" style={{ minHeight: "70vh" }}>
-            <div className="card shadow-lg overflow-hidden" style={{ maxWidth: "650px" }}>
-                <div className="row g-0">
-                    <div className="col-md-7 p-4 d-flex flex-column justify-content-center">
-                        <div className="text-center mb-3">
-                            <FaUser size={40} className="text-primary" />
+        <div
+            className="d-flex align-items-center justify-content-center"
+            style={{ minHeight: "70vh" }}
+        >
+            <div className="card shadow-lg overflow-hidden" style={{ maxWidth: "480px", width: "100%" }}>
+                <div className="p-4 d-flex flex-column justify-content-center" style={{ backgroundColor: "#C49A6C" }}>
+                    <div className="text-center mb-2">
+                        <FaUser size={40} style={{ color: "#fff" }} />
+                    </div>
+
+                    {error && <div className="alert alert-danger">{error}</div>}
+
+                    <form onSubmit={handleSubmit}>
+                        {/* Họ và tên */}
+                        <div className="input-group mb-3">
+                            <span className="input-group-text">
+                                <FaUser />
+                            </span>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Họ và tên"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required
+                            />
                         </div>
-                        {error && <div className="alert alert-danger">{error}</div>}
-                        <form onSubmit={handleSubmit}>
-                            {/* Trường nhập Name */}
-                            <div className="input-group mb-3">
-                                <span className="input-group-text"><FaUser /></span>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Full Name"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            {/* Trường email */}
-                            <div className="input-group mb-3">
-                                <span className="input-group-text"><FaEnvelope /></span>
-                                <input
-                                    type="email"
-                                    className="form-control"
-                                    placeholder="Email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                />
-                            </div>
 
-                            {/* Trường số điện thoại */}
-                            <div className="input-group mb-3">
-                                <span className="input-group-text"><FaPhone /></span>
-                                <input
-                                    type="tel"
-                                    className="form-control"
-                                    placeholder="Phone Number"
-                                    value={phone}
-                                    onChange={(e) => setPhone(e.target.value)}
-                                    required
-                                />
-                            </div>
+                        {/* Email */}
+                        <div className="input-group mb-3">
+                            <span className="input-group-text">
+                                <FaEnvelope />
+                            </span>
+                            <input
+                                type="email"
+                                className="form-control"
+                                placeholder="Email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
 
-                            {/* Trường mật khẩu */}
-                            <div className="input-group mb-3">
-                                <span className="input-group-text"><FaLock /></span>
-                                <input
-                                    type="password"
-                                    className="form-control"
-                                    placeholder="Password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                />
-                            </div>
+                        {/* Số điện thoại */}
+                        <div className="input-group mb-3">
+                            <span className="input-group-text">
+                                <FaPhone />
+                            </span>
+                            <input
+                                type="tel"
+                                className="form-control"
+                                placeholder="Số điện thoại"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                required
+                            />
+                        </div>
 
-                            {/* Trường xác nhận mật khẩu */}
-                            <div className="input-group mb-3">
-                                <span className="input-group-text"><FaLock /></span>
-                                <input
-                                    type="password"
-                                    className="form-control"
-                                    placeholder="Confirm Password"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    required
-                                />
-                            </div>
+                        {/* Mật khẩu */}
+                        <div className="input-group mb-3">
+                            <span className="input-group-text">
+                                <FaLock />
+                            </span>
+                            <input
+                                type="password"
+                                className="form-control"
+                                placeholder="Mật khẩu"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
 
-                            {/* Nút đăng ký */}
-                            <button type="submit" className="btn btn-primary w-100">
-                                Sign Up
-                            </button>
-                        </form>
+                        {/* Xác nhận mật khẩu */}
+                        <div className="input-group mb-3">
+                            <span className="input-group-text">
+                                <FaLock />
+                            </span>
+                            <input
+                                type="password"
+                                className="form-control"
+                                placeholder="Xác nhận mật khẩu"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                required
+                            />
+                        </div>
 
-                        {/* Liên kết đến trang đăng nhập */}
-                        <p className="mt-2 text-center">
-                            Already have an account?{" "}
-                            <a href="/login" className="text-decoration-none">
-                                Login
-                            </a>
-                        </p>
-                    </div>
+                        {/* Nút đăng ký */}
+                        <button
+                            type="submit"
+                            className="btn w-100 fw-semibold"
+                            style={{
+                                backgroundColor: "#fff",
+                                color: "#C49A6C",
+                                borderColor: "#fff",
+                                fontSize: "1rem",
+                            }}
+                        >
+                            Đăng ký
+                        </button>
+                    </form>
 
-                    {/* Hình ảnh banner */}
-                    <div className="col-md-5 d-none d-md-block">
-                        <img src="/login.jpg" alt="Sign Up Banner" className="img-fluid h-100" />
-                    </div>
+                    {/* Đường dẫn đến đăng nhập */}
+                    <p className="mt-3 text-center" style={{ color: "#fff" }}>
+                        Đã có tài khoản?{" "}
+                        <a href="/login" className="text-decoration-none fw-semibold" style={{ color: "#fff" }}>
+                            Đăng nhập
+                        </a>
+                    </p>
                 </div>
             </div>
         </div>
+
+
+
+
     );
 };
 

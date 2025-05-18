@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaSearch } from "react-icons/fa";
+import { useAuth } from "../../context/AuthContext";  // SỬ DỤNG useAuth
 import "./Header.css";
 
 const Header = () => {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
+
+  const { user, logout } = useAuth();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -43,7 +46,7 @@ const Header = () => {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarNav">
-          {/* Search bar - now in a centered container */}
+          {/* Search bar */}
           <div className="search-container">
             <form className="search-form" onSubmit={handleSearch}>
               <div className="input-group">
@@ -64,19 +67,40 @@ const Header = () => {
 
           {/* Navigation links */}
           <ul className="navbar-nav ms-auto align-items-center">
-            {/* Đăng ký */}
-            <li className="nav-item">
-              <Link className="nav-link fw-semibold" to="/register">
-                Đăng ký
-              </Link>
-            </li>
-            {/* Đăng nhập */}
-            <li className="nav-item">
-              <Link className="nav-link fw-semibold" to="/login">
-                Đăng nhập
-              </Link>
-            </li>
-            {/* Giỏ hàng */}
+            {!user ? (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link fw-semibold" to="/register">
+                    Đăng ký
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link fw-semibold" to="/login">
+                    Đăng nhập
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link fw-semibold" to="/me">
+                    Profile
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <button
+                    className="btn btn-link nav-link fw-semibold"
+                    onClick={() => {
+                      logout();
+                      navigate("/");
+                    }}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
+            )}
+
             <li className="nav-item">
               <Link
                 className="nav-link position-relative d-flex align-items-center cart-link"
