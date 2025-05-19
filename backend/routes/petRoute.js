@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const PetController = require("../controllers/PetController");
 const { checkAuthorize } = require("../middleware/authMiddleware");
-const upload = require("../middlewares/upload");
+const upload = require("../middleware/upload");
 
 router.get("/", checkAuthorize(["user"]), PetController.getPetsByUser);
 router.get("/:petId", checkAuthorize(["user"]), PetController.getPetDetail);

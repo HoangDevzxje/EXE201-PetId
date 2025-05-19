@@ -10,7 +10,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Header from "./components/Header/Header";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
-//import Dashboard from "./pages/Dashboard/Dashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Footer from "./components/Footer/Footer";
@@ -23,8 +22,10 @@ import ForgotPassword from "./pages/Login/forgotPassword";
 import Profile from "./pages/Login/profile";
 import SideBarAdmin from "./components/SideBarAdmin/SideBarAdmin";
 import ProductDetail from "./pages/Product/ProductDetail";
+import PetDetail from "./pages/Pet/PetDetail";
 import PetProfileManager from "./pages/Pet/PetProfileManager";
 import PetReminderManager from "./pages/Pet/PetReminderManager";
+import MyPets from "./pages/Pet/MyPets";
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -55,6 +56,8 @@ const App = () => {
             <Route path="/verify-otp" element={<VerifyOtp />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/my-pets" element={<MyPets />} />
+            <Route path="/pets/:petId" element={<PetDetail />} />
             <Route
               path="/me"
               element={
