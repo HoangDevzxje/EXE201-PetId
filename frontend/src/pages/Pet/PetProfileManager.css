@@ -1,0 +1,106 @@
+.pet-manager-container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 2rem;
+}
+
+.input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  font-size: 14px;
+}
+
+.submit-button {
+  padding: 10px 16px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #1e40af;
+}
+
+.error-message {
+  color: #dc2626;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.pet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pet-card {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.pet-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pet-avatar {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.pet-name {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.pet-desc {
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+}
+
+.pet-actions {
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  gap: 6px;
+}
+
+.edit-button,
+.delete-button {
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.edit-button {
+  color: #2563eb;
+}
+
+.delete-button {
+  color: #dc2626;
+}

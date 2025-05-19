@@ -2,11 +2,22 @@ const router = require("express").Router();
 const ReminderController = require("../controllers/ReminderController");
 const { checkAuthorize } = require("../middleware/authMiddleware");
 
-// Lấy tất cả nhắc nhở của user
+router.get("/", checkAuthorize(["user"]), ReminderController.getAllReminders);
 router.get(
-  "/",
+  "/pet/:petId",
   checkAuthorize(["user"]),
-  ReminderController.getRemindersByUser
+  ReminderController.getRemindersByPet
+);
+router.post("/", checkAuthorize(["user"]), ReminderController.createReminder);
+router.put(
+  "/:reminderId",
+  checkAuthorize(["user"]),
+  ReminderController.updateReminder
+);
+router.delete(
+  "/:reminderId",
+  checkAuthorize(["user"]),
+  ReminderController.deleteReminder
 );
 
 module.exports = router;

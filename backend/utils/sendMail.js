@@ -15,27 +15,35 @@ const sendEmail = async (email, otp, type) => {
         pass: process.env.EMAIL_PASS,
       },
     });
+    try {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
 
-    let emailHtml = emailTemplate.replace("{{OTP}}", otp);
-    if (type === "register") {
-      emailHtml = emailHtml.replace("{{TITLE}}", "Xác nhận đăng ký tài khoản");
+      let emailHtml = emailTemplate.replace("{{OTP}}", otp);
+      if (type === "register") {
+        emailHtml = emailHtml.replace("{{TITLE}}", "Xác nhận đăng ký tài khoản");
+      }
+      else if (type === "reset-password") {
+        emailHtml = emailHtml.replace("{{TITLE}}", "Xác nhận đặt lại mật khẩu");
+      }
+      const mailOptions = {
+        from: `"SIXMIX PETID"`, // Hiển thị tên thương hiệu
+        to: email,
+        subject: "Xác nhận đăng ký - Mã OTP của bạn",
+        html: emailHtml,
+      };
+
+
+      await transporter.sendMail(mailOptions);
+    } catch (error) {
+      console.log("Lỗi khi gửi email:", error);
+      throw new Error("Không thể gửi email. Vui lòng thử lại!");
     }
-    else if (type === "reset-password") {
-      emailHtml = emailHtml.replace("{{TITLE}}", "Xác nhận đặt lại mật khẩu");
-    }
-    const mailOptions = {
-      from: `"SIXMIX PETID"`, // Hiển thị tên thương hiệu
-      to: email,
-      subject: "Xác nhận đăng ký - Mã OTP của bạn",
-      html: emailHtml,
-    };
+  };
 
-
-    await transporter.sendMail(mailOptions);
-  } catch (error) {
-    console.log("Lỗi khi gửi email:", error);
-    throw new Error("Không thể gửi email. Vui lòng thử lại!");
-  }
-};
-
-module.exports = sendEmail;
+  module.exports = sendEmail;
