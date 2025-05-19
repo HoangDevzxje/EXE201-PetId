@@ -23,6 +23,8 @@ import ForgotPassword from "./pages/Login/forgotPassword";
 import Profile from "./pages/Login/profile";
 import SideBarAdmin from "./components/SideBarAdmin/SideBarAdmin";
 import ProductDetail from "./pages/Product/ProductDetail";
+import PetProfileManager from "./pages/Pet/PetProfileManager";
+import PetReminderManager from "./pages/Pet/PetReminderManager";
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -61,6 +63,19 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/pets"
+              element={
+                <ProtectedRoute role="user">
+                  <PetProfileManager />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/pets/:petId/reminders"
+              element={<PetReminderManager />}
+            />
+
             {/* <Route
               path="/admin"
               element={

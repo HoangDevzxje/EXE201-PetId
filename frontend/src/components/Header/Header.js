@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaSearch } from "react-icons/fa";
-import { useAuth } from "../../context/AuthContext";  // SỬ DỤNG useAuth
+import { useAuth } from "../../context/AuthContext"; // SỬ DỤNG useAuth
 import "./Header.css";
 
 const Header = () => {
@@ -87,6 +87,12 @@ const Header = () => {
                     Profile
                   </Link>
                 </li>
+                <li className="nav-item">
+                  <Link className="nav-link fw-semibold" to="/pets">
+                    Thú cưng
+                  </Link>
+                </li>
+
                 <li className="nav-item">
                   <button
                     className="btn btn-link nav-link fw-semibold"
