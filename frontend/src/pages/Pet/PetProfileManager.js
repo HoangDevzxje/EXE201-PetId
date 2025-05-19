@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import petApi from "../../api/petApi";
 import "./PetProfileManager.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function PetProfileManager() {
   const [pets, setPets] = useState([]);
@@ -17,6 +17,7 @@ export default function PetProfileManager() {
     notes: "",
   });
   const [message, setMessage] = useState(null);
+  const navigate = useNavigate();
 
   const fetchPets = async () => {
     try {
@@ -100,7 +101,11 @@ export default function PetProfileManager() {
 
   return (
     <div className="pet-manager-container">
+      <button onClick={() => navigate(-1)} className="btn-back">
+        ← Quay lại
+      </button>
       <h2 className="title">Quản lý hồ sơ thú cưng</h2>
+
       {message && <p className="error-message">{message}</p>}
 
       <form
@@ -212,7 +217,7 @@ export default function PetProfileManager() {
                   to={`/pets/${pet._id}/reminders`}
                   className="reminder-link"
                 >
-                  Xem nhắc tiêm
+                  Xem lịch tiêm
                 </Link>
 
                 <button
