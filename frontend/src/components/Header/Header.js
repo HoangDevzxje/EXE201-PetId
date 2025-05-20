@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaSearch } from "react-icons/fa";
-import { useAuth } from "../../context/AuthContext"; // SỬ DỤNG useAuth
+import { useAuth } from "../../context/AuthContext";
+import { useCartStore } from "../../services/useCartStore"; // 👈 Thêm dòng này
 import "./Header.css";
 
 const Header = () => {
@@ -9,6 +10,8 @@ const Header = () => {
   const navigate = useNavigate();
 
   const { user, logout } = useAuth();
+  const { cartItems } = useCartStore(); // 👈 Lấy cart từ store
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0); // 👈 Tính tổng số lượng
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -108,13 +111,17 @@ const Header = () => {
               </>
             )}
 
-            <li className="nav-item">
+            {/* Cart icon + số lượng */}
+            <li className="nav-item position-relative">
               <Link
-                className="nav-link position-relative d-flex align-items-center cart-link"
+                className="nav-link d-flex align-items-center cart-link"
                 to="/cart"
               >
                 <FaShoppingCart size={20} />
                 <span className="ms-1 fw-semibold">Giỏ hàng</span>
+                {cartCount > 0 && (
+                  <span className="cart-badge">{cartCount}</span>
+                )}
               </Link>
             </li>
           </ul>

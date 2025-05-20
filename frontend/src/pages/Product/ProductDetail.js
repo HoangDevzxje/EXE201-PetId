@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Spinner } from "react-bootstrap";
+import { useCartStore } from "../../services/useCartStore";
 
 const ProductDetail = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
+  const { addToCart } = useCartStore();
+
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -121,9 +124,21 @@ const ProductDetail = () => {
                   </button>
                 </div>
 
-                <button className="btn btn-dark btn-lg w-100 fw-semibold mb-2">
+                {/* <button className="btn btn-dark btn-lg w-100 fw-semibold mb-2">
+                  Thêm vào giỏ hàng
+                </button> */}
+                <button
+                  className="btn btn-dark btn-lg w-100 fw-semibold mb-2"
+                  onClick={() => {
+                    addToCart(product, quantity);
+                    alert("Đã thêm vào giỏ hàng!");
+                  }}
+                  disabled={product.stock === 0}
+                >
                   Thêm vào giỏ hàng
                 </button>
+
+
               </div>
             </div>
           </div>

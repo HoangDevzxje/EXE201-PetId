@@ -1,0 +1,25 @@
+.checkout h2 {
+  text-align: center;
+  font-weight: bold;
+  color: #333;
+}
+
+input.form-control,
+textarea.form-control {
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.list-group-item {
+  font-size: 15px;
+}
+
+.btn-dark {
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.btn-success {
+  font-weight: 600;
+}

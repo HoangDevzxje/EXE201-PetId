@@ -26,6 +26,9 @@ import PetDetail from "./pages/Pet/PetDetail";
 import PetProfileManager from "./pages/Pet/PetProfileManager";
 import PetReminderManager from "./pages/Pet/PetReminderManager";
 import MyPets from "./pages/Pet/MyPets";
+import Checkout from "./pages/Checkout/Checkout";
+import Cart from "./pages/Cart/Cart";
+
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -58,11 +61,28 @@ const App = () => {
             <Route path="/search" element={<SearchPage />} />
             <Route path="/my-pets" element={<MyPets />} />
             <Route path="/pets/:petId" element={<PetDetail />} />
+
             <Route
               path="/me"
               element={
                 <ProtectedRoute role="user">
                   <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/checkout"
+              element={
+                <ProtectedRoute role="user">
+                  <Checkout />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/cart"
+              element={
+                <ProtectedRoute role="user">
+                  <Cart />
                 </ProtectedRoute>
               }
             />
