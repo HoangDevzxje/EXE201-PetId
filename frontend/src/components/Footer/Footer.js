@@ -16,7 +16,7 @@ const Footer = () => {
         <div className="footer-section">
           <h4>Theo dõi chúng tôi</h4>
           <div className="social-icons">
-            <a href="#"><FaFacebookF /></a>
+            <a href="https://www.facebook.com/profile.php?id=61576388223451"><FaFacebookF /></a>
             <a href="#"><FaTwitter /></a>
             <a href="#"><FaInstagram /></a>
             <a href="#"><FaYoutube /></a>
