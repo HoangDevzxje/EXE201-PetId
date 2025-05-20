@@ -84,12 +84,13 @@ const Header = () => {
               <>
                 <li className="nav-item">
                   <Link className="nav-link fw-semibold" to="/me">
-                    Trang cá nhân
+                    Thú cưng của tôi
                   </Link>
                 </li>
+
                 <li className="nav-item">
-                  <Link className="nav-link fw-semibold" to="/pets">
-                    Thú cưng
+                  <Link className="nav-link fw-semibold" to="/me">
+                    Hồ sơ
                   </Link>
                 </li>
 
