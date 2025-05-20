@@ -83,7 +83,7 @@ const Header = () => {
             ) : (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link fw-semibold" to="/me">
+                  <Link className="nav-link fw-semibold" to="/my-pets">
                     Thú cưng của tôi
                   </Link>
                 </li>
