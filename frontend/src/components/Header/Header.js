@@ -84,7 +84,7 @@ const Header = () => {
               <>
                 <li className="nav-item">
                   <Link className="nav-link fw-semibold" to="/me">
-                    Profile
+                    Trang cá nhân
                   </Link>
                 </li>
                 <li className="nav-item">
@@ -101,7 +101,7 @@ const Header = () => {
                       navigate("/");
                     }}
                   >
-                    Logout
+                    Đăng xuất
                   </button>
                 </li>
               </>
