@@ -3,10 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaSearch } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext"; // SỬ DỤNG useAuth
 import "./Header.css";
+import { useCart } from "../../context/CartContext";
 
 const Header = () => {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
+  const { cart } = useCart();
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const { user, logout } = useAuth();
 
@@ -95,6 +98,12 @@ const Header = () => {
                 </li>
 
                 <li className="nav-item">
+                  <Link className="nav-link fw-semibold" to="/orders">
+                    Đơn hàng
+                  </Link>
+                </li>
+
+                <li className="nav-item">
                   <button
                     className="btn btn-link nav-link fw-semibold"
                     onClick={() => {
@@ -113,7 +122,17 @@ const Header = () => {
                 className="nav-link position-relative d-flex align-items-center cart-link"
                 to="/cart"
               >
-                <FaShoppingCart size={20} />
+                <div className="position-relative">
+                  <FaShoppingCart size={20} />
+                  {totalItems > 0 && (
+                    <span
+                      className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                      style={{ fontSize: "0.7rem" }}
+                    >
+                      {totalItems}
+                    </span>
+                  )}
+                </div>
                 <span className="ms-1 fw-semibold">Giỏ hàng</span>
               </Link>
             </li>

@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Spinner } from "react-bootstrap";
+import { useCart } from "../../context/CartContext";
+import { toast } from "react-toastify";
 
 const ProductDetail = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
-
+  const { addToCart } = useCart();
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -121,7 +123,13 @@ const ProductDetail = () => {
                   </button>
                 </div>
 
-                <button className="btn btn-dark btn-lg w-100 fw-semibold mb-2">
+                <button
+                  className="btn btn-dark btn-lg w-100 fw-semibold mb-2"
+                  onClick={() => {
+                    addToCart(product, quantity);
+                    toast.success("Đã thêm vào giỏ hàng!");
+                  }}
+                >
                   Thêm vào giỏ hàng
                 </button>
               </div>

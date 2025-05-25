@@ -135,3 +135,7 @@
     max-width: 40%;
   }
 }
+.cart-link .badge {
+  min-width: 18px;
+  padding: 4px 6px;
+}

@@ -26,6 +26,12 @@ import PetDetail from "./pages/Pet/PetDetail";
 import PetProfileManager from "./pages/Pet/PetProfileManager";
 import PetReminderManager from "./pages/Pet/PetReminderManager";
 import MyPets from "./pages/Pet/MyPets";
+import { CartProvider } from "./context/CartContext";
+import CartPage from "./pages/Cart/CartPage";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import CheckoutPage from "./pages/Checkout/CheckoutPage";
+import OrderHistoryPage from "./pages/Order/OrderHistoryPage";
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -46,40 +52,59 @@ const Layout = ({ children }) => {
 const App = () => {
   return (
     <AuthProvider>
-      <Router>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/product/:productId" element={<ProductDetail />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<SignUp />} />
-            <Route path="/verify-otp" element={<VerifyOtp />} />
-            <Route path="/forgotpassword" element={<ForgotPassword />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/my-pets" element={<MyPets />} />
-            <Route path="/pets/:petId" element={<PetDetail />} />
-            <Route
-              path="/me"
-              element={
-                <ProtectedRoute role="user">
-                  <Profile />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/pets"
-              element={
-                <ProtectedRoute role="user">
-                  <PetProfileManager />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/pets/:petId/reminders"
-              element={<PetReminderManager />}
-            />
+      <CartProvider>
+        <Router>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/product/:productId" element={<ProductDetail />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<SignUp />} />
+              <Route path="/verify-otp" element={<VerifyOtp />} />
+              <Route path="/forgotpassword" element={<ForgotPassword />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/my-pets" element={<MyPets />} />
+              <Route path="/pets/:petId" element={<PetDetail />} />
+              <Route
+                path="/me"
+                element={
+                  <ProtectedRoute role="user">
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/pets"
+                element={
+                  <ProtectedRoute role="user">
+                    <PetProfileManager />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/cart"
+                element={
+                  <ProtectedRoute role="user">
+                    <CartPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/checkout"
+                element={
+                  <ProtectedRoute role="user">
+                    <CheckoutPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/orders" element={<OrderHistoryPage />} />
 
-            {/* <Route
+              <Route
+                path="/pets/:petId/reminders"
+                element={<PetReminderManager />}
+              />
+
+              {/* <Route
               path="/admin"
               element={
                 <ProtectedRoute role="admin">
@@ -88,7 +113,7 @@ const App = () => {
               }
             /> */}
 
-            {/* <Route
+              {/* <Route
               path="/admin/manageUser"
               element={
                 <ProtectedRoute role="admin">
@@ -96,9 +121,11 @@ const App = () => {
                 </ProtectedRoute>
               }
             /> */}
-          </Routes>
-        </Layout>
-      </Router>
+            </Routes>
+          </Layout>
+          <ToastContainer position="top-right" autoClose={2000} />
+        </Router>
+      </CartProvider>
     </AuthProvider>
   );
 };
