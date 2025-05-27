@@ -26,6 +26,7 @@ import PetDetail from "./pages/Pet/PetDetail";
 import PetProfileManager from "./pages/Pet/PetProfileManager";
 import PetReminderManager from "./pages/Pet/PetReminderManager";
 import MyPets from "./pages/Pet/MyPets";
+import ChatBot from "./components/ChatBot/ChatBot";
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -39,6 +40,8 @@ const Layout = ({ children }) => {
         <div className="content">{children}</div>
       </div>
       {isAdminRoute ? <FooterAdmin /> : <Footer />}
+      {/* Hiển thị ChatBot ở tất cả trang user, ẩn ở trang admin */}
+      {!isAdminRoute && <ChatBot />}
     </div>
   );
 };
@@ -58,6 +61,7 @@ const App = () => {
             <Route path="/search" element={<SearchPage />} />
             <Route path="/my-pets" element={<MyPets />} />
             <Route path="/pets/:petId" element={<PetDetail />} />
+            <Route path="/chatbot" element={<ChatBot />} />
             <Route
               path="/me"
               element={
