@@ -67,79 +67,132 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="d-flex align-items-center justify-content-center" style={{ minHeight: "70vh" }}>
-            <div className="card shadow-lg p-4" style={{ maxWidth: "450px", width: "100%" }}>
-                <h3 className="text-center mb-3">Quên Mật Khẩu</h3>
+        <div className="d-flex align-items-center justify-content-center" style={{ minHeight: "50vh" }}>
+            <div
+                className="card shadow-lg overflow-hidden"
+                style={{ maxWidth: "480px", width: "100%" }}
+            >
+                <div className="p-4 d-flex flex-column justify-content-center" style={{ backgroundColor: "#C49A6C" }}>
+                    <h3 className="text-center mb-3 text-white fw-bold">Quên Mật Khẩu</h3>
 
-                {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+                    {errorMessage && <div className="alert alert-danger text-center py-1">{errorMessage}</div>}
 
-                {step === 1 && (
-                    <form onSubmit={handleSendOtp}>
-                        <div className="input-group mb-3">
-                            <span className="input-group-text"><FaEnvelope /></span>
-                            <input
-                                type="email"
-                                className="form-control"
-                                placeholder="Nhập email của bạn"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <button type="submit" className="btn btn-primary w-100">Gửi OTP</button>
-                    </form>
-                )}
+                    {step === 1 && (
+                        <form onSubmit={handleSendOtp}>
+                            <div className="input-group mb-3">
+                                <span className="input-group-text">
+                                    <FaEnvelope />
+                                </span>
+                                <input
+                                    type="email"
+                                    className="form-control"
+                                    placeholder="Nhập email của bạn"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                className="btn w-100 fw-semibold"
+                                style={{
+                                    backgroundColor: "#fff",
+                                    color: "#C49A6C",
+                                    borderColor: "#fff",
+                                    fontSize: "1rem",
+                                }}
+                            >
+                                Gửi OTP
+                            </button>
+                        </form>
+                    )}
 
-                {step === 2 && (
-                    <form onSubmit={handleVerifyOtp}>
-                        <div className="input-group mb-3">
-                            <span className="input-group-text"><FaKey /></span>
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Nhập OTP"
-                                value={otp}
-                                onChange={(e) => setOtp(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <button type="submit" className="btn btn-primary w-100">Xác Nhận OTP</button>
-                    </form>
-                )}
+                    {step === 2 && (
+                        <form onSubmit={handleVerifyOtp}>
+                            <div className="input-group mb-3">
+                                <span className="input-group-text">
+                                    <FaKey />
+                                </span>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Nhập mã OTP"
+                                    value={otp}
+                                    onChange={(e) => setOtp(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                className="btn w-100 fw-semibold"
+                                style={{
+                                    backgroundColor: "#fff",
+                                    color: "#C49A6C",
+                                    borderColor: "#fff",
+                                    fontSize: "1rem",
+                                }}
+                            >
+                                Xác nhận OTP
+                            </button>
+                        </form>
+                    )}
 
-                {step === 3 && (
-                    <form onSubmit={handleResetPassword}>
-                        <div className="input-group mb-3">
-                            <span className="input-group-text"><FaLock /></span>
-                            <input
-                                type="password"
-                                className="form-control"
-                                placeholder="Mật khẩu mới"
-                                value={newPassword}
-                                onChange={(e) => setNewPassword(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div className="input-group mb-3">
-                            <span className="input-group-text"><FaLock /></span>
-                            <input
-                                type="password"
-                                className="form-control"
-                                placeholder="Xác nhận mật khẩu"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <button type="submit" className="btn btn-primary w-100">Đặt Lại Mật Khẩu</button>
-                    </form>
-                )}
+                    {step === 3 && (
+                        <form onSubmit={handleResetPassword}>
+                            <div className="input-group mb-3">
+                                <span className="input-group-text">
+                                    <FaLock />
+                                </span>
+                                <input
+                                    type="password"
+                                    className="form-control"
+                                    placeholder="Mật khẩu mới"
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="input-group mb-3">
+                                <span className="input-group-text">
+                                    <FaLock />
+                                </span>
+                                <input
+                                    type="password"
+                                    className="form-control"
+                                    placeholder="Xác nhận mật khẩu"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                className="btn w-100 fw-semibold"
+                                style={{
+                                    backgroundColor: "#fff",
+                                    color: "#C49A6C",
+                                    borderColor: "#fff",
+                                    fontSize: "1rem",
+                                }}
+                            >
+                                Đặt lại mật khẩu
+                            </button>
+                        </form>
+                    )}
 
-                <p className="mt-3 text-center">
-                    <a href="/login" className="text-decoration-none">Quay lại Đăng nhập</a>
-                </p>
+                    <p className="mt-3 text-center">
+                        <a
+                            href="/login"
+                            className="text-decoration-none fw-semibold"
+                            style={{ color: "#fff" }}
+                        >
+                            Quay lại Đăng nhập
+                        </a>
+                    </p>
+                </div>
             </div>
         </div>
+
     );
 };
 

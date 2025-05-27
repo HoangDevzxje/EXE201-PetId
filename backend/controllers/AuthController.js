@@ -12,7 +12,7 @@ const sendOtp = async (req, res) => {
   try {
 
     const errMsg = validateUtils.validateEmail(email);
-    if(errMsg !== null) {
+    if (errMsg !== null) {
       return res.status(400).json({ message: errMsg });
     }
 
@@ -52,9 +52,8 @@ const sendOtp = async (req, res) => {
     res
       .status(200)
       .json({
-        message: `OTP đã được gửi để ${
-          type === "register" ? "đăng ký" : "đặt lại mật khẩu"
-        }!`,
+        message: `OTP đã được gửi để ${type === "register" ? "đăng ký" : "đặt lại mật khẩu"
+          }!`,
       });
   } catch (error) {
     console.log(error);
@@ -93,7 +92,7 @@ const register = async (req, res) => {
   const { name, email, password, phone } = req.body;
   try {
     const errMsg = validateUtils.validatePassword(password);
-    if(errMsg !== null) {
+    if (errMsg !== null) {
       return res.status(400).json({ message: errMsg });
     }
 
@@ -186,9 +185,9 @@ const resetPassword = async (req, res) => {
     return res.status(400).json({ message: "OTP đã hết hạn!" });
   }
   // Xóa OTP sau khi sử dụng
-  delete otpStore[email]["resetPassword"];
+  delete otpStore[email]["reset-password"];
   const errMsg = validateUtils.validatePassword(newPassword);
-  if(errMsg !== null) {
+  if (errMsg !== null) {
     return res.status(400).json({ message: errMsg });
   }
 
@@ -211,7 +210,7 @@ const changePassword = async (req, res) => {
       return res.status(400).json({ message: "Mật khẩu cũ không đúng!" });
 
     const errMsg = validateUtils.validatePassword(newPassword);
-    if(errMsg !== null) {
+    if (errMsg !== null) {
       return res.status(400).json({ message: errMsg });
     }
 

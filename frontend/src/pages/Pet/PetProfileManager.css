@@ -1,0 +1,169 @@
+.pet-manager-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: "Segoe UI", sans-serif;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+.error-message {
+  color: #e74c3c;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.input {
+  padding: 10px 12px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 100%;
+  transition: border 0.2s;
+}
+
+.input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+textarea.input {
+  grid-column: span 2;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.submit-button {
+  grid-column: span 2;
+  background-color: #007bff;
+  color: white;
+  padding: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
+
+.pet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pet-card {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.pet-avatar {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+}
+
+.pet-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.pet-name {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.pet-desc {
+  margin: 4px 0;
+  color: #555;
+  font-size: 14px;
+}
+
+.pet-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.edit-button,
+.delete-button,
+.reminder-link {
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.edit-button {
+  background-color: #ffc107;
+  color: #fff;
+}
+
+.edit-button:hover {
+  background-color: #e0a800;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+.reminder-link {
+  background-color: #28a745;
+  color: white;
+  text-align: center;
+}
+
+.reminder-link:hover {
+  background-color: #218838;
+}
+.btn-back {
+  display: inline-block;
+  margin-bottom: 16px;
+  background: #f8f8f8;
+  border: 1px solid #ccc;
+  color: #333;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}

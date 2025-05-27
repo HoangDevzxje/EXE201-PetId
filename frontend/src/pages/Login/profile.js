@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchUser } from "../../services/authen";
 import profileApi from "../../api/profileApi";
-import { Card, Button, Form, InputGroup } from "react-bootstrap";
+import { Card, Button, Table, Row, Col, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
@@ -12,6 +12,7 @@ const Profile = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const navigate = useNavigate();
+  const orders = [];
 
   useEffect(() => {
     const getUser = async () => {
@@ -38,66 +39,125 @@ const Profile = () => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100">
-      <Card className="shadow-lg p-4 rounded-4 border-0" style={{ maxWidth: "500px", width: "100%" }}>
-        <Card.Body className="text-center">
-          <i className="bi bi-person-circle text-primary mb-3" style={{ fontSize: "100px" }}></i>
-          <Card.Title className="fw-bold fs-4">Thông Tin Cá Nhân</Card.Title>
-          <Card.Text className="text-muted"><strong>Name:</strong> {user?.name}</Card.Text>
-          <Card.Text className="text-muted"><strong>Email:</strong> {user?.email}</Card.Text>
-          <Card.Text className="text-muted"><strong>Phone:</strong> {user?.phone}</Card.Text>
+    <div className="container mt-5">
+      <Row>
+        {/* Cột trái: Lịch sử đơn hàng */}
+        <Col md={8}>
+          <h3 className="fw-bold">Thông tin tài khoản</h3>
+          <p>
+            Xin chào, <span className="text-danger fw-bold">{user?.name || "User"}</span>!
+          </p>
+          <Table striped bordered hover responsive>
+            <thead className="table-secondary text-center">
+              <tr>
+                <th>Đơn hàng</th>
+                <th>Ngày</th>
+                <th>Giá trị đơn hàng</th>
+                <th>Trạng thái thanh toán</th>
+                <th>Trạng thái giao hàng</th>
+              </tr>
+            </thead>
+            <tbody className="text-center">
+              {orders.length === 0 ? (
+                <tr>
+                  <td colSpan="5">Không có đơn hàng nào.</td>
+                </tr>
+              ) : (
+                orders.map((order, index) => (
+                  <tr key={index}>
+                    <td>{order.id}</td>
+                    <td>{order.date}</td>
+                    <td>{order.total}</td>
+                    <td>{order.paymentStatus}</td>
+                    <td>{order.deliveryStatus}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </Table>
+        </Col>
 
-          {!showPasswordForm ? (
-            <Button variant="primary" className="mt-3 w-100" onClick={() => setShowPasswordForm(true)}>
-              Thay đổi mật khẩu
+        {/* Cột phải: Thông tin tài khoản */}
+        <Col md={4}>
+          <h3 className="fw-bold">Thông tin tài khoản</h3>
+          <p>
+            Xin chào, <span className="text-danger fw-bold">{user?.name || "User"}</span>!
+          </p>
+          <Card className="p-3 shadow-sm">
+            <h5 className="fw-bold mb-3">TÀI KHOẢN CỦA TÔI</h5>
+            <p>
+              <strong>Tên tài khoản:</strong> {user?.name}
+            </p>
+            <p>
+              <i className="bi bi-phone-fill me-2"></i>
+              <strong>Điện thoại:</strong> {user?.phone || "Chưa cập nhật"}
+            </p>
+            {/* <p>
+              <i className="bi bi-geo-alt-fill me-2"></i>
+              <strong>Địa chỉ:</strong> {user?.address || "Chưa cập nhật"}
+            </p>
+            <p>
+              <i className="bi bi-airplane-fill me-2"></i>
+              <strong>Quốc gia:</strong> {user?.country || "Vietnam"}
+            </p> */}
+            <Button
+              className="w-100 mt-3 text-white border-0"
+              style={{ backgroundColor: "#C49A6C" }}
+              onClick={() => setShowPasswordForm(!showPasswordForm)}
+            >
+              Thay đổi mật khẩu <i className="bi bi-lock ms-2"></i>
             </Button>
-          ) : (
-            <Form className="mt-3">
-              {/* Mật khẩu cũ */}
-              <Form.Group className="mb-2">
-                <Form.Label>Mật khẩu cũ</Form.Label>
-                <InputGroup>
-                  <Form.Control
-                    type={showOldPassword ? "text" : "password"}
-                    value={oldPassword}
-                    onChange={(e) => setOldPassword(e.target.value)}
-                    placeholder="Nhập mật khẩu cũ"
-                  />
-                  <InputGroup.Text onClick={() => setShowOldPassword(!showOldPassword)} style={{ cursor: "pointer" }}>
-                    <i className={`bi ${showOldPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
-                  </InputGroup.Text>
-                </InputGroup>
-              </Form.Group>
+            {showPasswordForm && (
+              <Form className="mt-3">
+                <Form.Group className="mb-3">
+                  <Form.Label>Mật khẩu hiện tại</Form.Label>
+                  <InputGroup>
+                    <Form.Control
+                      type={showOldPassword ? "text" : "password"}
+                      value={oldPassword}
+                      onChange={(e) => setOldPassword(e.target.value)}
+                      placeholder="Nhập mật khẩu hiện tại"
+                    />
+                    <Button
+                      variant="outline-secondary"
+                      onClick={() => setShowOldPassword(!showOldPassword)}
+                    >
+                      <i className={`bi ${showOldPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                    </Button>
+                  </InputGroup>
+                </Form.Group>
 
-              {/* Mật khẩu mới */}
-              <Form.Group className="mb-2">
-                <Form.Label>Mật khẩu mới</Form.Label>
-                <InputGroup>
-                  <Form.Control
-                    type={showNewPassword ? "text" : "password"}
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Nhập mật khẩu mới"
-                  />
-                  <InputGroup.Text onClick={() => setShowNewPassword(!showNewPassword)} style={{ cursor: "pointer" }}>
-                    <i className={`bi ${showNewPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
-                  </InputGroup.Text>
-                </InputGroup>
-              </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Mật khẩu mới</Form.Label>
+                  <InputGroup>
+                    <Form.Control
+                      type={showNewPassword ? "text" : "password"}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="Nhập mật khẩu mới"
+                    />
+                    <Button
+                      variant="outline-secondary"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                    >
+                      <i className={`bi ${showNewPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                    </Button>
+                  </InputGroup>
+                </Form.Group>
 
-              <div className="d-flex gap-2">
-                <Button variant="success" onClick={handleChangePassword} className="w-100">
-                  Xác nhận
+                <Button
+                  variant="success"
+                  onClick={handleChangePassword}
+                  disabled={!oldPassword || !newPassword}
+                >
+                  Cập nhật mật khẩu
                 </Button>
-                <Button variant="secondary" onClick={() => setShowPasswordForm(false)} className="w-100">
-                  Hủy
-                </Button>
-              </div>
-            </Form>
-          )}
-        </Card.Body>
-      </Card>
-    </div>
+              </Form>
+            )}
+          </Card>
+        </Col>
+      </Row>
+    </div >
   );
 };
 

@@ -45,11 +45,14 @@ const VerifyOtp = () => {
     };
 
     return (
-        <div className="d-flex align-items-center justify-content-center" style={{ minHeight: "80vh" }}>
-            <div className="card shadow-sm border-0 rounded-3 p-3" style={{ maxWidth: "350px" }}>
+        <div className="d-flex align-items-center justify-content-center" style={{ minHeight: "50vh" }}>
+            <div
+                className="card shadow-lg border-0 rounded-3 p-4"
+                style={{ maxWidth: "480px", width: "100%", backgroundColor: "#C49A6C" }}
+            >
                 <div className="text-center mb-3">
-                    <h4 className="fw-bold">Xác thực OTP</h4>
-                    <p className="text-muted mb-2">Nhập mã OTP gửi đến email</p>
+                    <h4 className="fw-bold" style={{ color: "#fff" }}>Xác thực OTP</h4>
+                    <p className="text-light mb-2">Vui lòng nhập mã OTP được gửi đến email của bạn</p>
                 </div>
 
                 {error && <div className="alert alert-danger text-center py-1">{error}</div>}
@@ -59,19 +62,32 @@ const VerifyOtp = () => {
                         <input
                             type="text"
                             className="form-control text-center fw-semibold"
-                            placeholder="Nhập OTP"
+                            placeholder="Nhập mã OTP"
                             value={otp}
                             onChange={(e) => setOtp(e.target.value)}
                             required
-                            style={{ letterSpacing: "2px" }}
+                            style={{
+                                letterSpacing: "2px",
+                                borderColor: "#fff",
+                            }}
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary w-100 fw-bold">
+                    <button
+                        type="submit"
+                        className="btn w-100 fw-semibold"
+                        style={{
+                            backgroundColor: "#fff",
+                            color: "#C49A6C",
+                            borderColor: "#fff",
+                            fontSize: "1rem",
+                        }}
+                    >
                         Xác nhận
                     </button>
                 </form>
             </div>
         </div>
+
 
 
     );

@@ -10,7 +10,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Header from "./components/Header/Header";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
-//import Dashboard from "./pages/Dashboard/Dashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Footer from "./components/Footer/Footer";
@@ -23,6 +22,11 @@ import ForgotPassword from "./pages/Login/forgotPassword";
 import Profile from "./pages/Login/profile";
 import SideBarAdmin from "./components/SideBarAdmin/SideBarAdmin";
 import ProductDetail from "./pages/Product/ProductDetail";
+import PetDetail from "./pages/Pet/PetDetail";
+import PetProfileManager from "./pages/Pet/PetProfileManager";
+import PetReminderManager from "./pages/Pet/PetReminderManager";
+import MyPets from "./pages/Pet/MyPets";
+import ChatBot from "./components/ChatBot/ChatBot";
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -36,6 +40,8 @@ const Layout = ({ children }) => {
         <div className="content">{children}</div>
       </div>
       {isAdminRoute ? <FooterAdmin /> : <Footer />}
+      {/* Hiển thị ChatBot ở tất cả trang user, ẩn ở trang admin */}
+      {!isAdminRoute && <ChatBot />}
     </div>
   );
 };
@@ -53,6 +59,9 @@ const App = () => {
             <Route path="/verify-otp" element={<VerifyOtp />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/my-pets" element={<MyPets />} />
+            <Route path="/pets/:petId" element={<PetDetail />} />
+            <Route path="/chatbot" element={<ChatBot />} />
             <Route
               path="/me"
               element={
@@ -61,6 +70,19 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/pets"
+              element={
+                <ProtectedRoute role="user">
+                  <PetProfileManager />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/pets/:petId/reminders"
+              element={<PetReminderManager />}
+            />
+
             {/* <Route
               path="/admin"
               element={
