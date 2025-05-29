@@ -1,70 +1,70 @@
 .footer {
-    background-color: #222;
-    color: white;
-    padding: 40px 0;
-    text-align: center;
-  }
-  
-  .footer-container {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    padding: 20px;
-  }
-  
-  .footer-section {
-    width: 300px;
-  }
-  
-  .footer-section h4 {
-    font-size: 18px;
-    margin-bottom: 15px;
-    text-transform: uppercase;
-  }
-  
-  .footer-section p,
-  .footer-section ul {
-    font-size: 14px;
-    margin: 5px 0;
-  }
-  
-  .footer-section ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .footer-section ul li {
-    margin: 5px 0;
-  }
-  
-  .footer-section ul li a {
-    color: white;
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-  
-  .footer-section ul li a:hover {
-    color: #f39c12;
-  }
-  
-  .social-icons {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-  }
-  
-  .social-icons a {
-    color: white;
-    font-size: 18px;
-    transition: color 0.3s;
-  }
-  
-  .social-icons a:hover {
-    color: #f39c12;
-  }
-  
-  .footer-bottom {
-    margin-top: 20px;
-    font-size: 14px;
-  }
-  
+  background-color: #bb9c73;
+  color: white;
+  padding: 40px 0;
+  text-align: center;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  padding: 20px;
+  align-items: center;
+}
+
+.footer-section {
+  width: 300px;
+  margin-bottom: 20px;
+}
+
+.logo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footer-logo {
+  width: 70px; /* Điều chỉnh kích thước theo nhu cầu */
+  height: auto;
+  margin-bottom: 15px;
+}
+
+.footer-section h4 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.footer-section p {
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.footer-section a {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-section a:hover {
+  color: #f39c12;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.social-icons a {
+  color: white;
+  font-size: 18px;
+  transition: color 0.3s;
+  display: flex;
+  align-items: center;
+}
+
+.social-icons a:hover {
+  color: #f39c12;
+}

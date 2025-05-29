@@ -1,171 +1,266 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Container, Row, Col, Card, Spinner, Form } from "react-bootstrap";
+import api from "../../api/baseApi";
+import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
+import { Card, Row, Col, Spinner, Carousel, Container } from "react-bootstrap";
 import "./Home.css";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const Home = () => {
+  const [pets, setPets] = useState([]);
   const [products, setProducts] = useState([]);
-  const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [loadingPets, setLoadingPets] = useState(true);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const { token, loading } = useAuth();
+
+  // Banner images data
+  const bannerImages = [
+    {
+      url: "https://png.pngtree.com/thumb_back/fh260/background/20230610/pngtree-golden-retriever-and-a-cat-greeting-each-other-image_2891837.jpg",
+      alt: "Golden retriever and cat",
+      title: "Chào mừng đến với PetID+",
+      subtitle: "Nơi hỗ trợ sức khỏe cho thú cưng của bạn",
+    },
+    {
+      url: "https://static.tuoitre.vn/tto/i/s626/2015/09/03/cho-meo-0-1441255567.jpg",
+      alt: "Dog and cat together",
+      title: "Chăm sóc toàn diện",
+      subtitle: "Dịch vụ chăm sóc thú cưng chất lượng cao",
+    },
+    {
+      url: "https://truongthinh.info/wp-content/uploads/2021/09/22/03/anh-cho-va-meo-cute-de-thuong-anh-che-cho-meo-hai-huoc-nhat-14.jpg",
+      alt: "Cute dog and cat",
+      title: "Phụ kiện đa dạng",
+      subtitle: "Những sản phẩm tốt nhất cho thú cưng của bạn",
+    },
+  ];
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [productsRes, categoriesRes, featuredRes] = await Promise.all([
-          axios.get("http://localhost:9999/products/main"),
-          axios.get("http://localhost:9999/categories"),
-          axios.get("http://localhost:9999/products/featured"),
-        ]);
+    if (loading) return;
 
-        setProducts(productsRes.data);
-        setFilteredProducts(productsRes.data);
-        setCategories(categoriesRes.data);
-        setFeaturedProducts(featuredRes.data);
-      } catch (error) {
-        console.error("Lỗi khi tải dữ liệu:", error);
+    const fetchPets = async () => {
+      try {
+        const res = await api.get("/pets");
+        setPets(res.data);
+      } catch (err) {
+        console.error("Lỗi khi tải danh sách thú cưng", err);
       } finally {
-        setLoading(false);
+        setLoadingPets(false);
       }
     };
 
-    fetchData();
-  }, []);
+    const fetchProducts = async () => {
+      try {
+        const res = await api.get("/products/featured");
+        setProducts(res.data);
+      } catch (err) {
+        console.error("Lỗi khi tải sản phẩm", err);
+      } finally {
+        setLoadingProducts(false);
+      }
+    };
 
-  useEffect(() => {
-    if (selectedCategory === "") {
-      setFilteredProducts(products);
-    } else {
-      const filtered = products.filter(
-        (product) => product.category?._id === selectedCategory
-      );
-      setFilteredProducts(filtered);
-    }
-  }, [selectedCategory, products]);
-
-  const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value);
-  };
-
-  if (loading) {
-    return (
-      <div className="loading-container">
-        <Spinner animation="border" variant="primary" />
-        <p>Đang tải sản phẩm...</p>
-      </div>
-    );
-  }
+    fetchPets();
+    fetchProducts();
+  }, [token, loading]);
 
   return (
-    <div className="home-page">
-      <div className="hero-section">
-        <Container>
-          <h1>Chào mừng đến với cửa hàng của chúng tôi</h1>
-          <p>Khám phá những sản phẩm chất lượng với giá cả hợp lý</p>
-        </Container>
-      </div>
+    <div className="home-container">
+      {/* Full-screen Banner Carousel */}
+      <section className="hero-section">
+        <Carousel
+          fade
+          interval={4000}
+          controls={false}
+          indicators={true}
+          pause={false}
+        >
+          {bannerImages.map((slide, index) => (
+            <Carousel.Item key={index}>
+              <div className="hero-slide">
+                <img
+                  className="d-block w-100 hero-img"
+                  src={slide.url}
+                  alt={slide.alt}
+                />
+                <div className="hero-overlay" />
+                <div className="hero-content">
+                  <h1>{slide.title}</h1>
+                  <p>{slide.subtitle}</p>
+                </div>
+              </div>
+            </Carousel.Item>
+          ))}
+        </Carousel>
+      </section>
 
-      <Container className="main-content">
-        {featuredProducts.length > 0 && (
-          <div className="featured-section">
-            <h2 className="section-title">Sản phẩm nổi bật</h2>
-            <Row className="featured-grid">
-              {featuredProducts.map((product) => (
-                <Col
-                  key={product._id}
-                  lg={3}
-                  md={4}
-                  sm={6}
-                  xs={12}
-                  className="mb-4"
-                >
-                  <Card className="product-card featured">
-                    <Link to={`/product/${product._id}`}>
-                      <div className="img-container">
-                        <Card.Img
-                          variant="top"
-                          src={product.imageUrl}
-                          alt={product.name}
-                        />
-                      </div>
-                    </Link>
-                    <Card.Body>
-                      <Card.Title>{product.name}</Card.Title>
-                      <Card.Subtitle className="category-name">
-                        {product.category?.name}
-                      </Card.Subtitle>
-                      <Card.Text className="price">
-                        {product.price.toLocaleString()}đ
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              ))}
-            </Row>
-          </div>
-        )}
-
-        <div className="filter-section">
-          <h2>Danh sách sản phẩm</h2>
-          <Form.Group className="category-filter">
-            <Form.Label>Lọc theo danh mục:</Form.Label>
-            <Form.Select
-              value={selectedCategory}
-              onChange={handleCategoryChange}
-            >
-              <option value="">Tất cả sản phẩm</option>
-              {categories.map((category) => (
-                <option key={category._id} value={category._id}>
-                  {category.name}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
+      {/* My Pets Section */}
+      <section className="pets-section container mt-5">
+        <div className="section-header">
+          <h2 className="section-title">
+            <i className="fas fa-paw me-2"></i>Thú cưng của tôi
+          </h2>
+          <Link to="/pets/manage" className="btn btn-outline-secondary">
+            Tạo hồ sơ thú cưng
+          </Link>
         </div>
 
-        {filteredProducts.length === 0 ? (
-          <div className="no-products">
-            <p>Không tìm thấy sản phẩm nào trong danh mục này.</p>
+        {loadingPets ? (
+          <div className="text-center py-4">
+            <Spinner animation="border" variant="secondary" />
+          </div>
+        ) : pets.length === 0 ? (
+          <div className="empty-state">
+            <p>
+              Hãy đăng nhập để xem thông tin hoặc tạo hồ sơ cho thú cưng của
+              bạn!
+            </p>
+            <Link to="/login" className="btn btn-primary">
+              Thú cưng
+            </Link>
           </div>
         ) : (
-          <Row className="products-grid">
-            {filteredProducts.map((product) => (
-              <Col
-                key={product._id}
-                lg={3}
-                md={4}
-                sm={6}
-                xs={12}
-                className="mb-4"
-              >
-                <Card className="product-card">
-                  <Link to={`/product/${product._id}`}>
-                    <div className="img-container">
-                      <Card.Img
-                        variant="top"
-                        src={product.imageUrl}
-                        alt={product.name}
+          <Row className="g-4">
+            {pets.slice(0, 3).map((pet) => (
+              <Col key={pet._id} xs={12} sm={6} md={4} lg={4}>
+                <Link to={`/pets/${pet._id}`} className="pet-card-link">
+                  <div className="styled-pet-card">
+                    <div className="styled-pet-avatar">
+                      <img
+                        src={pet.avatarUrl || "/images/default-pet.png"}
+                        alt={pet.name}
+                        onError={(e) => {
+                          e.target.src = "/images/default-pet.png";
+                        }}
                       />
                     </div>
-                  </Link>
-                  <Card.Body>
-                    <Card.Title>{product.name}</Card.Title>
-                    <Card.Subtitle className="category-name">
-                      {product.category?.name}
-                    </Card.Subtitle>
-                    <Card.Text className="price">
-                      {product.price.toLocaleString()}đ
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
+                    <div className="styled-pet-content">
+                      <h5 className="styled-pet-name">
+                        {pet.name || "Chưa đặt tên"}
+                      </h5>
+                      <hr className="divider" />
+                      <div className="styled-pet-info">
+                        <p>
+                          <strong>Tuổi:</strong>{" "}
+                          {pet.birthDate
+                            ? (() => {
+                                const birth = new Date(pet.birthDate);
+                                const now = new Date();
+
+                                let years =
+                                  now.getFullYear() - birth.getFullYear();
+                                let months = now.getMonth() - birth.getMonth();
+                                if (now.getDate() < birth.getDate()) months--;
+                                if (months < 0) {
+                                  years--;
+                                  months += 12;
+                                }
+
+                                return `${years} tuổi${
+                                  months > 0 ? ` ${months} tháng` : ""
+                                }`;
+                              })()
+                            : "Không rõ"}
+                        </p>
+                        <p>
+                          <strong>Cân nặng:</strong> {pet.weightKg} kg
+                        </p>
+                        <p>
+                          <strong>Giới tính:</strong>{" "}
+                          {pet.gender === "male"
+                            ? "Đực"
+                            : pet.gender === "female"
+                            ? "Cái"
+                            : "Không rõ"}
+                        </p>
+                        <Link
+                          to={`/pets/${pet._id}/reminders`}
+                          className="btn btn-sm btn-outline-primary mt-2"
+                        >
+                          📅 Lịch tiêm phòng
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
               </Col>
             ))}
           </Row>
         )}
-      </Container>
+      </section>
+      <section className="care-tips-section container mt-5 mb-5">
+        <div className="section-header">
+          <h2 className="section-title">
+            <i className="fas fa-paw me-2"></i>7 Mẹo Chăm Sóc Thú Cưng Hiệu Quả
+          </h2>
+        </div>
+        <Container className="my-5">
+          <Row className="justify-content-center">
+            <Col xs={12} md={6} lg={6} className="mb-4">
+              <img
+                src="https://sacomvet.com/upload/filemanager/benh-vien-thu-y-chuyen-nghiep-thu-duc-1.jpeg"
+                alt="Bệnh viện thú y 1"
+                className="img-fluid rounded shadow"
+                style={{ height: "300px", objectFit: "cover", width: "100%" }}
+              />
+            </Col>
+            <Col xs={12} md={6} lg={6} className="mb-4">
+              <img
+                src="https://media.istockphoto.com/id/529121920/vi/anh/m%C3%A8o-ba-t%C6%B0-v%E1%BB%9Bi-b%C3%A1c-s%C4%A9-th%C3%BA-y.jpg?s=612x612&w=0&k=20&c=Xt0rbXCqwCb1Qa3vTJpLAhh_4kM1ZZYmcMn970INQ2w="
+                alt="Bệnh viện thú y 2"
+                className="img-fluid rounded shadow"
+                style={{ height: "300px", objectFit: "cover", width: "100%" }}
+              />
+            </Col>
+          </Row>
+        </Container>
+        <div className="care-tips-content" style={{ whiteSpace: "pre-line" }}>
+          <p>
+            Thú cưng từ lâu đã trở thành một người bạn tâm giao, một thành viên
+            quan trọng không thể thiếu trong cuộc sống bộn bề của nhiều người.
+            Chính vì vậy, có rất nhiều thắc mắc xoay quanh vấn đề “phải chăm sóc
+            thú cưng như thế nào để chúng luôn khỏe mạnh và ở bên ta thật lâu”,
+            đặc biệt là với những người mới bắt đầu tập nuôi. Sau đây là 7 mẹo
+            chăm sóc thú cưng được chuyên gia khuyên dùng:
+          </p>
+          <ol>
+            <li>
+              <strong>Tiêm vắc-xin đầy đủ:</strong> Bảo vệ thú cưng khỏi bệnh
+              truyền nhiễm nguy hiểm như dại, care, viêm gan,...
+            </li>
+            <li>
+              <strong>Kiểm tra sức khỏe định kỳ:</strong> Giúp phát hiện sớm
+              bệnh và điều trị kịp thời.
+            </li>
+            <li>
+              <strong>Chế độ dinh dưỡng lành mạnh:</strong> Đảm bảo đủ đạm, béo,
+              vitamin, khoáng chất, tránh gia vị gây kích ứng.
+            </li>
+            <li>
+              <strong>Cung cấp đủ nước:</strong> Giúp trao đổi chất và duy trì
+              hoạt động cơ thể.
+            </li>
+            <li>
+              <strong>Giữ môi trường sống sạch sẽ:</strong> Ngăn ngừa nấm, ký
+              sinh và tăng cường tinh thần thú cưng.
+            </li>
+            <li>
+              <strong>Vận động đầy đủ:</strong> Tăng cường thể chất, giảm stress
+              và béo phì.
+            </li>
+            <li>
+              <strong>Vệ sinh sạch sẽ:</strong> Tắm rửa giúp loại bỏ vi khuẩn và
+              làm thú cưng thoải mái hơn.
+            </li>
+          </ol>
+          <p>
+            Pet ID+ hy vọng bạn sẽ áp dụng những mẹo trên để thú cưng của mình
+            luôn khỏe mạnh và hạnh phúc.
+          </p>
+        </div>
+      </section>
     </div>
   );
 };

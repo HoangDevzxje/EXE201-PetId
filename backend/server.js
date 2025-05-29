@@ -15,6 +15,7 @@ const petRoutes = require("./routes/petRoute");
 const reminderRoutes = require("./routes/reminderRoute");
 const productRoutes = require("./routes/productRoute");
 const categoryRoutes = require("./routes/categoryRoute");
+const chatbotRoutes = require("./routes/chatbotRoute");
 const orderRoutes = require("./routes/orderRoute");
 
 const DB = require("./config/db");
@@ -39,6 +40,7 @@ app.use("/reminders", reminderRoutes);
 app.use("/products", productRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/orders", orderRoutes);
+app.use("/chatbot", chatbotRoutes);
 app.use("/uploads", express.static("uploads"));
 
 // Start server

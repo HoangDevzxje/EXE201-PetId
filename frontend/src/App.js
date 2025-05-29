@@ -22,16 +22,18 @@ import ForgotPassword from "./pages/Login/forgotPassword";
 import Profile from "./pages/Login/profile";
 import SideBarAdmin from "./components/SideBarAdmin/SideBarAdmin";
 import ProductDetail from "./pages/Product/ProductDetail";
-import PetDetail from "./pages/Pet/PetDetail";
-import PetProfileManager from "./pages/Pet/PetProfileManager";
-import PetReminderManager from "./pages/Pet/PetReminderManager";
-import MyPets from "./pages/Pet/MyPets";
+
 import { CartProvider } from "./context/CartContext";
 import CartPage from "./pages/Cart/CartPage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CheckoutPage from "./pages/Checkout/CheckoutPage";
 import OrderHistoryPage from "./pages/Order/OrderHistoryPage";
+import ChatBot from "./components/ChatBot/ChatBot";
+import Product from "./pages/Product/Product";
+import PetManagement from "./pages/Home/PetManagement";
+import PetDetail from "./pages/Home/PetDetail";
+import PetReminderManager from "./pages/Home/PetReminderManager";
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -45,6 +47,7 @@ const Layout = ({ children }) => {
         <div className="content">{children}</div>
       </div>
       {isAdminRoute ? <FooterAdmin /> : <Footer />}
+      {!isAdminRoute && <ChatBot />}
     </div>
   );
 };
@@ -63,8 +66,18 @@ const App = () => {
               <Route path="/verify-otp" element={<VerifyOtp />} />
               <Route path="/forgotpassword" element={<ForgotPassword />} />
               <Route path="/search" element={<SearchPage />} />
-              <Route path="/my-pets" element={<MyPets />} />
+              <Route path="/product" element={<Product />} />
               <Route path="/pets/:petId" element={<PetDetail />} />
+              <Route path="/chatbot" element={<ChatBot />} />
+              <Route
+                path="/pets/manage"
+                element={
+                  <ProtectedRoute role="user">
+                    <PetManagement />
+                  </ProtectedRoute>
+                }
+              />
+
               <Route
                 path="/me"
                 element={
@@ -75,11 +88,7 @@ const App = () => {
               />
               <Route
                 path="/pets"
-                element={
-                  <ProtectedRoute role="user">
-                    <PetProfileManager />
-                  </ProtectedRoute>
-                }
+                element={<ProtectedRoute role="user"></ProtectedRoute>}
               />
               <Route
                 path="/cart"

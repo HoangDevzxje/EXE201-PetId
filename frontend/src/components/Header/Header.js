@@ -73,6 +73,11 @@ const Header = () => {
             {!user ? (
               <>
                 <li className="nav-item">
+                  <Link className="nav-link fw-semibold" to="/product">
+                    Sản phẩm thú cưng
+                  </Link>
+                </li>
+                <li className="nav-item">
                   <Link className="nav-link fw-semibold" to="/register">
                     Đăng ký
                   </Link>
@@ -85,12 +90,6 @@ const Header = () => {
               </>
             ) : (
               <>
-                <li className="nav-item">
-                  <Link className="nav-link fw-semibold" to="/my-pets">
-                    Thú cưng của tôi
-                  </Link>
-                </li>
-
                 <li className="nav-item">
                   <Link className="nav-link fw-semibold" to="/me">
                     Hồ sơ

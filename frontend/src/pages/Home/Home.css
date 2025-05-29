@@ -1,190 +1,351 @@
-.home-page {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+.home-container {
+  padding: 0;
 }
 
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 60vh;
-  gap: 1rem;
-}
-
+/* Hero Section Styles */
+/* Fullscreen Hero Section */
 .hero-section {
-  background: linear-gradient(135deg, #c49a6c 0%, #2575fc 100%);
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.hero-slide {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+}
+
+/* Fullscreen Image */
+.hero-img {
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Dark overlay to enhance text visibility */
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+/* Centered Content */
+.hero-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   color: white;
-  padding: 3rem 0;
-  margin-bottom: 2rem;
+  z-index: 2;
   text-align: center;
-  border-radius: 0 0 10px 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 0 1rem;
+  width: 90%;
+  max-width: 800px;
 }
 
-.hero-section h1 {
-  font-size: 2.5rem;
+.hero-content h1 {
+  font-size: 4rem;
+  font-weight: bold;
   margin-bottom: 1rem;
-  font-weight: 700;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
 }
 
-.hero-section p {
-  font-size: 1.2rem;
-  opacity: 0.9;
+.hero-content p {
+  font-size: 1.5rem;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+}
+/* Carousel Indicators */
+.carousel-indicators {
+  bottom: 30px;
 }
 
-.main-content {
-  padding-bottom: 3rem;
+.carousel-indicators [data-bs-target] {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin: 0 8px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: none;
 }
 
-.filter-section {
+.carousel-indicators .active {
+  background-color: white;
+}
+
+/* Overlay for better text visibility */
+.hero-slide::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+/* Section Styles */
+.section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.filter-section h2 {
-  margin: 0;
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: #333;
-}
-
-.category-filter {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.category-filter label {
-  margin-bottom: 0;
-  font-weight: 500;
-}
-
-.category-filter select {
-  min-width: 200px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  padding: 0.5rem;
-}
-
-.no-products {
-  text-align: center;
-  padding: 3rem;
-  background-color: #f8f9fa;
-  border-radius: 10px;
-  margin-top: 2rem;
-}
-
-.products-grid {
-  margin-top: 1.5rem;
-}
-
-.product-card {
-  border: none;
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  height: 100%;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-}
-
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-}
-
-.img-container {
-  height: 220px;
-  background-color: #f9f9f9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.img-container img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  transition: transform 0.5s ease;
-}
-
-.product-card:hover .img-container img {
-  transform: scale(1.05);
-}
-
-.product-card .card-body {
-  padding: 1.25rem;
-}
-
-.product-card .card-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-.category-name {
-  color: #6c757d;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-}
-
-.price {
-  font-weight: 700;
-  font-size: 1.25rem;
-  color: #c49a6c;
-  margin-bottom: 1.25rem;
-}
-
-/* Featured section */
-.featured-section {
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem;
 }
 
 .section-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #c49a6c;
-  margin-bottom: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.empty-state {
   text-align: center;
-  position: relative;
+  padding: 3rem;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
 }
 
-.section-title::after {
-  content: "";
-  width: 60px;
-  height: 3px;
-  background-color: #c49a6c;
+/* Pet Card Link Styles */
+.pets-section {
+  margin-bottom: 3rem;
+}
+
+.pet-card-link {
+  text-decoration: none;
+  color: inherit;
   display: block;
-  margin: 0.5rem auto 0;
-  border-radius: 2px;
+  height: 100%;
 }
 
-.product-card.featured {
-  border: 2px solid #c49a6c;
+.pet-card-link:hover,
+.pet-card-link:focus,
+.pet-card-link:active,
+.pet-card-link:visited {
+  text-decoration: none;
+  color: inherit;
 }
 
-/* Responsive adjustments */
+.styled-pet-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+  overflow: hidden;
+  text-align: center;
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+}
+
+.styled-pet-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: #007bff;
+}
+
+.styled-pet-avatar {
+  height: 220px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.styled-pet-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.styled-pet-card:hover .styled-pet-avatar img {
+  transform: scale(1.05);
+}
+
+.styled-pet-content {
+  padding: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.styled-pet-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.divider {
+  width: 60px;
+  margin: 0.5rem auto;
+  border: none;
+  border-top: 3px solid #ddd;
+  opacity: 1;
+}
+
+.styled-pet-info {
+  font-size: 0.95rem;
+  color: #555;
+  text-align: left;
+}
+
+.styled-pet-info p {
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.styled-pet-info strong {
+  color: #333;
+  font-weight: 600;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  background-color: #f8f9fa;
+  border-radius: 1rem;
+  border: 2px dashed #dee2e6;
+}
+
+.empty-state p {
+  font-size: 1.1rem;
+  color: #6c757d;
+  margin-bottom: 1.5rem;
+}
+.care-tips-section {
+  background-color: #fdfdfd;
+  border-top: 1px solid #ddd;
+  padding: 2rem;
+  border-radius: 12px;
+}
+
+.care-tips-section img {
+  max-width: 100%;
+  border-radius: 12px;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .hero-content h1 {
+    font-size: 2.8rem;
+  }
+
+  .hero-content p {
+    font-size: 1.3rem;
+  }
+}
+
 @media (max-width: 768px) {
-  .filter-section {
+  .hero-section {
+    max-height: 600px;
+  }
+
+  .hero-content h1 {
+    font-size: 2.2rem;
+  }
+
+  .hero-content p {
+    font-size: 1.1rem;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .section-header {
     flex-direction: column;
     align-items: flex-start;
+    gap: 1rem;
   }
 
+  .pet-avatar-container {
+    height: 150px;
+  }
+}
+
+@media (max-width: 576px) {
   .hero-section {
-    padding: 2rem 0;
+    max-height: 500px;
   }
 
-  .hero-section h1 {
-    font-size: 2rem;
-  }
-
-  .section-title {
+  .hero-content h1 {
     font-size: 1.8rem;
+  }
+
+  .hero-content p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .product-image {
+    height: 120px;
+  }
+}
+@media (max-width: 1200px) {
+  .styled-pet-avatar {
+    height: 200px;
+  }
+
+  .styled-pet-card {
+    min-height: 380px;
+  }
+}
+
+@media (max-width: 992px) {
+  .styled-pet-avatar {
+    height: 180px;
+  }
+
+  .styled-pet-card {
+    min-height: 350px;
+  }
+
+  .styled-pet-name {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .styled-pet-avatar {
+    height: 160px;
+  }
+
+  .styled-pet-card {
+    min-height: 320px;
+  }
+
+  .styled-pet-name {
+    font-size: 1.2rem;
+  }
+
+  .styled-pet-info {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .styled-pet-card {
+    min-height: 300px;
+  }
+
+  .styled-pet-avatar {
+    height: 140px;
   }
 }
