@@ -101,11 +101,11 @@ const Header = () => {
                   </Link>
                 </li>
 
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   <Link className="nav-link fw-semibold" to="/orders">
                     Đơn hàng
                   </Link>
-                </li>
+                </li> */}
 
                 <li className="nav-item">
                   <button
