@@ -2,7 +2,15 @@ import React, { useEffect, useState } from "react";
 import { fetchUser } from "../../services/authen";
 import profileApi from "../../api/profileApi";
 import orderApi from "../../api/orderApi";
-import { Card, Button, Table, Row, Col, Form, InputGroup } from "react-bootstrap";
+import {
+  Card,
+  Button,
+  Table,
+  Row,
+  Col,
+  Form,
+  InputGroup,
+} from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 
 const Profile = () => {
@@ -44,13 +52,19 @@ const Profile = () => {
 
   const handleChangePassword = async () => {
     try {
-      const response = await profileApi.changePassword(oldPassword, newPassword);
+      const response = await profileApi.changePassword(
+        oldPassword,
+        newPassword
+      );
       alert(response.message);
       setOldPassword("");
       setNewPassword("");
       setShowPasswordForm(false);
     } catch (error) {
-      alert("Lỗi khi đổi mật khẩu: " + (error.response?.data?.message || "Vui lòng thử lại!"));
+      alert(
+        "Lỗi khi đổi mật khẩu: " +
+          (error.response?.data?.message || "Vui lòng thử lại!")
+      );
     }
   };
 
@@ -59,7 +73,10 @@ const Profile = () => {
       <Row>
         {/* Cột trái: Thông tin + Lịch sử đơn hàng */}
         <Col md={8}>
-          <h3 className="fw-bold">Xin chào, <span className="text-danger">{user?.name || "User"}</span>!</h3>
+          <h3 className="fw-bold">
+            Xin chào,{" "}
+            <span className="text-danger">{user?.name || "User"}</span>!
+          </h3>
 
           <h4 className="fw-bold mt-4">📦 Lịch sử đơn hàng</h4>
 
@@ -83,11 +100,16 @@ const Profile = () => {
                   {orders.map((order) => (
                     <tr key={order._id}>
                       <td>
-                        <Link to={`/orders/${order._id}`} className="text-decoration-none">
+                        <Link
+                          to={`/orders/${order._id}`}
+                          className="text-decoration-none"
+                        >
                           {order.orderCode || order._id.slice(-6).toUpperCase()}
                         </Link>
                       </td>
-                      <td>{new Date(order.createdAt).toLocaleString("vi-VN")}</td>
+                      <td>
+                        {new Date(order.createdAt).toLocaleString("vi-VN")}
+                      </td>
                       <td>
                         <ul className="list-unstyled mb-0">
                           {order.items.map((item, idx) => (
@@ -100,12 +122,13 @@ const Profile = () => {
                       <td>{order.totalAmount?.toLocaleString("vi-VN")}₫</td>
                       <td>
                         <span
-                          className={`badge text-bg-${order.status === "paid"
+                          className={`badge text-bg-${
+                            order.status === "paid"
                               ? "success"
                               : order.status === "cancelled"
-                                ? "danger"
-                                : "secondary"
-                            }`}
+                              ? "danger"
+                              : "secondary"
+                          }`}
                         >
                           {order.status}
                         </span>
@@ -125,6 +148,10 @@ const Profile = () => {
             <h5 className="fw-bold mb-3">TÀI KHOẢN CỦA TÔI</h5>
             <p>
               <strong>Tên tài khoản:</strong> {user?.name}
+            </p>
+            <p>
+              <i className="fw-bold mb-3"></i>
+              <strong>Email:</strong> {user?.email || "Chưa cập nhật"}
             </p>
             <p>
               <i className="bi bi-phone-fill me-2"></i>
@@ -154,7 +181,11 @@ const Profile = () => {
                       variant="outline-secondary"
                       onClick={() => setShowOldPassword(!showOldPassword)}
                     >
-                      <i className={`bi ${showOldPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                      <i
+                        className={`bi ${
+                          showOldPassword ? "bi-eye-slash" : "bi-eye"
+                        }`}
+                      ></i>
                     </Button>
                   </InputGroup>
                 </Form.Group>
@@ -172,7 +203,11 @@ const Profile = () => {
                       variant="outline-secondary"
                       onClick={() => setShowNewPassword(!showNewPassword)}
                     >
-                      <i className={`bi ${showNewPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                      <i
+                        className={`bi ${
+                          showNewPassword ? "bi-eye-slash" : "bi-eye"
+                        }`}
+                      ></i>
                     </Button>
                   </InputGroup>
                 </Form.Group>
