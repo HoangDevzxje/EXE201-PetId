@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import api from "../api/baseApi";
+import api from "../api/baseApi"; // axios instance with baseURL & withCredentials
 
 const AuthContext = createContext();
 
@@ -7,7 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 1️⃣ Fetch user khi app load
+  // ✅ 1. Kiểm tra phiên đăng nhập khi app load
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -15,25 +15,34 @@ export const AuthProvider = ({ children }) => {
         setUser(res.data);
       } catch (error) {
         setUser(null);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
     fetchUser();
   }, []);
 
-  // 2️⃣ Hàm login (Gửi email & password đến backend)
+  // ✅ 2. Đăng nhập: Gửi credentials + fetch lại user
   const login = async (email, password) => {
-    await api.post("/auth/login", { email, password });
-    const res = await api.get("/auth/me");
-    setUser(res.data);
-    return res.data; // Trả về user sau khi fetch
+    try {
+      await api.post("/auth/login", { email, password });
+      const res = await api.get("/auth/me");
+      setUser(res.data);
+      return res.data; // Trả về user để client xử lý điều hướng
+    } catch (error) {
+      throw error; // Cho phép component xử lý lỗi (hiển thị message)
+    }
   };
 
-  // 3️⃣ Hàm logout (Xóa cookie từ backend)
+  // ✅ 3. Đăng xuất
   const logout = async () => {
-    await api.post("/auth/logout");
-    setUser(null);
-    window.location.href = "/"; // Reload UI
+    try {
+      await api.post("/auth/logout");
+      setUser(null);
+      window.location.href = "/"; // Reload UI
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   return (
@@ -43,4 +52,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
+// ✅ Custom hook để sử dụng AuthContext
 export const useAuth = () => useContext(AuthContext);

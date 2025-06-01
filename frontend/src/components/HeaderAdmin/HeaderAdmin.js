@@ -1,53 +1,77 @@
 import React, { useState } from "react";
-import "./HeaderAdmin.css";
-import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-export default function HeaderAdmin() {
-  const [isOpen, setIsOpen] = useState(false);
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Menu,
+  MenuItem,
+  Box,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+
+export default function HeaderAdmin({ toggleSidebar }) {
+  const [anchorEl, setAnchorEl] = useState(null);
   const { user, logout } = useAuth();
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
-    <nav className="sb-topnav navbar navbar-expand navbar-dark bg-dark d-flex justify-content-between position-relative">
-      <div className="d-flex align-items-center">
-        <a className="navbar-brand ps-3 text-white" href="index.html">
-          Admin Panel
-        </a>
-        <button
-          className="btn btn-link btn-sm me-3"
-          id="sidebarToggle"
-          href="#!"
+    <AppBar
+      position="fixed"
+      sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+    >
+      <Toolbar>
+        <IconButton
+          color="inherit"
+          edge="start"
+          onClick={toggleSidebar}
+          sx={{ mr: 2 }}
         >
-          <i className="fas fa-bars"></i>
-        </button>
-      </div>
+          <MenuIcon />
+        </IconButton>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          Quản trị PetID+
+        </Typography>
 
-      <ul className="navbar-nav ms-auto">
-        <li className="nav-item dropdown position-relative">
-          <button
-            className="nav-link dropdown-toggle btn"
-            onClick={toggleDropdown}
+        <Box>
+          <IconButton
+            size="large"
+            aria-label="Tài khoản người dùng hiện tại"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleMenu}
+            color="inherit"
           >
-            <i className="fas fa-user"></i>
-          </button>
-          {isOpen && (
-            <ul className="dropdown-menu dropdown-menu-end show position-absolute">
-              <li></li>
-              <li></li>
-              <li>
-                <hr className="dropdown-divider" />
-              </li>
-              <li>
-                <button className="dropdown-item" onClick={logout}>
-                  LOGOUT
-                </button>
-              </li>
-            </ul>
-          )}
-        </li>
-      </ul>
-    </nav>
+            <AccountCircle />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={logout}>Đăng xuất</MenuItem>
+          </Menu>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 }

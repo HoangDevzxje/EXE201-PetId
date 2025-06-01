@@ -17,7 +17,9 @@ import SearchPage from "./pages/Product/SearchPage";
 import SignUp from "./pages/Login/Signup";
 import VerifyOtp from "./pages/Login/verifyOtp";
 import HeaderAdmin from "./components/HeaderAdmin/HeaderAdmin";
-import FooterAdmin from "./components/FooterAdmin/FooterAdmin";
+import ProductManagement from "./pages/Admin/ProductManagement";
+import CategoryManagement from "./pages/Admin/CategoryManagement";
+import OrderManagement from "./pages/Admin/OrderManagement";
 import ForgotPassword from "./pages/Login/forgotPassword";
 import Profile from "./pages/Login/profile";
 import SideBarAdmin from "./components/SideBarAdmin/SideBarAdmin";
@@ -34,20 +36,25 @@ import Product from "./pages/Product/Product";
 import PetManagement from "./pages/Home/PetManagement";
 import PetDetail from "./pages/Home/PetDetail";
 import PetReminderManager from "./pages/Home/PetReminderManager";
+import UserManagement from "./pages/Admin/UserManagement";
+import AdminLayout from "./components/HeaderAdmin/AdminLayout";
 
 const Layout = ({ children }) => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
 
+  // Don't render normal layout for admin routes since AdminLayout handles it
+  if (isAdminRoute) {
+    return <>{children}</>;
+  }
+
   return (
     <div className="layout">
-      {isAdminRoute ? <HeaderAdmin /> : <Header />}
+      <Header />
       <div className="main-container">
-        {isAdminRoute && <SideBarAdmin />}
         <div className="content">{children}</div>
       </div>
-      {isAdminRoute ? <FooterAdmin /> : <Footer />}
-      {!isAdminRoute && <ChatBot />}
+      <ChatBot />
     </div>
   );
 };
@@ -59,6 +66,7 @@ const App = () => {
         <Router>
           <Layout>
             <Routes>
+              {/* Public Routes */}
               <Route path="/" element={<Home />} />
               <Route path="/product/:productId" element={<ProductDetail />} />
               <Route path="/login" element={<Login />} />
@@ -69,6 +77,8 @@ const App = () => {
               <Route path="/product" element={<Product />} />
               <Route path="/pets/:petId" element={<PetDetail />} />
               <Route path="/chatbot" element={<ChatBot />} />
+
+              {/* Protected User Routes */}
               <Route
                 path="/pets/manage"
                 element={
@@ -77,7 +87,6 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
-
               <Route
                 path="/me"
                 element={
@@ -107,29 +116,26 @@ const App = () => {
                 }
               />
               <Route path="/orders" element={<OrderHistoryPage />} />
-
               <Route
                 path="/pets/:petId/reminders"
                 element={<PetReminderManager />}
               />
 
-              {/* <Route
-              path="/admin"
-              element={
-                <ProtectedRoute role="admin">
-                  <AdminPanel />
-                </ProtectedRoute>
-              }
-            /> */}
-
-              {/* <Route
-              path="/admin/manageUser"
-              element={
-                <ProtectedRoute role="admin">
-                  <ManageUser />
-                </ProtectedRoute>
-              }
-            /> */}
+              {/* Admin Routes */}
+              <Route
+                path="/admin/*"
+                element={
+                  <ProtectedRoute role="admin">
+                    <AdminLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<UserManagement />} />
+                <Route path="users" element={<UserManagement />} />
+                <Route path="products" element={<ProductManagement />} />
+                <Route path="categories" element={<CategoryManagement />} />
+                <Route path="orders" element={<OrderManagement />} />
+              </Route>
             </Routes>
           </Layout>
           <ToastContainer position="top-right" autoClose={2000} />

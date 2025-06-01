@@ -1,6 +1,6 @@
 const Product = require("../models/Product");
 const User = require("../models/User");
- 
+
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
@@ -36,7 +36,7 @@ const getAllProducts = async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
   }
-};  
+};
 const addNewProduct = async (req, res) => {
   try {
     const newProduct = new Product(req.body);

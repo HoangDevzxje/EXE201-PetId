@@ -7,25 +7,28 @@ import { Link } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); // State để lưu lỗi đăng nhập
+  const [errorMessage, setErrorMessage] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Reset lỗi trước khi thử đăng nhập
+    setErrorMessage("");
 
     try {
-      const loggedInUser = await login(email, password); // Nhận dữ liệu user ngay sau khi đăng nhập
+      const loggedInUser = await login(email, password);
 
-      if (loggedInUser.role === "admin") {
+      if (loggedInUser?.role === "admin") {
         navigate("/admin");
       } else {
         navigate("/");
       }
     } catch (error) {
-      setErrorMessage("Login failed. Please check your email and password.");
-      console.error("Login failed", error);
+      if (error.response?.data?.message) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage("Đăng nhập thất bại. Vui lòng thử lại.");
+      }
     }
   };
 
@@ -39,7 +42,6 @@ const Login = () => {
         style={{ maxWidth: "480px", width: "100%", backgroundColor: "#C49A6C" }}
       >
         <div className="card-body p-4 text-center">
-          {/* Đổi màu icon thành trắng */}
           <FaUser size={48} style={{ color: "#fff" }} className="mb-2" />
           <h3 className="mb-4" style={{ color: "#fff" }}>
             Đăng nhập
@@ -95,12 +97,15 @@ const Login = () => {
             </div>
 
             <div className="d-flex justify-content-end mb-3">
-              <Link to="/forgotpassword" className="text-decoration-none small" style={{ color: "#fff" }}>
+              <Link
+                to="/forgotpassword"
+                className="text-decoration-none small"
+                style={{ color: "#fff" }}
+              >
                 Quên mật khẩu?
               </Link>
             </div>
 
-            {/* Nút đổi thành nền trắng chữ màu #C49A6C (màu background của navbar) */}
             <button
               type="submit"
               className="btn w-100 fw-semibold"
@@ -117,15 +122,17 @@ const Login = () => {
 
           <p className="mt-3 small" style={{ color: "#fff" }}>
             Bạn chưa có tài khoản?{" "}
-            <Link to="/register" className="text-decoration-none fw-semibold" style={{ color: "#fff" }}>
+            <Link
+              to="/register"
+              className="text-decoration-none fw-semibold"
+              style={{ color: "#fff" }}
+            >
               Đăng ký ngay
             </Link>
           </p>
         </div>
       </div>
     </div>
-
-
   );
 };
 
