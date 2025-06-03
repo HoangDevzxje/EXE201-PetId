@@ -24,4 +24,12 @@ router.put("/orders/:id", adminController.updateOrder);
 router.delete("/orders/:id", adminController.deleteOrder);
 router.put("/orders/:id/status", adminController.updateOrderStatus);
 
+// ----- Clinic -----
+router.get("/clinics", adminController.getAllClinics);
+router.post("/clinics", adminController.addNewClinic);
+router.put("/clinics/:id", adminController.updateClinic);
+router.delete("/clinics/:id", adminController.deleteClinic);
+// Toggle trạng thái hoạt động phòng khám
+router.put("/clinics/:id/status", adminController.toggleClinicStatus);
+
 module.exports = router;

@@ -2,6 +2,7 @@ const Product = require("../models/Product");
 const User = require("../models/User");
 const Category = require("../models/Category");
 const Order = require("../models/Order");
+const Clinic = require("../models/Clinic");
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
@@ -174,6 +175,69 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
+// Lấy tất cả phòng khám
+const getAllClinics = async (req, res) => {
+  try {
+    const clinics = await Clinic.find();
+    res.status(200).json(clinics);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+// Thêm mới phòng khám
+const addNewClinic = async (req, res) => {
+  try {
+    const newClinic = new Clinic(req.body);
+    await newClinic.save();
+    res.status(201).json(newClinic);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+// Cập nhật thông tin phòng khám
+const updateClinic = async (req, res) => {
+  try {
+    const clinic = await Clinic.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!clinic) {
+      return res.status(404).json({ message: "Clinic not found" });
+    }
+    res.status(200).json(clinic);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+// Xoá phòng khám
+const deleteClinic = async (req, res) => {
+  try {
+    const clinic = await Clinic.findByIdAndDelete(req.params.id);
+    if (!clinic) {
+      return res.status(404).json({ message: "Clinic not found" });
+    }
+    res.status(200).json({ message: "Clinic deleted successfully" });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+const toggleClinicStatus = async (req, res) => {
+  try {
+    const clinic = await Clinic.findById(req.params.id);
+    if (!clinic) {
+      return res.status(404).json({ message: "Clinic not found" });
+    }
+    clinic.isActive = !clinic.isActive;
+    await clinic.save();
+    res.status(200).json(clinic);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 const adminController = {
   getAllUsers,
   changeRoleUser,
@@ -187,8 +251,14 @@ const adminController = {
   updateCategory,
   deleteCategory,
   getAllOrders,
-  updateOrderStatus,
   updateOrder,
   deleteOrder,
+  updateOrderStatus,
+  getAllClinics,
+  addNewClinic,
+  updateClinic,
+  deleteClinic,
+  toggleClinicStatus,
 };
+
 module.exports = adminController;
