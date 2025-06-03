@@ -54,6 +54,7 @@ function OrderManagement() {
           <table className="order-table">
             <thead>
               <tr>
+                <th>STT</th>
                 <th>Khách hàng</th>
                 <th>Email</th>
                 <th>Sản phẩm</th>
@@ -62,19 +63,20 @@ function OrderManagement() {
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => (
+              {orders.map((order, index) => (
                 <tr key={order._id}>
+                  <td>{index + 1}</td>
                   <td>{order.user?.name}</td>
                   <td>{order.user?.email}</td>
                   <td>
-                    <ul>
-                      {order.items.map((item) => (
-                        <li key={item._id}>
-                          {item.product?.name} - {item.product?.price} x{" "}
-                          {item.quantity}
-                        </li>
+                    <div>
+                      {order.items.map((item, itemIndex) => (
+                        <div key={item._id}>
+                          <strong>+</strong> {item.product?.name} -{" "}
+                          {item.product?.price} x {item.quantity}
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   </td>
                   <td>
                     <select
