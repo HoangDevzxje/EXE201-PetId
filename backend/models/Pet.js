@@ -15,6 +15,7 @@ const petSchema = new mongoose.Schema(
     weightKg: Number,
     avatarUrl: String,
     notes: String,
+    clinic: { type: mongoose.Schema.Types.ObjectId, ref: "Clinic" }, // <-- Thêm dòng này
     medicalHistory: [
       {
         date: Date,
