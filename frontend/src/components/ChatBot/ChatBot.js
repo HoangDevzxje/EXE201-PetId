@@ -150,7 +150,7 @@ const ChatBot = ({ userId }) => {
       );
 
       const healthMessage = {
-        text: `🏥 **Phân tích sức khỏe cho ${response.data.petInfo.name}**\n\n${response.data.analysis}`,
+        text: `*Phân tích sức khỏe cho ${response.data.petInfo.name}**\n\n${response.data.analysis}`,
         sender: "bot",
         products: [],
         isHealthAnalysis: true,
@@ -296,7 +296,7 @@ const ChatBot = ({ userId }) => {
             {showHealthAnalysis && (
               <div className="health-analysis-modal">
                 <div className="modal-content">
-                  <h4>🏥 Phân tích sức khỏe thú cưng</h4>
+                  <h4>Phân tích sức khỏe thú cưng</h4>
                   {selectedPet && (
                     <p>
                       Phân tích cho: <strong>{selectedPet.name}</strong>
