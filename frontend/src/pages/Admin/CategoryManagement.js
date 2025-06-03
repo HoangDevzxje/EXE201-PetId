@@ -73,10 +73,11 @@ function CategoryManagement() {
       </div>
 
       <div className="category-list">
-        {categories.map((cat) => (
+        {categories.map((cat, index) => (
           <div key={cat._id} className="category-item">
             {editing === cat._id ? (
               <>
+                <span className="category-stt">{index + 1}.</span>
                 <input
                   value={editedName}
                   onChange={(e) => setEditedName(e.target.value)}
@@ -95,7 +96,8 @@ function CategoryManagement() {
               </>
             ) : (
               <>
-                <span>{cat.name}</span>
+                <span className="category-stt">{index + 1}.</span>
+                <span className="category-name">{cat.name}</span>
                 <div className="btn-group">
                   <button
                     className="edit"

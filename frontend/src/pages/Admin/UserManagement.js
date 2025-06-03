@@ -150,6 +150,7 @@ const UserManagement = () => {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell>STT</TableCell>
                 <TableCell>Họ tên</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Số điện thoại</TableCell>
@@ -158,8 +159,9 @@ const UserManagement = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredUsers.map((user) => (
+              {filteredUsers.map((user, index) => (
                 <TableRow key={user._id}>
+                  <TableCell>{index + 1}</TableCell>
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.phone || "-"}</TableCell>
