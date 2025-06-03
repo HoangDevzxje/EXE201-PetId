@@ -55,6 +55,7 @@ const Layout = ({ children }) => {
         <div className="content">{children}</div>
       </div>
       <ChatBot />
+      <Footer />
     </div>
   );
 };

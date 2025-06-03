@@ -38,6 +38,15 @@ function OrderManagement() {
     }
   };
 
+  // Function to calculate total price for an order
+  const calculateTotalPrice = (items) => {
+    return items.reduce((total, item) => {
+      const itemPrice = parseFloat(item.product?.price) || 0;
+      const quantity = parseInt(item.quantity) || 0;
+      return total + itemPrice * quantity;
+    }, 0);
+  };
+
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -58,6 +67,7 @@ function OrderManagement() {
                 <th>Khách hàng</th>
                 <th>Email</th>
                 <th>Sản phẩm</th>
+                <th>Tổng tiền</th>
                 <th>Trạng thái</th>
                 <th>Thao tác</th>
               </tr>
@@ -77,6 +87,11 @@ function OrderManagement() {
                         </div>
                       ))}
                     </div>
+                  </td>
+                  <td>
+                    <strong>
+                      {calculateTotalPrice(order.items).toLocaleString()} VNĐ
+                    </strong>
                   </td>
                   <td>
                     <select

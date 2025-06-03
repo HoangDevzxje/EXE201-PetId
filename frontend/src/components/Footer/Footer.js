@@ -9,7 +9,7 @@ const Footer = () => {
         {/* Phần logo sử dụng link ảnh */}
         <div className="footer-section logo-section">
           <img
-            src="https://scontent.fhan14-4.fna.fbcdn.net/v/t39.30808-6/499952565_1938189916923811_2585624547647457727_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeFmtzrc5CehTIonJhXX5hooX5YIVwaa5Q9flghXBprlDwTJexxPD-P9meykWFfLyiY-9S2rP9pub_cJGK_U02Gu&_nc_ohc=VwmwZR4M6rMQ7kNvwFJYMzs&_nc_oc=AdkpUhhi-TZd6e2fV59lvTtocFb6Gq1D8wiMgSDzfWQu3u5lVIEJDTwsKXgKdDkjHIY&_nc_zt=23&_nc_ht=scontent.fhan14-4.fna&_nc_gid=6rvzSVsrtwdb2VEIWRevAg&oh=00_AfLLggc-BF3IuaxBwn8apVC6GVOjLe21rjwKbJ8Wa4tpQA&oe=683D5327"
+            src="https://scontent.fhan14-5.fna.fbcdn.net/v/t1.15752-9/480464299_1159822715802794_7333872149066597135_n.png?_nc_cat=104&ccb=1-7&_nc_sid=0024fc&_nc_eui2=AeG0lj74EskpN4oqK0wHo3LGEwiXKu05PDMTCJcq7Tk8M4zBCsBZpalW9fLMUyICq0N-5QbN7alUPZ47UQReorvE&_nc_ohc=NZCTn08pCa8Q7kNvwEpD1rk&_nc_oc=Adn3CtljCePd2XNisFEcTuXzhO-ELXMhrCRUN2LMp5I4hgZhCLOaVprpG4Ar-H9kAm4&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.fhan14-5.fna&oh=03_Q7cD2QFGLbkZQ3LnOx1V7ze2WwRVnuwYfoOVbNJYCdWdl0najw&oe=684CB9BC"
             alt="PetID+ Logo"
             className="footer-logo"
           />

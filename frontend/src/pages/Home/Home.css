@@ -1,23 +1,32 @@
 .home-container {
   padding: 0;
+  background-color: #f8f9fa;
 }
 
-/* Hero Section Styles */
-/* Fullscreen Hero Section */
 .hero-section {
   position: relative;
   height: 100vh;
   width: 100%;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-item {
+  height: 100vh;
 }
 
 .hero-slide {
   position: relative;
-  height: 100vh;
   width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-/* Fullscreen Image */
 .hero-img {
   width: 100%;
   height: 100vh;
@@ -26,18 +35,20 @@
   display: block;
 }
 
-/* Dark overlay to enhance text visibility */
+.carousel-inner {
+  height: 100vh;
+}
+
 .hero-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.45);
   z-index: 1;
 }
 
-/* Centered Content */
 .hero-content {
   position: absolute;
   top: 50%;
@@ -46,74 +57,106 @@
   color: white;
   z-index: 2;
   text-align: center;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
   width: 90%;
-  max-width: 800px;
+  max-width: 900px;
 }
 
 .hero-content h1 {
-  font-size: 4rem;
-  font-weight: bold;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 700;
   margin-bottom: 1rem;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+  text-shadow: 2px 3px 10px rgba(0, 0, 0, 0.7);
+  letter-spacing: 1px;
 }
 
 .hero-content p {
-  font-size: 1.5rem;
-  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+  text-shadow: 1px 2px 6px rgba(0, 0, 0, 0.5);
+  line-height: 1.5;
 }
-/* Carousel Indicators */
+
 .carousel-indicators {
-  bottom: 30px;
+  bottom: 25px;
+  z-index: 3;
 }
 
 .carousel-indicators [data-bs-target] {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  margin: 0 8px;
-  background-color: rgba(255, 255, 255, 0.5);
+  margin: 0 6px;
+  background-color: rgba(255, 255, 255, 0.6);
   border: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .carousel-indicators .active {
   background-color: white;
+  transform: scale(1.2);
 }
 
-/* Overlay for better text visibility */
-.hero-slide::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 1;
+.main-content {
+  padding: 2rem 1rem;
 }
 
-/* Section Styles */
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .section-title {
-  font-weight: 600;
-  color: #333;
+  font-weight: 700;
+  color: #2c3e50;
   margin: 0;
+  font-size: 1.9rem;
+}
+
+.section-title i {
+  color: #007bff;
+}
+
+.create-pet-btn {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.create-pet-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
 }
 
 .empty-state {
   text-align: center;
   padding: 3rem;
-  background-color: #f8f9fa;
-  border-radius: 0.5rem;
+  background-color: #ffffff;
+  border-radius: 1rem;
+  border: 2px dashed #b0d8ff;
+  color: #495057;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-/* Pet Card Link Styles */
+.empty-state p {
+  font-size: 1.15rem;
+  color: #6c757d;
+  margin-bottom: 1.8rem;
+}
+
+.empty-state .btn {
+  padding: 0.75rem 1.8rem;
+  font-size: 1rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
 .pets-section {
   margin-bottom: 3rem;
 }
@@ -125,18 +168,10 @@
   height: 100%;
 }
 
-.pet-card-link:hover,
-.pet-card-link:focus,
-.pet-card-link:active,
-.pet-card-link:visited {
-  text-decoration: none;
-  color: inherit;
-}
-
-.styled-pet-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+.modern-pet-card {
+  border: none;
+  border-radius: 1.25rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   background-color: #fff;
   overflow: hidden;
   text-align: center;
@@ -144,103 +179,130 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  min-height: 400px;
 }
 
-.styled-pet-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  border-color: #007bff;
+.modern-pet-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
 }
 
-.styled-pet-avatar {
-  height: 220px;
+.card-img-top-wrapper {
+  height: 200px;
   overflow: hidden;
-  flex-shrink: 0;
-  background-color: #f8f9fa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-top-left-radius: 1.25rem;
+  border-top-right-radius: 1.25rem;
+  background-color: #f0f2f5;
 }
 
-.styled-pet-avatar img {
+.modern-pet-avatar {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s ease;
 }
 
-.styled-pet-card:hover .styled-pet-avatar img {
-  transform: scale(1.05);
+.modern-pet-card:hover .modern-pet-avatar {
+  transform: scale(1.1);
 }
 
-.styled-pet-content {
-  padding: 1rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.styled-pet-name {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #2c3e50;
-  margin: 0 0 0.5rem 0;
+.modern-pet-name {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #34495e;
+  margin: 0.5rem 0 0.75rem 0;
   line-height: 1.2;
 }
 
-.divider {
-  width: 60px;
-  margin: 0.5rem auto;
+.modern-divider {
+  width: 70px;
+  margin: 0.75rem auto 1rem auto;
   border: none;
-  border-top: 3px solid #ddd;
+  border-top: 4px solid #b0d8ff;
   opacity: 1;
+  border-radius: 2px;
 }
 
-.styled-pet-info {
-  font-size: 0.95rem;
+.modern-pet-info {
+  font-size: 1rem;
   color: #555;
   text-align: left;
+  margin-bottom: 1rem;
 }
 
-.styled-pet-info p {
-  margin-bottom: 0.5rem;
-  line-height: 1.4;
+.modern-pet-info p {
+  margin-bottom: 0.6rem;
+  line-height: 1.5;
 }
 
-.styled-pet-info strong {
+.modern-pet-info strong {
   color: #333;
-  font-weight: 600;
+  font-weight: 700;
 }
 
-/* Empty State */
-.empty-state {
-  text-align: center;
-  padding: 3rem 2rem;
-  background-color: #f8f9fa;
-  border-radius: 1rem;
-  border: 2px dashed #dee2e6;
-}
-
-.empty-state p {
-  font-size: 1.1rem;
-  color: #6c757d;
-  margin-bottom: 1.5rem;
-}
 .care-tips-section {
-  background-color: #fdfdfd;
-  border-top: 1px solid #ddd;
-  padding: 2rem;
-  border-radius: 12px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  padding: 3rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
 .care-tips-section img {
   max-width: 100%;
-  border-radius: 12px;
+  border-radius: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Responsive Styles */
+.care-tips-section img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.care-tips-content {
+  margin-top: 2rem;
+}
+
+.care-tips-content .lead {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.care-tips-content ol {
+  padding-left: 0;
+}
+
+.care-tips-content ol li {
+  margin-bottom: 1rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #444;
+  display: flex;
+  align-items: flex-start;
+}
+
+.care-tips-content ol li i {
+  margin-right: 0.8rem;
+  font-size: 1.2em;
+  color: #28a745;
+  flex-shrink: 0;
+  padding-top: 0.2em;
+}
+
+.care-tips-content strong {
+  color: #007bff;
+}
+
+@media (max-width: 1200px) {
+  .modern-pet-card {
+    min-height: 400px;
+  }
+  .card-img-top-wrapper {
+    height: 180px;
+  }
+}
+
 @media (max-width: 992px) {
   .hero-content h1 {
     font-size: 2.8rem;
@@ -249,11 +311,31 @@
   .hero-content p {
     font-size: 1.3rem;
   }
+
+  .section-title {
+    font-size: 1.7rem;
+  }
+
+  .modern-pet-card {
+    min-height: 380px;
+  }
+  .card-img-top-wrapper {
+    height: 160px;
+  }
+  .modern-pet-name {
+    font-size: 1.4rem;
+  }
+  .care-tips-section {
+    padding: 2.5rem;
+  }
 }
 
 @media (max-width: 768px) {
   .hero-section {
-    max-height: 600px;
+    height: 70vh;
+  }
+  .hero-img {
+    height: 70vh;
   }
 
   .hero-content h1 {
@@ -264,25 +346,40 @@
     font-size: 1.1rem;
   }
 
-  .hero-buttons {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
   .section-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
+    margin-bottom: 1.5rem;
   }
 
-  .pet-avatar-container {
-    height: 150px;
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .modern-pet-card {
+    min-height: 350px;
+  }
+  .card-img-top-wrapper {
+    height: 140px;
+  }
+  .modern-pet-name {
+    font-size: 1.3rem;
+  }
+  .modern-pet-info {
+    font-size: 0.95rem;
+  }
+  .care-tips-section {
+    padding: 2rem;
   }
 }
 
 @media (max-width: 576px) {
   .hero-section {
-    max-height: 500px;
+    height: 60vh;
+  }
+  .hero-img {
+    height: 60vh;
   }
 
   .hero-content h1 {
@@ -294,58 +391,32 @@
     margin-bottom: 1.5rem;
   }
 
-  .product-image {
-    height: 120px;
-  }
-}
-@media (max-width: 1200px) {
-  .styled-pet-avatar {
-    height: 200px;
-  }
-
-  .styled-pet-card {
-    min-height: 380px;
-  }
-}
-
-@media (max-width: 992px) {
-  .styled-pet-avatar {
-    height: 180px;
-  }
-
-  .styled-pet-card {
-    min-height: 350px;
-  }
-
-  .styled-pet-name {
+  .section-title {
     font-size: 1.3rem;
   }
-}
-
-@media (max-width: 768px) {
-  .styled-pet-avatar {
-    height: 160px;
+  .create-pet-btn {
+    width: 100%;
   }
 
-  .styled-pet-card {
-    min-height: 320px;
+  .modern-pet-card {
+    min-height: auto;
   }
-
-  .styled-pet-name {
-    font-size: 1.2rem;
+  .card-img-top-wrapper {
+    height: 180px;
   }
-
-  .styled-pet-info {
+  .modern-pet-name {
+    font-size: 1.5rem;
+  }
+  .modern-pet-info {
     font-size: 0.9rem;
   }
-}
-
-@media (max-width: 576px) {
-  .styled-pet-card {
-    min-height: 300px;
+  .care-tips-section {
+    padding: 1.5rem;
   }
-
-  .styled-pet-avatar {
-    height: 140px;
+  .care-tips-content .lead {
+    font-size: 1rem;
+  }
+  .care-tips-content ol li {
+    font-size: 0.95rem;
   }
 }
