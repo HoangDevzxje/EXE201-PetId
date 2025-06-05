@@ -167,9 +167,8 @@ const UserManagement = () => {
                   <TableCell>{user.phone || "-"}</TableCell>
                   <TableCell>
                     <Tooltip
-                      title={`Chuyển thành ${
-                        user.role === "user" ? "admin" : "user"
-                      }`}
+                      title={`Chuyển thành ${user.role === "user" ? "admin" : "user"
+                        }`}
                     >
                       <Button
                         variant="outlined"

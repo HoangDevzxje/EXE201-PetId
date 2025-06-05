@@ -37,6 +37,7 @@ import PetManagement from "./pages/Home/PetManagement";
 import PetDetail from "./pages/Home/PetDetail";
 import PetReminderManager from "./pages/Home/PetReminderManager";
 import UserManagement from "./pages/Admin/UserManagement";
+import ClinicsAdminPage from "./pages/Admin/ClinicsAdminPage";
 import AdminLayout from "./components/HeaderAdmin/AdminLayout";
 
 const Layout = ({ children }) => {
@@ -136,6 +137,7 @@ const App = () => {
                 <Route path="products" element={<ProductManagement />} />
                 <Route path="categories" element={<CategoryManagement />} />
                 <Route path="orders" element={<OrderManagement />} />
+                <Route path="clinics" element={<ClinicsAdminPage />} />
               </Route>
             </Routes>
           </Layout>
