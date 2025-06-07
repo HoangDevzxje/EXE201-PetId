@@ -157,8 +157,8 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
         <Container>
           <div className="section-header">
             <h3>
-              Những Lợi Ích Khi Có Pet ID+ trong tay – Nuôi boss mượt như
-              lan,chẳng ngại gian nan
+              Những Lợi Ích Khi Có Pet ID+ Trong Tay – Nuôi Boss Mượt Như Lan,
+              Chẳng Ngại Gian Nan
             </h3>
           </div>
           <div className="benefit-content">
@@ -185,11 +185,11 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
                 <br />
                 Một nhà full "team chó team mèo", Pet ID+ vẫn lo hết!
                 <br />
-                Bạn có thể quản lý nguyên vũ trụ thú cưng trên cùng một app – từ
-                bé Poodle bánh bèo tới hoàng thượng Maine Coon cool ngầu
+                Bạn có thể quản lý nguyên vũ trụ thú cưng trên cùng một website
+                – từ bé Poodle bánh bèo tới hoàng thượng Maine Coon cool ngầu
                 <br />
-                Một app, nhiều boss, không tốn một giọt mồ hôi – chỉ tốn thêm
-                tình yêu thôi nha
+                Một website, nhiều boss, không tốn một giọt mồ hôi – chỉ tốn
+                thêm tình yêu thôi nha
               </li>
             </ul>
             <div className="benefit-cta">
