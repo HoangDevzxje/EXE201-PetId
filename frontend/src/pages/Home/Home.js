@@ -156,10 +156,10 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
       <section className="benefit-section">
         <Container>
           <div className="section-header">
-            <h2>
-              Những Lợi Ích Khi Có Pet ID+ trong tay – Nuôi boss mượt như lan,
-              chẳng ngại gian nan
-            </h2>
+            <h3>
+              Những Lợi Ích Khi Có Pet ID+ trong tay – Nuôi boss mượt như
+              lan,chẳng ngại gian nan
+            </h3>
           </div>
           <div className="benefit-content">
             <ul>
@@ -194,7 +194,7 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
             </ul>
             <div className="benefit-cta">
               <p>
-                <strong>=&gt; Pet ID+ – Chăm Boss Đúng Chất Gen Z!</strong>
+                <strong> Pet ID+ – Chăm Boss Đúng Chất Gen Z!</strong>
                 <br />
                 Boss khỏe – Sen nhàn – Cuộc sống mượt mà như lông mèo mới chải!
                 <br />
