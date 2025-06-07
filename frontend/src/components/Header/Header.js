@@ -23,7 +23,7 @@ const Header = () => {
   return (
     <nav
       className="navbar navbar-expand-lg navbar-dark shadow-sm petid-navbar"
-      style={{ backgroundColor: "#C49A6C" }}
+      style={{ backgroundColor: "#c49a6c" }}
     >
       <div className="container">
         {/* Logo */}
@@ -97,7 +97,7 @@ const Header = () => {
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link fw-semibold" to="/me">
-                    Hồ sơ
+                    Thông tin người dùng
                   </Link>
                 </li>
 

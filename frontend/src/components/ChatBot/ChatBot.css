@@ -1,6 +1,6 @@
 .chatbot {
   position: fixed;
-  bottom: 20px;
+  bottom: 30px;
   right: 20px;
   width: 380px;
   background: white;
@@ -239,13 +239,14 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
+  width: auto; /* Auto width to fit the text */
+  height: auto; /* Auto height to fit the text */
+  padding: 10px 20px; /* Add padding for better text visibility */
+  border-radius: 30px; /* Rounded corners */
   background: #4e73df;
   color: white;
   border: none;
-  font-size: 24px;
+  font-size: 16px; /* Adjust font size for readability */
   cursor: pointer;
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
   z-index: 999;
@@ -253,10 +254,11 @@
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  white-space: nowrap; /* Prevent text from wrapping */
 }
 
 .chat-toggle-btn:hover {
-  transform: scale(1.1);
+  transform: scale(1.05); /* Slightly smaller scale on hover */
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
 }
 

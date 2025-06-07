@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { Spinner } from "react-bootstrap";
 import { useCart } from "../../context/CartContext";
@@ -51,6 +51,11 @@ const ProductDetail = () => {
     <div className="d-flex flex-column min-vh-100 bg-light">
       <main className="flex-grow-1 py-5">
         <div className="container">
+          <div className="d-flex justify-content-start mb-4">
+            <Link to="/product" className="btn btn-secondary mb-3">
+              &larr; Sản phẩm
+            </Link>
+          </div>
           <div className="row g-4">
             {/* Left: Image */}
             <div className="col-md-5">

@@ -143,7 +143,7 @@ const Profile = () => {
 
         {/* Cột phải: Tài khoản + Đổi mật khẩu */}
         <Col md={4}>
-          <h3 className="fw-bold">Thông tin tài khoản</h3>
+          <h3 className="fw-bold">Thông tin người dùng</h3>
           <Card className="p-3 shadow-sm">
             <h5 className="fw-bold mb-3">TÀI KHOẢN CỦA TÔI</h5>
             <p>

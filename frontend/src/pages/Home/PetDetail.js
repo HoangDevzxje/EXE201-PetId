@@ -97,8 +97,8 @@ const PetDetail = () => {
 
   return (
     <div className="container mt-4">
-      <Link to="/" className="btn btn-secondary mb-3">
-        &larr; Quay lại trang chủ
+      <Link to="/pets" className="btn btn-secondary mb-3">
+        &larr; Quay lại danh sách thú cưng
       </Link>
 
       {message && (

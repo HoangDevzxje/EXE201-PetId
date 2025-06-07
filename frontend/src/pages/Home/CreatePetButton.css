@@ -1,0 +1,88 @@
+.floating-pet-button {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  z-index: 1000;
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.create-pet-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border: none !important;
+  border-radius: 50px !important;
+  padding: 15px 25px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: white !important;
+  text-decoration: none !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+  transition: all 0.3s ease !important;
+  white-space: nowrap !important;
+  min-width: 200px !important;
+  justify-content: center !important;
+}
+
+.create-pet-btn:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4) !important;
+  color: white !important;
+  text-decoration: none !important;
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+}
+
+.create-pet-btn:active {
+  transform: translateY(-1px) !important;
+}
+
+.create-pet-btn i {
+  font-size: 18px !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design */
+
+@media (max-width: 768px) {
+  .floating-pet-button {
+    bottom: 110px;
+    left: 20px;
+  }
+
+  .create-pet-btn {
+    padding: 12px 20px !important;
+    font-size: 14px !important;
+    min-width: 180px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-pet-button {
+    bottom: 100px;
+    left: 15px;
+  }
+
+  .create-pet-btn {
+    padding: 10px 16px !important;
+    font-size: 13px !important;
+    min-width: 160px !important;
+  }
+}

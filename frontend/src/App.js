@@ -16,15 +16,12 @@ import Footer from "./components/Footer/Footer";
 import SearchPage from "./pages/Product/SearchPage";
 import SignUp from "./pages/Login/Signup";
 import VerifyOtp from "./pages/Login/verifyOtp";
-import HeaderAdmin from "./components/HeaderAdmin/HeaderAdmin";
 import ProductManagement from "./pages/Admin/ProductManagement";
 import CategoryManagement from "./pages/Admin/CategoryManagement";
 import OrderManagement from "./pages/Admin/OrderManagement";
 import ForgotPassword from "./pages/Login/forgotPassword";
 import Profile from "./pages/Login/profile";
-import SideBarAdmin from "./components/SideBarAdmin/SideBarAdmin";
 import ProductDetail from "./pages/Product/ProductDetail";
-
 import { CartProvider } from "./context/CartContext";
 import CartPage from "./pages/Cart/CartPage";
 import { ToastContainer } from "react-toastify";
@@ -39,12 +36,15 @@ import PetReminderManager from "./pages/Home/PetReminderManager";
 import UserManagement from "./pages/Admin/UserManagement";
 import ClinicsAdminPage from "./pages/Admin/ClinicsAdminPage";
 import AdminLayout from "./components/HeaderAdmin/AdminLayout";
+import CreatePetButton from "./pages/Home/CreatePetButton";
+import PetList from "./pages/Home/Petlist";
+import PetListButton from "./pages/Home/PetListButton";
 
 const Layout = ({ children }) => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
-
-  // Don't render normal layout for admin routes since AdminLayout handles it
+  const isPetDetailPage = /^\/pets\/[^/]+$/.test(location.pathname);
+  const isProfilePage = location.pathname === "/me";
   if (isAdminRoute) {
     return <>{children}</>;
   }
@@ -56,7 +56,13 @@ const Layout = ({ children }) => {
         <div className="content">{children}</div>
       </div>
       <ChatBot />
-      <Footer />
+      <PetListButton />
+      <CreatePetButton />
+      {!isPetDetailPage && !isProfilePage && (
+        <>
+          <Footer />
+        </>
+      )}
     </div>
   );
 };
@@ -70,6 +76,15 @@ const App = () => {
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
+              <Route
+                path="/pets"
+                element={
+                  <ProtectedRoute role="user">
+                    <PetList />
+                  </ProtectedRoute>
+                }
+              />
+
               <Route path="/product/:productId" element={<ProductDetail />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<SignUp />} />

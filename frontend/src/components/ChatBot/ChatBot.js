@@ -17,9 +17,6 @@ const ChatBot = ({ userId }) => {
   const [userPets, setUserPets] = useState([]);
   const [selectedPet, setSelectedPet] = useState(null);
   const [showPetSelector, setShowPetSelector] = useState(false);
-  const [showHealthAnalysis, setShowHealthAnalysis] = useState(false);
-  const [healthSymptoms, setHealthSymptoms] = useState("");
-  const [healthConcerns, setHealthConcerns] = useState("");
 
   const chatBoxRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -132,42 +129,6 @@ const ChatBot = ({ userId }) => {
     }
   };
 
-  const handleHealthAnalysis = async () => {
-    if (!selectedPet) {
-      alert("Vui lòng chọn thú cưng để phân tích sức khỏe");
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const response = await axios.post(
-        "http://localhost:9999/chatbot/health-analysis",
-        {
-          petId: selectedPet._id,
-          symptoms: healthSymptoms,
-          concerns: healthConcerns,
-        }
-      );
-
-      const healthMessage = {
-        text: `*Phân tích sức khỏe cho ${response.data.petInfo.name}**\n\n${response.data.analysis}`,
-        sender: "bot",
-        products: [],
-        isHealthAnalysis: true,
-      };
-
-      setMessages((prev) => [...prev, healthMessage]);
-      setShowHealthAnalysis(false);
-      setHealthSymptoms("");
-      setHealthConcerns("");
-    } catch (error) {
-      console.error("Health analysis error:", error);
-      alert("Lỗi khi phân tích sức khỏe. Vui lòng thử lại.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       handleSend();
@@ -232,7 +193,7 @@ const ChatBot = ({ userId }) => {
           <>
             <div className="chatbot-header">
               <div>
-                <h3>AI PetID+ - Trợ lý thông minh</h3>
+                <h3>AI PetID+</h3>
                 {selectedPet && (
                   <div className="selected-pet-info">
                     <span>
@@ -252,13 +213,7 @@ const ChatBot = ({ userId }) => {
                     🐾
                   </button>
                 )}
-                <button
-                  className="health-analysis-btn"
-                  onClick={() => setShowHealthAnalysis(true)}
-                  title="Phân tích sức khỏe"
-                >
-                  🏥
-                </button>
+
                 <button className="close-btn" onClick={() => setIsOpen(false)}>
                   ✖
                 </button>
@@ -289,46 +244,6 @@ const ChatBot = ({ userId }) => {
                       )} tuổi`}
                   </div>
                 ))}
-              </div>
-            )}
-
-            {/* Health Analysis Modal */}
-            {showHealthAnalysis && (
-              <div className="health-analysis-modal">
-                <div className="modal-content">
-                  <h4>Phân tích sức khỏe thú cưng</h4>
-                  {selectedPet && (
-                    <p>
-                      Phân tích cho: <strong>{selectedPet.name}</strong>
-                    </p>
-                  )}
-                  <div className="form-group">
-                    <label>Triệu chứng quan sát được:</label>
-                    <textarea
-                      value={healthSymptoms}
-                      onChange={(e) => setHealthSymptoms(e.target.value)}
-                      placeholder="Ví dụ: Ăn ít, uống nhiều nước, lười vận động..."
-                      rows="3"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Mối quan tâm khác:</label>
-                    <textarea
-                      value={healthConcerns}
-                      onChange={(e) => setHealthConcerns(e.target.value)}
-                      placeholder="Ví dụ: Gần đây thú cưng có biểu hiện lạ..."
-                      rows="3"
-                    />
-                  </div>
-                  <div className="modal-actions">
-                    <button onClick={handleHealthAnalysis} disabled={isLoading}>
-                      {isLoading ? "Đang phân tích..." : "Phân tích"}
-                    </button>
-                    <button onClick={() => setShowHealthAnalysis(false)}>
-                      Hủy
-                    </button>
-                  </div>
-                </div>
               </div>
             )}
 
@@ -451,7 +366,7 @@ const ChatBot = ({ userId }) => {
       {/* Nút mở/ẩn chatbot */}
       {!isOpen && (
         <button className="chat-toggle-btn" onClick={() => setIsOpen(true)}>
-          💬
+          Trợ lý AI phân tích thú cưng
         </button>
       )}
     </>
