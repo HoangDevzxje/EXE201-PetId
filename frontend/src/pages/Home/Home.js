@@ -44,7 +44,7 @@ const Home = () => {
       cta: "Tới PetID+ ngay",
     },
     {
-      url: "https://scontent.fhan14-2.fna.fbcdn.net/v/t1.15752-9/494824802_9801386069980181_3984430373227015678_n.png?stp=dst-png_s480x480&_nc_cat=100&ccb=1-7&_nc_sid=0024fc&_nc_eui2=AeE1ztc2aDm1uys8UzbH2_QSjKqxZbP604KMqrFls_rTguUyhK9whmbB4G1jUSecjOqTb6oNo4xKXnaDpgs2tQPc&_nc_ohc=nIg9Dbn78LEQ7kNvwGxg1yx&_nc_oc=Adk2RO-pYm0hEEb8-DcLJ0EMmHGsgAml9lNrQSzrUhYGxgPeVaGj5iJ5YMfvyCi9DiY&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.fhan14-2.fna&oh=03_Q7cD2gHp0Tz-zQjubA0qNy9mYOSHhyMvByRmaJA8s_k9Cm729g&oe=686B3E16",
+      url: "/image.png",
       alt: "Dog with fashionable accessories",
       title: "Phụ kiện cao cấp cho boss",
       subtitle: `“Sen” mua đồ – “Boss” không chê 😎
@@ -150,6 +150,61 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
               </Col>
             ))}
           </Row>
+        </Container>
+      </section>
+      {/* Benefit Section */}
+      <section className="benefit-section">
+        <Container>
+          <div className="section-header">
+            <h2>
+              Những Lợi Ích Khi Có Pet ID+ trong tay – Nuôi boss mượt như lan,
+              chẳng ngại gian nan
+            </h2>
+          </div>
+          <div className="benefit-content">
+            <ul>
+              <li>
+                <strong>Hồ sơ gọn, boss không dỗi, sen không rối</strong>
+                <br />
+                Từ tên gọi tới món khoái khẩu, từ giống loài tới biểu cảm "kêu
+                là tới" – Pet ID+ gom hết vào 1 chỗ, xịn xò hơn sổ hồng!
+                <br />
+                Không còn cảnh “đào mộ” giấy tờ cũ rích – chỉ cần click là thấy
+                ngay lịch sử “bệnh tình và tình cảm” của boss!
+              </li>
+              <li>
+                <strong>Nhắc lịch cực tỉnh – Tiêm đúng cực đỉnh</strong>
+                <br />
+                "Meow meow, tới giờ đi chích ngừa rồi nha sen~"
+                <br />
+                Hệ thống nhắc lịch auto đỉnh chóp – tiêm phòng, tẩy giun,
+                check-up định kỳ, chẳng bỏ sót giây nào!
+              </li>
+              <li>
+                <strong>Boss bầy đàn, sen vẫn nhàn</strong>
+                <br />
+                Một nhà full "team chó team mèo", Pet ID+ vẫn lo hết!
+                <br />
+                Bạn có thể quản lý nguyên vũ trụ thú cưng trên cùng một app – từ
+                bé Poodle bánh bèo tới hoàng thượng Maine Coon cool ngầu
+                <br />
+                Một app, nhiều boss, không tốn một giọt mồ hôi – chỉ tốn thêm
+                tình yêu thôi nha
+              </li>
+            </ul>
+            <div className="benefit-cta">
+              <p>
+                <strong>=&gt; Pet ID+ – Chăm Boss Đúng Chất Gen Z!</strong>
+                <br />
+                Boss khỏe – Sen nhàn – Cuộc sống mượt mà như lông mèo mới chải!
+                <br />
+                <span role="img" aria-label="arrow">
+                  👉
+                </span>{" "}
+                Sử dụng ngay Pet ID+ – Đừng để boss giận vì sen “não cá vàng”
+              </p>
+            </div>
+          </div>
         </Container>
       </section>
 

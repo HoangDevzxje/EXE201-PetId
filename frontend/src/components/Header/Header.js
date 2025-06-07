@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaShoppingCart, FaSearch } from "react-icons/fa";
-import { useAuth } from "../../context/AuthContext"; // SỬ DỤNG useAuth
-import "./Header.css";
+import { FaShoppingCart, FaSearch, FaUserCircle } from "react-icons/fa";
+import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
+import "./Header.css";
 
 const Header = () => {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
   const { cart } = useCart();
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-
   const { user, logout } = useAuth();
 
   const handleSearch = (e) => {
@@ -70,13 +69,14 @@ const Header = () => {
 
           {/* Navigation links */}
           <ul className="navbar-nav ms-auto align-items-center">
+            <li className="nav-item">
+              <Link className="nav-link fw-semibold" to="/product">
+                Sản phẩm thú cưng
+              </Link>
+            </li>
+
             {!user ? (
               <>
-                <li className="nav-item">
-                  <Link className="nav-link fw-semibold" to="/product">
-                    Sản phẩm thú cưng
-                  </Link>
-                </li>
                 <li className="nav-item">
                   <Link className="nav-link fw-semibold" to="/register">
                     Đăng ký
@@ -90,37 +90,51 @@ const Header = () => {
               </>
             ) : (
               <>
-                <li className="nav-item">
-                  <Link className="nav-link fw-semibold" to="/product">
-                    Sản phẩm thú cưng
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link fw-semibold" to="/me">
-                    Thông tin người dùng
-                  </Link>
-                </li>
-
-                {/* <li className="nav-item">
-                  <Link className="nav-link fw-semibold" to="/orders">
-                    Đơn hàng
-                  </Link>
-                </li> */}
-
-                <li className="nav-item">
+                {/* Dropdown user menu */}
+                <li className="nav-item dropdown">
                   <button
-                    className="btn btn-link nav-link fw-semibold"
-                    onClick={() => {
-                      logout();
-                      navigate("/");
-                    }}
+                    className="btn btn-link nav-link dropdown-toggle d-flex align-items-center gap-2 text-white"
+                    id="userDropdown"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
                   >
-                    Đăng xuất
+                    <FaUserCircle size={22} />
+                    {user?.name || "Tài khoản"}
                   </button>
+                  <ul
+                    className="dropdown-menu dropdown-menu-end"
+                    aria-labelledby="userDropdown"
+                  >
+                    <li>
+                      <Link className="dropdown-item" to="/me">
+                        Thông tin người dùng
+                      </Link>
+                    </li>
+                    {/* <li>
+                      <Link className="dropdown-item" to="/orders">
+                        Đơn hàng
+                      </Link>
+                    </li> */}
+                    <li>
+                      <hr className="dropdown-divider" />
+                    </li>
+                    <li>
+                      <button
+                        className="dropdown-item text-danger"
+                        onClick={() => {
+                          logout();
+                          navigate("/");
+                        }}
+                      >
+                        Đăng xuất
+                      </button>
+                    </li>
+                  </ul>
                 </li>
               </>
             )}
 
+            {/* Cart */}
             <li className="nav-item">
               <Link
                 className="nav-link position-relative d-flex align-items-center cart-link"
