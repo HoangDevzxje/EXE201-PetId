@@ -58,7 +58,7 @@
 
 .banner-image {
   width: 100%;
-  aspect-ratio: 2.5/1; /* Đảm bảo tỷ lệ ảnh đồng đều */
+  aspect-ratio: 1/1;
   min-height: 120px;
   background-size: cover;
   background-position: center;
@@ -117,6 +117,7 @@
 
 /* Section Styles */
 .section-header {
+  margin-top: 30px;
   text-align: center;
   margin-bottom: 2.5rem;
 }

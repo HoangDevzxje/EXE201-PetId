@@ -1,21 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Table, Container, Button, Badge } from 'react-bootstrap';
-import { Snackbar, Alert } from '@mui/material';
-import api from '../../api/baseApi';
-
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Table, Container, Button, Badge } from "react-bootstrap";
+import { Snackbar, Alert } from "@mui/material";
+import api from "../../api/baseApi";
 
 const AppointmentsAdminPage = () => {
   const [appointments, setAppointments] = useState([]);
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   const fetchAppointments = async () => {
     try {
-      const res = await api.get('/admin/appointments');
+      const res = await api.get("/admin/appointments");
       setAppointments(res.data);
     } catch (err) {
       console.error("Lỗi khi lấy danh sách lịch hẹn:", err);
-      showSnackbar('Lỗi khi tải lịch hẹn', 'error');
+      showSnackbar("Lỗi khi tải lịch hẹn", "error");
     }
   };
 
@@ -26,12 +29,12 @@ const AppointmentsAdminPage = () => {
   const deleteAppointment = async (id) => {
     if (window.confirm("Bạn có chắc muốn xóa lịch hẹn này không?")) {
       try {
-        await api.delete('/admin/appointments/${id}');
-        showSnackbar('Xóa lịch hẹn thành công', 'success');
+        await api.delete(`/admin/appointments/${id}`);
+        showSnackbar("Xóa lịch hẹn thành công", "success");
         fetchAppointments();
       } catch (err) {
         console.error("Lỗi khi xóa:", err);
-        showSnackbar('Xóa thất bại', 'error');
+        showSnackbar("Xóa thất bại", "error");
       }
     }
   };
@@ -61,16 +64,22 @@ const AppointmentsAdminPage = () => {
           </tr>
         </thead>
         <tbody>
-          {appointments.map(app => (
+          {appointments.map((app) => (
             <tr key={app._id}>
               <td>{app.name}</td>
               <td>{app.phone}</td>
-              <td><Badge bg="info">{app.service}</Badge></td>
-              <td>{app.note || '-'}</td>
-              <td>{app.clinic?.name || 'N/A'}</td>
+              <td>
+                <Badge bg="info">{app.service}</Badge>
+              </td>
+              <td>{app.note || "-"}</td>
+              <td>{app.clinic?.name || "N/A"}</td>
               <td>{new Date(app.createdAt).toLocaleString()}</td>
               <td>
-                <Button variant="danger" size="sm" onClick={() => deleteAppointment(app._id)}>
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={() => deleteAppointment(app._id)}
+                >
                   Xóa
                 </Button>
               </td>
@@ -83,9 +92,13 @@ const AppointmentsAdminPage = () => {
         open={snackbar.open}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>
