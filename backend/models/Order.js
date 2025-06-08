@@ -18,7 +18,12 @@ const orderSchema = new mongoose.Schema(
     total: Number,
     status: {
       type: String,
+<<<<<<< HEAD
       default: "pending", // hoặc "paid"
+=======
+      enum: ["pending", "paid", "cancelled"],
+      default: "pending",
+>>>>>>> backup-code-8-6
     },
   },
   { timestamps: true }

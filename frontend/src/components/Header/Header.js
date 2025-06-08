@@ -1,14 +1,21 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 import { FaShoppingCart, FaSearch } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 import { useCartStore } from "../../services/useCartStore"; // 👈 Thêm dòng này
+=======
+import { FaShoppingCart, FaSearch, FaUserCircle } from "react-icons/fa";
+import { useAuth } from "../../context/AuthContext";
+import { useCart } from "../../context/CartContext";
+>>>>>>> backup-code-8-6
 import "./Header.css";
 
 const Header = () => {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
-
+  const { cart } = useCart();
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const { user, logout } = useAuth();
   const { cartItems } = useCartStore(); // 👈 Lấy cart từ store
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0); // 👈 Tính tổng số lượng
@@ -23,7 +30,7 @@ const Header = () => {
   return (
     <nav
       className="navbar navbar-expand-lg navbar-dark shadow-sm petid-navbar"
-      style={{ backgroundColor: "#C49A6C" }}
+      style={{ backgroundColor: "#c49a6c" }}
     >
       <div className="container">
         {/* Logo */}
@@ -36,7 +43,7 @@ const Header = () => {
             alt="Logo"
             className="brand-logo"
           />
-          <span className="brand-name">PetID+</span>
+          <span className="brand-name single-line">PetID+</span>
         </Link>
 
         <button
@@ -70,6 +77,17 @@ const Header = () => {
 
           {/* Navigation links */}
           <ul className="navbar-nav ms-auto align-items-center">
+            <li className="nav-item">
+              <Link className="nav-link fw-semibold" to="/product">
+                Sản phẩm thú cưng
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link fw-semibold" to="/clinics">
+                Đặt lịch khám
+              </Link>
+            </li>
+
             {!user ? (
               <>
                 <li className="nav-item">
@@ -85,43 +103,81 @@ const Header = () => {
               </>
             ) : (
               <>
-                <li className="nav-item">
-                  <Link className="nav-link fw-semibold" to="/my-pets">
-                    Thú cưng của tôi
-                  </Link>
-                </li>
-
-                <li className="nav-item">
-                  <Link className="nav-link fw-semibold" to="/me">
-                    Hồ sơ
-                  </Link>
-                </li>
-
-                <li className="nav-item">
+                {/* Dropdown user menu */}
+                <li className="nav-item dropdown">
                   <button
-                    className="btn btn-link nav-link fw-semibold"
-                    onClick={() => {
-                      logout();
-                      navigate("/");
-                    }}
+                    className="btn btn-link nav-link dropdown-toggle d-flex align-items-center gap-2 text-white"
+                    id="userDropdown"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
                   >
-                    Đăng xuất
+                    <FaUserCircle size={22} />
+                    <span
+                      className="single-line"
+                      title={user?.name}
+                    >
+                      {user?.name || "Tài khoản"}
+                    </span>
                   </button>
+                  <ul
+                    className="dropdown-menu dropdown-menu-end"
+                    aria-labelledby="userDropdown"
+                  >
+                    <li>
+                      <Link className="dropdown-item" to="/me">
+                        Thông tin người dùng
+                      </Link>
+                    </li>
+                    <li>
+                      <hr className="dropdown-divider" />
+                    </li>
+                    <li>
+                      <button
+                        className="dropdown-item text-danger"
+                        onClick={() => {
+                          logout();
+                          navigate("/");
+                        }}
+                      >
+                        Đăng xuất
+                      </button>
+                    </li>
+                  </ul>
                 </li>
               </>
             )}
 
+<<<<<<< HEAD
             {/* Cart icon + số lượng */}
             <li className="nav-item position-relative">
+=======
+            {/* Cart */}
+            <li className="nav-item">
+>>>>>>> backup-code-8-6
               <Link
                 className="nav-link d-flex align-items-center cart-link"
                 to="/cart"
               >
+<<<<<<< HEAD
                 <FaShoppingCart size={20} />
                 <span className="ms-1 fw-semibold">Giỏ hàng</span>
                 {cartCount > 0 && (
                   <span className="cart-badge">{cartCount}</span>
                 )}
+=======
+                <div className="position-relative">
+                  <FaShoppingCart size={20} />
+                  {totalItems > 0 && (
+                    <span
+                      className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                      style={{ fontSize: "0.7rem" }}
+                    >
+                      {totalItems}
+                    </span>
+                  )}
+                </div>
+                <span className="ms-1 fw-semibold single-line">Giỏ hàng</span>
+>>>>>>> backup-code-8-6
               </Link>
             </li>
           </ul>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import signupApi from "../../api/signupApi";
+import { useAuth } from "../../context/AuthContext";
 
 const VerifyOtp = () => {
     const [otp, setOtp] = useState("");
@@ -8,6 +9,7 @@ const VerifyOtp = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { name, email, password, phone, type } = location.state || {}; // Lấy type từ location.state
+    const { login } = useAuth();
 
     const handleVerifyOtp = async (e) => {
         e.preventDefault();
@@ -27,7 +29,8 @@ const VerifyOtp = () => {
                     console.log("Signup Response:", signupResponse);
 
                     if (signupResponse.message === "Đăng ký thành công!") {
-                        navigate("/login"); // Chuyển hướng đến trang đăng nhập
+                        await login(email, password);
+                        navigate("/pets/manage"); // Chuyển hướng đến trang đăng nhập
                     } else {
                         setError(signupResponse.message || "Failed to sign up.");
                     }

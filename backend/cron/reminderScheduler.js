@@ -1,8 +1,6 @@
 // reminderScheduler.js
 const cron = require("node-cron");
 const Reminder = require("../models/Reminder");
-const Pet = require("../models/Pet");
-const User = require("../models/User");
 const sendReminderMail = require("../utils/sendReminderMail");
 
 // Chạy mỗi phút

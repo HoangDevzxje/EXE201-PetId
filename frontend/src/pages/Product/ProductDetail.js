@@ -1,22 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { Spinner } from "react-bootstrap";
+<<<<<<< HEAD
 import { useCartStore } from "../../services/useCartStore";
+=======
+import { useCart } from "../../context/CartContext";
+import { toast } from "react-toastify";
+import api from "../../api/baseApi";
+>>>>>>> backup-code-8-6
 
 const ProductDetail = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
+<<<<<<< HEAD
   const { addToCart } = useCartStore();
 
 
+=======
+  const { addToCart } = useCart();
+>>>>>>> backup-code-8-6
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:9999/products/detail/${productId}`
+        const res = await api.get(
+          `/products/detail/${productId}`
         );
         setProduct(res.data);
       } catch (err) {
@@ -52,6 +62,11 @@ const ProductDetail = () => {
     <div className="d-flex flex-column min-vh-100 bg-light">
       <main className="flex-grow-1 py-5">
         <div className="container">
+          <div className="d-flex justify-content-start mb-4">
+            <Link to="/product" className="btn btn-secondary mb-3">
+              &larr; Sản phẩm
+            </Link>
+          </div>
           <div className="row g-4">
             {/* Left: Image */}
             <div className="col-md-5">
@@ -124,16 +139,24 @@ const ProductDetail = () => {
                   </button>
                 </div>
 
+<<<<<<< HEAD
                 {/* <button className="btn btn-dark btn-lg w-100 fw-semibold mb-2">
                   Thêm vào giỏ hàng
                 </button> */}
+=======
+>>>>>>> backup-code-8-6
                 <button
                   className="btn btn-dark btn-lg w-100 fw-semibold mb-2"
                   onClick={() => {
                     addToCart(product, quantity);
+<<<<<<< HEAD
                     alert("Đã thêm vào giỏ hàng!");
                   }}
                   disabled={product.stock === 0}
+=======
+                    toast.success("Đã thêm vào giỏ hàng!");
+                  }}
+>>>>>>> backup-code-8-6
                 >
                   Thêm vào giỏ hàng
                 </button>

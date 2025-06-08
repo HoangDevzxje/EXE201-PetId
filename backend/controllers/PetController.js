@@ -42,6 +42,15 @@ const createPet = async (req, res) => {
       weightKg: parseFloat(req.body.weightKg),
       avatarUrl,
       notes: req.body.notes,
+      hobbies: req.body.hobbies
+        ? req.body.hobbies.split(",").map((h) => h.trim())
+        : [],
+      restrictions: req.body.restrictions
+        ? req.body.restrictions.split(",").map((r) => r.trim())
+        : [],
+      album: req.body.album
+        ? req.body.album.split(",").map((a) => a.trim())
+        : [],
     });
 
     const savedPet = await newPet.save();
@@ -67,6 +76,15 @@ const updatePet = async (req, res) => {
       birthDate: new Date(req.body.birthDate),
       weightKg: parseFloat(req.body.weightKg),
       notes: req.body.notes,
+      hobbies: req.body.hobbies
+        ? req.body.hobbies.split(",").map((h) => h.trim())
+        : [],
+      restrictions: req.body.restrictions
+        ? req.body.restrictions.split(",").map((r) => r.trim())
+        : [],
+      album: req.body.album
+        ? req.body.album.split(",").map((a) => a.trim())
+        : [],
     };
 
     if (avatarUrl) updateData.avatarUrl = avatarUrl;
@@ -109,6 +127,32 @@ const deletePet = async (req, res) => {
     res.status(500).json({ message: "Lỗi khi xoá thú cưng", error });
   }
 };
+const uploadAlbum = async (req, res) => {
+  try {
+    // req.files là mảng file do multer xử lý
+    const albumUrls = req.files.map((file) => {
+      return `${req.protocol}://${req.get("host")}/uploads/${file.filename}`;
+    });
+
+    const updatedPet = await Pet.findOneAndUpdate(
+      { _id: req.params.petId, owner: req.user._id },
+      { $push: { album: { $each: albumUrls } } },
+      { new: true }
+    );
+
+    if (!updatedPet) {
+      return res.status(404).json({ message: "Không tìm thấy thú cưng" });
+    }
+
+    res.status(200).json({
+      message: "Album đã được cập nhật thành công!",
+      album: updatedPet.album,
+    });
+  } catch (error) {
+    console.error("Lỗi khi upload album:", error);
+    res.status(500).json({ message: "Không thể upload album", error });
+  }
+};
 
 module.exports = {
   getPetsByUser,
@@ -116,4 +160,5 @@ module.exports = {
   createPet,
   updatePet,
   deletePet,
+  uploadAlbum,
 };

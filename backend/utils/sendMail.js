@@ -19,17 +19,15 @@ const sendEmail = async (email, otp, type) => {
     let emailHtml = emailTemplate.replace("{{OTP}}", otp);
     if (type === "register") {
       emailHtml = emailHtml.replace("{{TITLE}}", "Xác nhận đăng ký tài khoản");
-    }
-    else if (type === "reset-password") {
+    } else if (type === "reset-password") {
       emailHtml = emailHtml.replace("{{TITLE}}", "Xác nhận đặt lại mật khẩu");
     }
     const mailOptions = {
-      from: `"5BROS Cinema" " <${process.env.EMAIL_USER}>`, // Hiển thị tên thương hiệu
+      from: `"PETID" " <${process.env.EMAIL_USER}>`, // Hiển thị tên thương hiệu
       to: email,
       subject: "Xác nhận đăng ký - Mã OTP của bạn",
       html: emailHtml,
     };
-
 
     await transporter.sendMail(mailOptions);
   } catch (error) {

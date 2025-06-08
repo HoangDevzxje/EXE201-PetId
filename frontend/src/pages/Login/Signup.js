@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUser, FaLock, FaEnvelope, FaPhone } from "react-icons/fa";
+import { FaUser, FaLock, FaEnvelope, FaPhone, FaEye, FaEyeSlash } from "react-icons/fa";
 import signupApi from "../../api/signupApi"; // Đảm bảo import đúng
 
 const SignUp = () => {
@@ -10,7 +10,12 @@ const SignUp = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [phone, setPhone] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     const navigate = useNavigate();
+
     const validatePassword = (password) => {
         const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         return passwordRegex.test(password);
@@ -18,9 +23,10 @@ const SignUp = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError("");
 
         if (password !== confirmPassword) {
-            setError("Passwords do not match.");
+            setError("Mật khẩu xác nhận không khớp.");
             return;
         }
         if (!validatePassword(password)) {
@@ -29,25 +35,24 @@ const SignUp = () => {
         }
 
         try {
-            console.log("Requesting OTP for:", { email });
+            setLoading(true);
 
-            // Gửi yêu cầu OTP với loại OTP là "register"
             const otpResponse = await signupApi.sendOtp(email, "register");
-            console.log("OTP API Response:", otpResponse);
 
             if (otpResponse.message) {
-                // Chuyển hướng đến trang xác thực OTP
-                navigate("/verify-otp", { state: { name, email, password, phone, type: "register" } });
+                navigate("/verify-otp", {
+                    state: { name, email, password, phone, type: "register" },
+                });
             } else {
-                setError(otpResponse.message || "Failed to send OTP.");
+                setError(otpResponse.message || "Gửi OTP thất bại.");
             }
         } catch (error) {
-            setError(error.response?.data?.message || "Failed to send OTP.");
+            setError(error.response?.data?.message || "Gửi OTP thất bại.");
             console.error("OTP request failed", error);
+        } finally {
+            setLoading(false);
         }
     };
-
-
 
     return (
         <div
@@ -114,13 +119,20 @@ const SignUp = () => {
                                 <FaLock />
                             </span>
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 className="form-control"
                                 placeholder="Mật khẩu"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
+                            <span
+                                className="input-group-text"
+                                style={{ cursor: "pointer" }}
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                            </span>
                         </div>
 
                         {/* Xác nhận mật khẩu */}
@@ -129,13 +141,20 @@ const SignUp = () => {
                                 <FaLock />
                             </span>
                             <input
-                                type="password"
+                                type={showConfirmPassword ? "text" : "password"}
                                 className="form-control"
                                 placeholder="Xác nhận mật khẩu"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 required
                             />
+                            <span
+                                className="input-group-text"
+                                style={{ cursor: "pointer" }}
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            >
+                                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                            </span>
                         </div>
 
                         {/* Nút đăng ký */}
@@ -148,8 +167,9 @@ const SignUp = () => {
                                 borderColor: "#fff",
                                 fontSize: "1rem",
                             }}
+                            disabled={loading}
                         >
-                            Đăng ký
+                            {loading ? "Đang xử lý..." : "Đăng ký"}
                         </button>
                     </form>
 
@@ -163,10 +183,6 @@ const SignUp = () => {
                 </div>
             </div>
         </div>
-
-
-
-
     );
 };
 
