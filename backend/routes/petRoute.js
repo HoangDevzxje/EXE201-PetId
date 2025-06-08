@@ -18,5 +18,11 @@ router.put(
   PetController.updatePet
 );
 router.delete("/:petId", checkAuthorize(["user"]), PetController.deletePet);
+router.post(
+  "/:petId/album",
+  checkAuthorize(["user"]),
+  upload.array("album", 10), // tối đa 10 ảnh
+  PetController.uploadAlbum
+);
 
 module.exports = router;
