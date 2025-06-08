@@ -39,6 +39,9 @@ import AdminLayout from "./components/HeaderAdmin/AdminLayout";
 import CreatePetButton from "./pages/Home/CreatePetButton";
 import PetList from "./pages/Home/Petlist";
 import PetListButton from "./pages/Home/PetListButton";
+import ClinicsUserPage from "./pages/Clinic/ClinicsUserPage";
+import ClinicDetailPage from "./pages/Clinic/ClinicsDetailPage";
+import AppointmentsAdminPage from "./pages/Admin/AppointmentsAdminPage";
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -76,6 +79,8 @@ const App = () => {
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
+              <Route path="/clinics" element={<ClinicsUserPage />} />
+              <Route path="/clinics/detail" element={<ClinicDetailPage />} />
               <Route
                 path="/pets"
                 element={
@@ -94,6 +99,7 @@ const App = () => {
               <Route path="/product" element={<Product />} />
               <Route path="/pets/:petId" element={<PetDetail />} />
               <Route path="/chatbot" element={<ChatBot />} />
+              
 
               {/* Protected User Routes */}
               <Route
@@ -153,6 +159,7 @@ const App = () => {
                 <Route path="categories" element={<CategoryManagement />} />
                 <Route path="orders" element={<OrderManagement />} />
                 <Route path="clinics" element={<ClinicsAdminPage />} />
+                <Route path="appointments" element={<AppointmentsAdminPage />} />
               </Route>
             </Routes>
           </Layout>

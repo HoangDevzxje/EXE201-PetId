@@ -11,7 +11,7 @@ import {
 } from "react-bootstrap";
 import { Link, Navigate } from "react-router-dom";
 import "./Product.css";
-
+import api from "../../api/baseApi";
 const Product = () => {
   const [products, setProducts] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -24,9 +24,9 @@ const Product = () => {
     const fetchData = async () => {
       try {
         const [productsRes, categoriesRes, featuredRes] = await Promise.all([
-          axios.get("http://localhost:9999/products/main"),
-          axios.get("http://localhost:9999/categories"),
-          axios.get("http://localhost:9999/products/featured"),
+          api.get("/products/main"),
+          api.get("/categories"),
+          api.get("/products/featured"),
         ]);
 
         setProducts(productsRes.data);

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./OrderManagement.css";
+import api from "../../api/baseApi";
 
 function OrderManagement() {
   const [orders, setOrders] = useState([]);
@@ -8,7 +9,7 @@ function OrderManagement() {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:9999/admin/orders");
+      const res = await api.get("/admin/orders");
       setOrders(res.data);
     } catch (err) {
       console.error("Failed to fetch orders:", err);
@@ -19,7 +20,7 @@ function OrderManagement() {
 
   const handleStatusChange = async (id, status) => {
     try {
-      await axios.put(`http://localhost:9999/admin/orders/${id}/status`, {
+      await api.put(`/admin/orders/${id}/status`, {
         status,
       });
       fetchOrders();
@@ -31,7 +32,7 @@ function OrderManagement() {
   const handleDelete = async (id) => {
     if (!window.confirm("Bạn có chắc chắn muốn xoá đơn hàng này?")) return;
     try {
-      await axios.delete(`http://localhost:9999/admin/orders/${id}`);
+      await api.delete(`/admin/orders/${id}`);
       fetchOrders();
     } catch (err) {
       console.error("Failed to delete order:", err);

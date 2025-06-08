@@ -35,7 +35,7 @@ const Header = () => {
             alt="Logo"
             className="brand-logo"
           />
-          <span className="brand-name">PetID+</span>
+          <span className="brand-name single-line">PetID+</span>
         </Link>
 
         <button
@@ -74,6 +74,11 @@ const Header = () => {
                 Sản phẩm thú cưng
               </Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link fw-semibold" to="/clinics">
+                Đặt lịch khám
+              </Link>
+            </li>
 
             {!user ? (
               <>
@@ -99,7 +104,12 @@ const Header = () => {
                     aria-expanded="false"
                   >
                     <FaUserCircle size={22} />
-                    {user?.name || "Tài khoản"}
+                    <span
+                      className="single-line"
+                      title={user?.name}
+                    >
+                      {user?.name || "Tài khoản"}
+                    </span>
                   </button>
                   <ul
                     className="dropdown-menu dropdown-menu-end"
@@ -110,11 +120,6 @@ const Header = () => {
                         Thông tin người dùng
                       </Link>
                     </li>
-                    {/* <li>
-                      <Link className="dropdown-item" to="/orders">
-                        Đơn hàng
-                      </Link>
-                    </li> */}
                     <li>
                       <hr className="dropdown-divider" />
                     </li>
@@ -151,7 +156,7 @@ const Header = () => {
                     </span>
                   )}
                 </div>
-                <span className="ms-1 fw-semibold">Giỏ hàng</span>
+                <span className="ms-1 fw-semibold single-line">Giỏ hàng</span>
               </Link>
             </li>
           </ul>

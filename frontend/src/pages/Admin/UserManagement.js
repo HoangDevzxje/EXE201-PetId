@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import { Refresh as RefreshIcon } from "@mui/icons-material";
 import axios from "axios";
+import api from "../../api/baseApi";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -35,7 +36,7 @@ const UserManagement = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:9999/admin/users");
+      const response = await api.get("/admin/users");
       setUsers(response.data);
       setFilteredUsers(response.data);
       setError(null);
@@ -65,8 +66,8 @@ const UserManagement = () => {
 
   const handleRoleChange = async (userId) => {
     try {
-      const response = await axios.put(
-        `http://localhost:9999/admin/users/${userId}/role`
+      const response = await api.put(
+        `/admin/users/${userId}/role`
       );
       setUsers((prevUsers) =>
         prevUsers.map((user) => (user._id === userId ? response.data : user))
@@ -88,8 +89,8 @@ const UserManagement = () => {
 
   const handleStatusChange = async (userId) => {
     try {
-      const response = await axios.put(
-        `http://localhost:9999/admin/users/${userId}/status`
+      const response = await api.put(
+        `/admin/users/${userId}/status`
       );
       setUsers((prevUsers) =>
         prevUsers.map((user) => (user._id === userId ? response.data : user))

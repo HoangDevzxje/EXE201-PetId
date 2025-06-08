@@ -37,6 +37,7 @@ import {
 import axios from "axios";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import api from "../../api/baseApi";
 
 // Schema validation cho form sản phẩm
 const productSchema = yup.object({
@@ -82,8 +83,8 @@ const ProductManagement = () => {
     try {
       setLoading(true);
       const [productsRes, categoriesRes] = await Promise.all([
-        axios.get("http://localhost:9999/admin/products"),
-        axios.get("http://localhost:9999/categories"),
+        api.get("/admin/products"),
+        api.get("/categories"),
       ]);
       setProducts(productsRes.data);
       setCategories(categoriesRes.data);
@@ -156,8 +157,8 @@ const ProductManagement = () => {
 
         let response;
         if (currentProduct) {
-          response = await axios.put(
-            `http://localhost:9999/admin/products/${currentProduct._id}`,
+          response = await api.put(
+            `/admin/products/${currentProduct._id}`,
             productData
           );
           setProducts(
@@ -171,8 +172,8 @@ const ProductManagement = () => {
             severity: "success",
           });
         } else {
-          response = await axios.post(
-            "http://localhost:9999/admin/products",
+          response = await api.post(
+            "/admin/products",
             productData
           );
           setProducts([...products, response.data]);
@@ -228,8 +229,8 @@ const ProductManagement = () => {
 
   const handleConfirmDelete = async () => {
     try {
-      await axios.delete(
-        `http://localhost:9999/admin/products/${productToDelete._id}`
+      await api.delete(
+        `/admin/products/${productToDelete._id}`
       );
       setProducts(products.filter((p) => p._id !== productToDelete._id));
       setSnackbar({

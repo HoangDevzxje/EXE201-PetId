@@ -15,7 +15,7 @@ const PetList = () => {
 
     const fetchPets = async () => {
       try {
-        const res = await api.get("http://localhost:9999/pets");
+        const res = await api.get("/pets");
         setPets(res.data);
       } catch (err) {
         console.error("Lỗi khi tải danh sách thú cưng", err);
