@@ -1,0 +1,52 @@
+/* ClinicDetailPage.css */
+
+.clinic-detail-card {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  transition: box-shadow 0.3s ease;
+}
+
+.clinic-detail-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.clinic-detail-img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-bottom: 1px solid #eee;
+}
+
+.appointment-form .form-control {
+  border-radius: 8px;
+}
+
+.appointment-form .form-label {
+  font-weight: 500;
+  color: #444;
+}
+
+.appointment-form button {
+  background-color: #c49a6c;
+  border: none;
+  font-weight: 500;
+}
+
+.appointment-form button:hover {
+  background-color: #b0864f;
+}
+
+.alert-info {
+  font-weight: 500;
+  font-size: 1rem;
+  border-left: 5px solid #c49a6c;
+  background-color: #fff8f2;
+  color: #5d3c1d;
+}
+.clinic-detail-img {
+  height: 300px;
+  object-fit: cover;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}

@@ -4,6 +4,7 @@ import axios from "axios";
 import { Spinner } from "react-bootstrap";
 import { useCart } from "../../context/CartContext";
 import { toast } from "react-toastify";
+import api from "../../api/baseApi";
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -14,8 +15,8 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:9999/products/detail/${productId}`
+        const res = await api.get(
+          `/products/detail/${productId}`
         );
         setProduct(res.data);
       } catch (err) {

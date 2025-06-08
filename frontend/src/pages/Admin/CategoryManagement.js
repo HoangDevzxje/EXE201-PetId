@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./CategoryManagement.css";
+import api from "../../api/baseApi";
 
 function CategoryManagement() {
   const [categories, setCategories] = useState([]);
@@ -10,7 +11,7 @@ function CategoryManagement() {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get("http://localhost:9999/admin/categories");
+      const res = await api.get("/admin/categories");
       setCategories(res.data);
     } catch (err) {
       console.error("Failed to fetch categories:", err);
@@ -20,7 +21,7 @@ function CategoryManagement() {
   const handleAdd = async () => {
     if (!newCategory.trim()) return;
     try {
-      const res = await axios.post("http://localhost:9999/admin/categories", {
+      const res = await api.post("/admin/categories", {
         name: newCategory.trim(),
       });
       setCategories([...categories, res.data]);
@@ -33,7 +34,7 @@ function CategoryManagement() {
   const handleDelete = async (id) => {
     if (!window.confirm("Bạn có chắc chắn muốn xoá danh mục này?")) return;
     try {
-      await axios.delete(`http://localhost:9999/admin/categories/${id}`);
+      await api.delete(`/admin/categories/${id}`);
       setCategories(categories.filter((cat) => cat._id !== id));
     } catch (err) {
       console.error("Failed to delete category:", err);
@@ -43,8 +44,8 @@ function CategoryManagement() {
   const handleUpdate = async (id) => {
     if (!editedName.trim()) return;
     try {
-      const res = await axios.put(
-        `http://localhost:9999/admin/categories/${id}`,
+      const res = await api.put(
+        `/admin/categories/${id}`,
         { name: editedName.trim() }
       );
       setCategories(categories.map((cat) => (cat._id === id ? res.data : cat)));

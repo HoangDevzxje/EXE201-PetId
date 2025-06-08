@@ -15,6 +15,11 @@ const categoryRoutes = require("./routes/categoryRoute");
 const chatbotRoutes = require("./routes/chatbotRoute");
 const orderRoutes = require("./routes/orderRoute");
 const adminRoutes = require("./routes/adminRoute");
+const clinicRoutes = require("./routes/clinicRoute");
+const userRoutes = require("./routes/userRoute");
+const appointmentRoutes = require('./routes/appointmentRoute');
+
+
 
 const DB = require("./config/db");
 const app = express();
@@ -38,6 +43,10 @@ app.use("/orders", orderRoutes);
 app.use("/chatbot", chatbotRoutes);
 app.use("/admin", adminRoutes);
 app.use("/uploads", express.static("uploads"));
+app.use("/clinics", clinicRoutes);
+app.use("/users", userRoutes);
+app.use('/appointments', appointmentRoutes);
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

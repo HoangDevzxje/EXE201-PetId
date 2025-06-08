@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import api from "../../api/baseApi";
 
 const SearchPage = () => {
   const [products, setProducts] = useState([]);
@@ -12,9 +13,9 @@ const SearchPage = () => {
   useEffect(() => {
     if (!name) return;
     setLoading(true);
-    axios
+    api
       .get(
-        `http://localhost:9999/products/search?name=${encodeURIComponent(name)}`
+        `/products/search?name=${encodeURIComponent(name)}`
       )
       .then((res) => setProducts(res.data))
       .catch((err) => {

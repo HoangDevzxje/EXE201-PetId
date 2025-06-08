@@ -39,7 +39,13 @@ import AdminLayout from "./components/HeaderAdmin/AdminLayout";
 import CreatePetButton from "./pages/Home/CreatePetButton";
 import PetList from "./pages/Home/Petlist";
 import PetListButton from "./pages/Home/PetListButton";
+<<<<<<< HEAD
 import PetEdit from "./pages/Home/PetEdit";
+=======
+import ClinicsUserPage from "./pages/Clinic/ClinicsUserPage";
+import ClinicDetailPage from "./pages/Clinic/ClinicsDetailPage";
+import AppointmentsAdminPage from "./pages/Admin/AppointmentsAdminPage";
+>>>>>>> backup-code-8-6
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -89,6 +95,8 @@ const App = () => {
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
+              <Route path="/clinics" element={<ClinicsUserPage />} />
+              <Route path="/clinics/detail" element={<ClinicDetailPage />} />
               <Route
                 path="/pets"
                 element={
@@ -108,6 +116,11 @@ const App = () => {
               <Route path="/pets/:petId/edit" element={<PetEdit />} />{" "}
               {/* Thêm dòng này */}
               <Route path="/chatbot" element={<ChatBot />} />
+<<<<<<< HEAD
+=======
+              
+
+>>>>>>> backup-code-8-6
               {/* Protected User Routes */}
               <Route
                 path="/pets/manage"
@@ -165,6 +178,7 @@ const App = () => {
                 <Route path="categories" element={<CategoryManagement />} />
                 <Route path="orders" element={<OrderManagement />} />
                 <Route path="clinics" element={<ClinicsAdminPage />} />
+                <Route path="appointments" element={<AppointmentsAdminPage />} />
               </Route>
             </Routes>
           </Layout>

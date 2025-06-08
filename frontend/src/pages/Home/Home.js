@@ -64,7 +64,7 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
       icon: <FaPaw className="feature-icon" />,
       title: "Hồ sơ điện tử",
       description: "Lưu trữ mọi thông tin về thú cưng một cách khoa học",
-      link: "/pets",
+      // link: "/pets",
     },
     {
       icon: <FaCalendarAlt className="feature-icon" />,
@@ -82,7 +82,7 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
       icon: <FaClinicMedical className="feature-icon" />,
       title: "Kết nối bác sĩ",
       description: "Tư vấn trực tuyến với bác sĩ thú y",
-      link: "/doctor-connect",
+      link: "/clinics",
     },
   ];
 
@@ -90,7 +90,7 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
     if (loading) return;
     const fetchPets = async () => {
       try {
-        const res = await api.get("https://localhost:9999/pets");
+        const res = await api.get("/pets");
         setPets(res.data);
       } catch (err) {
         console.error("Lỗi khi tải danh sách thú cưng", err);

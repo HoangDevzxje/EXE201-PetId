@@ -139,3 +139,16 @@
   min-width: 18px;
   padding: 4px 6px;
 }
+.single-line {
+  display: inline-block;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+.navbar-nav .nav-link {
+  white-space: nowrap; 
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

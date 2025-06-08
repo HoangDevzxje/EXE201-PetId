@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Form, Table } from 'react-bootstrap';
 import { Switch, Snackbar, Alert } from '@mui/material';
+import api from '../../api/baseApi';
 
-const API_BASE_URL = 'http://localhost:9999';
 
 const ClinicsAdminPage = () => {
     const [clinics, setClinics] = useState([]);
@@ -14,7 +14,7 @@ const ClinicsAdminPage = () => {
 
     const fetchClinics = async () => {
         try {
-            const res = await axios.get(`${API_BASE_URL}/admin/clinics`);
+            const res = await api.get('/admin/clinics');
             setClinics(res.data);
         } catch (err) {
             console.error("Lỗi khi lấy danh sách phòng khám:", err);
@@ -39,10 +39,10 @@ const ClinicsAdminPage = () => {
     const saveClinic = async () => {
         try {
             if (isEditing) {
-                await axios.put(`${API_BASE_URL}/admin/clinics/${currentClinic._id}`, currentClinic);
+                await api.put(`/admin/clinics/${currentClinic._id}`, currentClinic);
                 showSnackbar('Cập nhật phòng khám thành công', 'success');
             } else {
-                await axios.post(`${API_BASE_URL}/admin/clinics`, currentClinic);
+                await api.post(`/admin/clinics`, currentClinic);
                 showSnackbar('Thêm phòng khám thành công', 'success');
             }
             fetchClinics();
@@ -56,7 +56,7 @@ const ClinicsAdminPage = () => {
     const deleteClinic = async (id) => {
         if (window.confirm('Bạn có chắc muốn xóa phòng khám này không?')) {
             try {
-                await axios.delete(`${API_BASE_URL}/admin/clinics/${id}`);
+                await api.delete(`/admin/clinics/${id}`);
                 fetchClinics();
                 showSnackbar('Xóa phòng khám thành công', 'success');
             } catch (err) {
@@ -68,7 +68,7 @@ const ClinicsAdminPage = () => {
 
     const toggleClinicStatus = async (id) => {
         try {
-            const res = await axios.put(`${API_BASE_URL}/admin/clinics/${id}/status`);
+            const res = await api.put(`/admin/clinics/${id}/status`);
             setClinics(prev =>
                 prev.map(clinic => (clinic._id === id ? res.data : clinic))
             );
