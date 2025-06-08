@@ -13,14 +13,21 @@ const PetManagement = () => {
     weightKg: "",
     avatarFile: null,
     notes: "",
+    hobbies: "",
+    restrictions: "",
+    dislikes: "",
+    albumFiles: [],
   });
+
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (files) {
+    if (name === "avatar" && files.length > 0) {
       setForm({ ...form, avatarFile: files[0] });
+    } else if (name === "album" && files.length > 0) {
+      setForm({ ...form, albumFiles: Array.from(files) });
     } else {
       setForm({ ...form, [name]: value });
     }
@@ -30,17 +37,38 @@ const PetManagement = () => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      for (let key in form) {
-        if (key === "avatarFile" && form.avatarFile) {
-          formData.append("avatar", form.avatarFile);
-        } else {
-          formData.append(key, form[key]);
-        }
+      formData.append("name", form.name);
+      formData.append("species", form.species);
+      formData.append("breed", form.breed);
+      formData.append("gender", form.gender);
+      formData.append("birthDate", form.birthDate);
+      formData.append("weightKg", form.weightKg);
+      formData.append("notes", form.notes);
+
+      if (form.avatarFile) {
+        formData.append("avatar", form.avatarFile);
       }
+
+      formData.append(
+        "hobbies",
+        JSON.stringify(form.hobbies.split(",").map((s) => s.trim()))
+      );
+      formData.append(
+        "restrictions",
+        JSON.stringify(form.restrictions.split(",").map((s) => s.trim()))
+      );
+      formData.append(
+        "dislikes",
+        JSON.stringify(form.dislikes.split(",").map((s) => s.trim()))
+      );
+
+      form.albumFiles.forEach((file) => {
+        formData.append("album", file);
+      });
 
       await petApi.create(formData);
       setMessage("Đã tạo hồ sơ thú cưng mới");
-      navigate("/");
+      navigate("/pets");
     } catch (err) {
       setMessage(
         "Lỗi: " + (err.response?.data?.message || "Không thể lưu hồ sơ")
@@ -73,6 +101,7 @@ const PetManagement = () => {
               required
             />
           </div>
+
           <div className="form-group">
             <label>Loài</label>
             <select
@@ -88,6 +117,7 @@ const PetManagement = () => {
               <option value="other">Khác</option>
             </select>
           </div>
+
           <div className="form-group">
             <label>Giống loài</label>
             <input
@@ -97,6 +127,7 @@ const PetManagement = () => {
               className="input"
             />
           </div>
+
           <div className="form-group">
             <label>Giới tính</label>
             <select
@@ -110,6 +141,7 @@ const PetManagement = () => {
               <option value="unknown">Không rõ</option>
             </select>
           </div>
+
           <div className="form-group">
             <label>Ngày sinh</label>
             <input
@@ -121,6 +153,7 @@ const PetManagement = () => {
               required
             />
           </div>
+
           <div className="form-group">
             <label>Cân nặng (kg)</label>
             <input
@@ -132,6 +165,7 @@ const PetManagement = () => {
               required
             />
           </div>
+
           <div className="form-group">
             <label>Ảnh đại diện</label>
             <input
@@ -142,6 +176,49 @@ const PetManagement = () => {
               accept="image/*"
             />
           </div>
+
+          <div className="form-group">
+            <label>Sở thích (phân cách bằng dấu phẩy)</label>
+            <input
+              name="hobbies"
+              value={form.hobbies}
+              onChange={handleChange}
+              className="input"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Dị ứng (phân cách bằng dấu phẩy)</label>
+            <input
+              name="restrictions"
+              value={form.restrictions}
+              onChange={handleChange}
+              className="input"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Sở ghét (phân cách bằng dấu phẩy)</label>
+            <input
+              name="dislikes"
+              value={form.dislikes}
+              onChange={handleChange}
+              className="input"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Album ảnh (nhiều ảnh)</label>
+            <input
+              name="album"
+              type="file"
+              multiple
+              onChange={handleChange}
+              className="input"
+              accept="image/*"
+            />
+          </div>
+
           <div className="form-group full-width">
             <label>Ghi chú</label>
             <textarea

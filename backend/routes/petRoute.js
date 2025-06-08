@@ -8,9 +8,13 @@ router.get("/:petId", checkAuthorize(["user"]), PetController.getPetDetail);
 router.post(
   "/",
   checkAuthorize(["user"]),
-  upload.single("avatar"),
+  upload.fields([
+    { name: "avatar", maxCount: 1 },
+    { name: "album", maxCount: 10 },
+  ]),
   PetController.createPet
 );
+
 router.put(
   "/:petId",
   checkAuthorize(["user"]),

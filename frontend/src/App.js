@@ -39,15 +39,23 @@ import AdminLayout from "./components/HeaderAdmin/AdminLayout";
 import CreatePetButton from "./pages/Home/CreatePetButton";
 import PetList from "./pages/Home/Petlist";
 import PetListButton from "./pages/Home/PetListButton";
+import PetEdit from "./pages/Home/PetEdit";
 
 const Layout = ({ children }) => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isPetDetailPage = /^\/pets\/[^/]+$/.test(location.pathname);
+  const isPetEditPage = /^\/pets\/[^/]+\/edit$/.test(location.pathname);
+  const isPetManagementPage = location.pathname === "/pets/manage";
   const isProfilePage = location.pathname === "/me";
   if (isAdminRoute) {
     return <>{children}</>;
   }
+
+  // Ẩn các thành phần khi ở trang chi tiết, edit, hoặc quản lý thú cưng
+  const hideFloating = isPetEditPage || isPetManagementPage;
+  const hideFooter =
+    isPetDetailPage || isPetEditPage || isPetManagementPage || isProfilePage;
 
   return (
     <div className="layout">
@@ -55,11 +63,16 @@ const Layout = ({ children }) => {
       <div className="main-container">
         <div className="content">{children}</div>
       </div>
-      <ChatBot />
-      <PetListButton />
-      <CreatePetButton />
-      {!isPetDetailPage && !isProfilePage && (
+      {!hideFloating && (
         <>
+          <ChatBot />
+
+          <CreatePetButton />
+        </>
+      )}
+      {!hideFooter && (
+        <>
+          <PetListButton />
           <Footer />
         </>
       )}
@@ -84,7 +97,6 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
-
               <Route path="/product/:productId" element={<ProductDetail />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<SignUp />} />
@@ -93,8 +105,9 @@ const App = () => {
               <Route path="/search" element={<SearchPage />} />
               <Route path="/product" element={<Product />} />
               <Route path="/pets/:petId" element={<PetDetail />} />
+              <Route path="/pets/:petId/edit" element={<PetEdit />} />{" "}
+              {/* Thêm dòng này */}
               <Route path="/chatbot" element={<ChatBot />} />
-
               {/* Protected User Routes */}
               <Route
                 path="/pets/manage"
@@ -137,7 +150,6 @@ const App = () => {
                 path="/pets/:petId/reminders"
                 element={<PetReminderManager />}
               />
-
               {/* Admin Routes */}
               <Route
                 path="/admin/*"

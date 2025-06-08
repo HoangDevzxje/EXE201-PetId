@@ -1,41 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../../api/baseApi";
-import petApi from "../../api/petApi";
 import "./PetDetail.css";
+
 const PetDetail = () => {
   const { petId } = useParams();
   const navigate = useNavigate();
   const [pet, setPet] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState({
-    name: "",
-    species: "",
-    breed: "",
-    gender: "unknown",
-    birthDate: "",
-    weightKg: "",
-    avatarFile: null,
-    notes: "",
-  });
-  const [message, setMessage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const fetchPet = async () => {
       try {
+        // Nếu backend có populate clinic, sẽ nhận object clinic
         const res = await api.get(`/pets/${petId}`);
         setPet(res.data);
-        setForm({
-          name: res.data.name,
-          species: res.data.species,
-          breed: res.data.breed,
-          gender: res.data.gender,
-          birthDate: res.data.birthDate.split("T")[0],
-          weightKg: res.data.weightKg,
-          avatarFile: null,
-          notes: res.data.notes || "",
-        });
       } catch (err) {
         setPet(null);
       } finally {
@@ -45,49 +25,17 @@ const PetDetail = () => {
     fetchPet();
   }, [petId]);
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (files) {
-      setForm({ ...form, avatarFile: files[0] });
-    } else {
-      setForm({ ...form, [name]: value });
-    }
-  };
-
   const handleDelete = async () => {
-    if (!window.confirm("Bạn có chắc chắn muốn xoá hồ sơ thú cưng này?"))
-      return;
-    try {
-      await petApi.delete(petId);
-      setMessage("Đã xoá hồ sơ thú cưng");
-      setTimeout(() => navigate("/"), 1000);
-    } catch (err) {
-      setMessage(
-        "Lỗi: " + (err.response?.data?.message || "Không thể xoá hồ sơ")
-      );
-    }
-  };
+    const confirmed = window.confirm("Bạn có chắc chắn muốn xoá thú cưng này?");
+    if (!confirmed) return;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
     try {
-      const formData = new FormData();
-      for (let key in form) {
-        if (key === "avatarFile" && form.avatarFile) {
-          formData.append("avatar", form.avatarFile);
-        } else if (key !== "avatarFile") {
-          formData.append(key, form[key]);
-        }
-      }
-
-      const res = await petApi.update(petId, formData);
-      setPet(res.data);
-      setMessage("Đã cập nhật hồ sơ thú cưng");
-      setEditing(false);
+      await api.delete(`/pets/${petId}`);
+      alert("Đã xoá thú cưng thành công");
+      navigate("/pets");
     } catch (err) {
-      setMessage(
-        "Lỗi: " + (err.response?.data?.message || "Không thể cập nhật hồ sơ")
-      );
+      console.error("Lỗi khi xoá thú cưng:", err);
+      alert("Xoá thất bại. Vui lòng thử lại.");
     }
   };
 
@@ -95,250 +43,257 @@ const PetDetail = () => {
   if (!pet)
     return <div className="text-center py-4">Không tìm thấy thú cưng.</div>;
 
+  // Tính tuổi thú cưng
+  const getAgeText = () => {
+    if (!pet.birthDate) return "Không rõ";
+    const birth = new Date(pet.birthDate);
+    const now = new Date();
+    let years = now.getFullYear() - birth.getFullYear();
+    let months = now.getMonth() - birth.getMonth();
+    if (now.getDate() < birth.getDate()) months--;
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+    return `${years} tuổi${months > 0 ? ` ${months} tháng` : ""}`;
+  };
+
   return (
     <div className="container mt-4">
       <Link to="/pets" className="btn btn-secondary mb-3">
         &larr; Quay lại danh sách thú cưng
       </Link>
-
-      {message && (
-        <div
-          className={`alert ${
-            message.includes("Lỗi") ? "alert-danger" : "alert-success"
-          }`}
-        >
-          {message}
+      <div className="row">
+        {/* Phần ảnh */}
+        <div className="col-lg-6 mb-4">
+          <div className="card shadow-sm h-100">
+            <img
+              src={pet.avatarUrl || "/images/default-pet.png"}
+              className="card-img-top"
+              alt={pet.name}
+              style={{
+                objectFit: "cover",
+                height: "400px",
+                borderRadius: "0.375rem 0.375rem 0 0",
+                cursor: "pointer",
+              }}
+              onClick={() => pet.avatarUrl && setSelectedImage(pet.avatarUrl)}
+            />
+            {/* Hiển thị album nếu có */}
+            {pet.album && pet.album.length > 0 && (
+              <div className="pet-album mt-3 px-3 pb-3">
+                <div className="fw-bold mb-2">Album ảnh:</div>
+                <div className="d-flex flex-wrap gap-2">
+                  {pet.album.map((img, idx) => (
+                    <img
+                      key={idx}
+                      src={img}
+                      alt={`pet-album-${idx}`}
+                      style={{
+                        width: 80,
+                        height: 80,
+                        objectFit: "cover",
+                        borderRadius: 8,
+                        border: "1px solid #eee",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => setSelectedImage(img)}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      )}
 
-      {editing ? (
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <form onSubmit={handleSubmit} encType="multipart/form-data">
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Tên thú cưng</label>
-                    <input
-                      name="name"
-                      value={form.name}
-                      onChange={handleChange}
-                      className="form-control"
-                      required
-                    />
+        {/* Phần thông tin */}
+        <div className="col-lg-6">
+          <div className="card shadow-sm h-100">
+            <div className="card-body p-4">
+              <h1
+                className="card-title mb-4"
+                style={{ fontSize: "2.5rem", fontWeight: "bold" }}
+              >
+                {pet.name}
+              </h1>
+              <div className="pet-info">
+                <div className="info-row d-flex mb-3 pb-3 border-bottom">
+                  <div className="label-col">Giống:</div>
+                  <div className="value-col">
+                    {(pet.species === "dog"
+                      ? "Chó"
+                      : pet.species === "cat"
+                      ? "Mèo"
+                      : "Khác") +
+                      " " +
+                      (pet.breed || "")}
                   </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">Loài</label>
-                    <select
-                      name="species"
-                      value={form.species}
-                      onChange={handleChange}
-                      className="form-control"
-                      required
-                    >
-                      <option value="dog">Chó</option>
-                      <option value="cat">Mèo</option>
-                      <option value="other">Khác</option>
-                    </select>
+                </div>
+                <div className="info-row d-flex mb-3 pb-3 border-bottom">
+                  <div className="label-col">Tuổi:</div>
+                  <div className="value-col">{getAgeText()}</div>
+                </div>
+                <div className="info-row d-flex mb-3 pb-3 border-bottom">
+                  <div className="label-col">Cân nặng:</div>
+                  <div className="value-col">
+                    {pet.weightKg ? pet.weightKg + " kg" : "Không rõ"}
                   </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">Giống loài</label>
-                    <input
-                      name="breed"
-                      value={form.breed}
-                      onChange={handleChange}
-                      className="form-control"
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">Giới tính</label>
-                    <select
-                      name="gender"
-                      value={form.gender}
-                      onChange={handleChange}
-                      className="form-control"
-                    >
-                      <option value="male">Đực</option>
-                      <option value="female">Cái</option>
-                      <option value="unknown">Không rõ</option>
-                    </select>
+                </div>
+                <div className="info-row d-flex mb-3 pb-3 border-bottom">
+                  <div className="label-col">Giới tính:</div>
+                  <div className="value-col">
+                    {pet.gender === "male"
+                      ? "Đực"
+                      : pet.gender === "female"
+                      ? "Cái"
+                      : "Không rõ"}
                   </div>
                 </div>
 
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label">Ngày sinh</label>
-                    <input
-                      name="birthDate"
-                      type="date"
-                      value={form.birthDate}
-                      onChange={handleChange}
-                      className="form-control"
-                      required
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">Cân nặng (kg)</label>
-                    <input
-                      name="weightKg"
-                      type="number"
-                      value={form.weightKg}
-                      onChange={handleChange}
-                      className="form-control"
-                      required
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">Ảnh đại diện</label>
-                    <input
-                      name="avatar"
-                      type="file"
-                      onChange={handleChange}
-                      className="form-control"
-                      accept="image/*"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-3">
-                <label className="form-label">Ghi chú</label>
-                <textarea
-                  name="notes"
-                  value={form.notes}
-                  onChange={handleChange}
-                  className="form-control"
-                  rows="3"
-                />
-              </div>
-
-              <div className="d-flex justify-content-between">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={() => setEditing(false)}
-                >
-                  Hủy
-                </button>
-                <button type="submit" className="btn btn-primary">
-                  Lưu thay đổi
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      ) : (
-        <div className="row">
-          {/* Phần ảnh */}
-          <div className="col-lg-6 mb-4">
-            <div className="card shadow-sm h-100">
-              <img
-                src={pet.avatarUrl || "/images/default-pet.png"}
-                className="card-img-top"
-                alt={pet.name}
-                style={{
-                  objectFit: "cover",
-                  height: "400px",
-                  borderRadius: "0.375rem 0.375rem 0 0",
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Phần thông tin */}
-          <div className="col-lg-6">
-            <div className="card shadow-sm h-100">
-              <div className="card-body p-4">
-                <h1
-                  className="card-title mb-4"
-                  style={{ fontSize: "2.5rem", fontWeight: "bold" }}
-                >
-                  {pet.name}
-                </h1>
-
-                <div className="pet-info">
+                {/* Sở thích */}
+                {pet.hobbies && pet.hobbies.length > 0 && (
                   <div className="info-row d-flex mb-3 pb-3 border-bottom">
-                    <div className="label-col">Giống:</div>
+                    <div className="label-col">Sở thích:</div>
+                    <div className="value-col">{pet.hobbies.join(", ")}</div>
+                  </div>
+                )}
+
+                {/* Sở ghét */}
+                {pet.dislikes && pet.dislikes.length > 0 && (
+                  <div className="info-row d-flex mb-3 pb-3 border-bottom">
+                    <div className="label-col">Sở ghét:</div>
+                    <div className="value-col">{pet.dislikes.join(", ")}</div>
+                  </div>
+                )}
+
+                {/* Dị ứng */}
+                {pet.restrictions && pet.restrictions.length > 0 && (
+                  <div className="info-row d-flex mb-3 pb-3 border-bottom">
+                    <div className="label-col">Dị ứng:</div>
                     <div className="value-col">
-                      {(pet.species === "dog"
-                        ? "Chó"
-                        : pet.species === "cat"
-                        ? "Mèo"
-                        : "Khác") +
-                        " " +
-                        pet.breed}
+                      {pet.restrictions.join(", ")}
                     </div>
                   </div>
+                )}
 
-                  <div className="info-row d-flex mb-3 pb-3 border-bottom">
-                    <div className="label-col">Tuổi:</div>
-                    <div className="value-col">
-                      {pet.birthDate
-                        ? (() => {
-                            const birth = new Date(pet.birthDate);
-                            const now = new Date();
-
-                            let years = now.getFullYear() - birth.getFullYear();
-                            let months = now.getMonth() - birth.getMonth();
-                            if (now.getDate() < birth.getDate()) months--;
-                            if (months < 0) {
-                              years--;
-                              months += 12;
-                            }
-
-                            return `${years} tuổi${
-                              months > 0 ? ` ${months} tháng` : ""
-                            }`;
-                          })()
-                        : "Không rõ"}
+                {/* Ghi chú */}
+                {pet.notes && (
+                  <div className="info-row d-flex mb-3 pb-3">
+                    <div className="label-col">Ghi chú:</div>
+                    <div className="value-col text-muted">
+                      <p className="mb-0">{pet.notes}</p>
                     </div>
                   </div>
+                )}
 
+                {/* Phòng khám */}
+                {pet.clinic && (
                   <div className="info-row d-flex mb-3 pb-3 border-bottom">
-                    <div className="label-col">Cân nặng:</div>
-                    <div className="value-col">{pet.weightKg} kg</div>
-                  </div>
-
-                  <div className="info-row d-flex mb-3 pb-3 border-bottom">
-                    <div className="label-col">Giới tính:</div>
+                    <div className="label-col">Phòng khám:</div>
                     <div className="value-col">
-                      {pet.gender === "male"
-                        ? "Đực"
-                        : pet.gender === "female"
-                        ? "Cái"
-                        : "Không rõ"}
+                      {typeof pet.clinic === "object"
+                        ? pet.clinic.name
+                        : "Phòng khám đã liên kết"}
                     </div>
                   </div>
+                )}
 
-                  {pet.notes && (
-                    <div className="info-row d-flex mb-3 pb-3">
-                      <div className="label-col">Ghi chú:</div>
-                      <div className="value-col text-muted">
-                        <p className="mb-0">{pet.notes}</p>
-                      </div>
+                {/* Hồ sơ tiêm chủng */}
+                {pet.vaccinationRecords &&
+                  pet.vaccinationRecords.length > 0 && (
+                    <div className="info-row mb-4">
+                      <div className="fw-bold mb-2">📌 Hồ sơ tiêm chủng:</div>
+                      <ul className="list-group">
+                        {pet.vaccinationRecords.map((vaccine, idx) => (
+                          <li className="list-group-item" key={idx}>
+                            <strong>{vaccine.vaccineName}</strong> –{" "}
+                            {new Date(vaccine.date).toLocaleDateString("vi-VN")}
+                            {vaccine.nextDoseDue && (
+                              <>
+                                {" "}
+                                | Mũi kế tiếp:{" "}
+                                {new Date(
+                                  vaccine.nextDoseDue
+                                ).toLocaleDateString("vi-VN")}
+                              </>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   )}
-                </div>
 
-                <div className="action-buttons mt-4">
-                  <button
-                    onClick={() => setEditing(true)}
-                    className="btn btn-warning me-2"
-                  >
-                    Chỉnh sửa
-                  </button>
-                  <button onClick={handleDelete} className="btn btn-danger">
-                    Xoá
-                  </button>
-                </div>
+                {/* Lịch sử y tế */}
+                {pet.medicalHistory && pet.medicalHistory.length > 0 && (
+                  <div className="info-row mb-4">
+                    <div className="fw-bold mb-2">🩺 Lịch sử y tế:</div>
+                    <ul className="list-group">
+                      {pet.medicalHistory.map((record, idx) => (
+                        <li className="list-group-item" key={idx}>
+                          <div>
+                            <strong>Ngày:</strong>{" "}
+                            {new Date(record.date).toLocaleDateString("vi-VN")}
+                          </div>
+                          <div>
+                            <strong>Mô tả:</strong> {record.description}
+                          </div>
+                          {record.vet && (
+                            <div>
+                              <strong>Bác sĩ:</strong> {record.vet}
+                            </div>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              <div className="action-buttons mt-4">
+                <Link
+                  to={`/pets/${petId}/edit`}
+                  className="btn btn-warning me-2"
+                >
+                  Chỉnh sửa
+                </Link>
+                <button className="btn btn-danger" onClick={handleDelete}>
+                  Xoá
+                </button>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Modal xem ảnh */}
+      {selectedImage && (
+        <div
+          className="modal d-block"
+          onClick={() => setSelectedImage(null)}
+          style={{
+            backgroundColor: "rgba(0,0,0,0.8)",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 1050,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            cursor: "zoom-out",
+          }}
+        >
+          <img
+            src={selectedImage}
+            alt="Xem ảnh"
+            style={{
+              maxHeight: "90%",
+              maxWidth: "90%",
+              borderRadius: "8px",
+              boxShadow: "0 0 20px rgba(0,0,0,0.5)",
+            }}
+          />
         </div>
       )}
     </div>

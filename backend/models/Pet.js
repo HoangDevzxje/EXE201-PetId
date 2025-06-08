@@ -16,9 +16,12 @@ const petSchema = new mongoose.Schema(
     avatarUrl: String,
     notes: String,
     clinic: { type: mongoose.Schema.Types.ObjectId, ref: "Clinic" },
-    hobbies: [String], // Thêm sở thích
-    restrictions: [String], // Thêm kiêng (VD: không được ăn đồ ngọt)
-    album: [String], // Thêm album ảnh (mảng link ảnh)
+
+    hobbies: [String], // Sở thích
+    restrictions: [String], // Kiêng
+    dislikes: [String],
+    album: [String], // Album ảnh
+
     medicalHistory: [
       {
         date: Date,
@@ -26,6 +29,7 @@ const petSchema = new mongoose.Schema(
         vet: String,
       },
     ],
+
     vaccinationRecords: [
       {
         vaccineName: String,

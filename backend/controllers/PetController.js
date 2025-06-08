@@ -28,9 +28,18 @@ const getPetDetail = async (req, res) => {
 // Tạo hồ sơ thú cưng mới
 const createPet = async (req, res) => {
   try {
-    const avatarUrl = req.file
-      ? `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`
+    const avatarUrl = req.files?.avatar?.[0]
+      ? `${req.protocol}://${req.get("host")}/uploads/${
+          req.files.avatar[0].filename
+        }`
       : undefined;
+
+    const albumUrls = req.files?.album
+      ? req.files.album.map(
+          (file) =>
+            `${req.protocol}://${req.get("host")}/uploads/${file.filename}`
+        )
+      : [];
 
     const newPet = new Pet({
       owner: req.user._id,
@@ -42,22 +51,21 @@ const createPet = async (req, res) => {
       weightKg: parseFloat(req.body.weightKg),
       avatarUrl,
       notes: req.body.notes,
-      hobbies: req.body.hobbies
-        ? req.body.hobbies.split(",").map((h) => h.trim())
-        : [],
+      hobbies: req.body.hobbies ? JSON.parse(req.body.hobbies) : [],
       restrictions: req.body.restrictions
-        ? req.body.restrictions.split(",").map((r) => r.trim())
+        ? JSON.parse(req.body.restrictions)
         : [],
-      album: req.body.album
-        ? req.body.album.split(",").map((a) => a.trim())
-        : [],
+      dislikes: req.body.dislikes ? JSON.parse(req.body.dislikes) : [], // <-- thêm xử lý dislikes
+      album: albumUrls,
     });
 
     const savedPet = await newPet.save();
     res.status(201).json(savedPet);
   } catch (error) {
     console.error("Lỗi khi tạo hồ sơ thú cưng:", error);
-    res.status(400).json({ message: "Không thể tạo hồ sơ thú cưng", error });
+    res
+      .status(400)
+      .json({ message: "Không thể tạo hồ sơ thú cưng", error: error.message });
   }
 };
 
@@ -82,6 +90,9 @@ const updatePet = async (req, res) => {
       restrictions: req.body.restrictions
         ? req.body.restrictions.split(",").map((r) => r.trim())
         : [],
+      dislikes: req.body.dislikes
+        ? req.body.dislikes.split(",").map((d) => d.trim())
+        : [], // <-- thêm xử lý dislikes
       album: req.body.album
         ? req.body.album.split(",").map((a) => a.trim())
         : [],
@@ -127,6 +138,7 @@ const deletePet = async (req, res) => {
     res.status(500).json({ message: "Lỗi khi xoá thú cưng", error });
   }
 };
+
 const uploadAlbum = async (req, res) => {
   try {
     // req.files là mảng file do multer xử lý
