@@ -3,6 +3,7 @@ const User = require("../models/User");
 const Category = require("../models/Category");
 const Order = require("../models/Order");
 const Clinic = require("../models/Clinic");
+const Blog = require("../models/Blog");
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
@@ -238,6 +239,45 @@ const toggleClinicStatus = async (req, res) => {
   }
 };
 
+// Thêm Blog
+const addNewBlog = async (req, res) => {
+  try {
+    const newBlog = new Blog(req.body);
+    await newBlog.validate(); // Kiểm tra validation trước khi lưu
+    const savedBlog = await newBlog.save();
+    res.status(201).json(savedBlog);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+// Sửa Blog
+const updateBlog = async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id);
+    if (!blog) return res.status(404).json({ error: "Blog không tồn tại" });
+
+    // Cập nhật thông tin blog
+    Object.assign(blog, req.body);
+    await blog.validate(); // Kiểm tra validation trước khi cập nhật
+    const updatedBlog = await blog.save();
+    res.status(200).json(updatedBlog);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+// Xoá Blog
+const deleteBlog = async (req, res) => {
+  try {
+    const blog = await Blog.findByIdAndDelete(req.params.id);
+    if (!blog) return res.status(404).json({ error: "Blog không tồn tại" });
+    res.status(200).json({ message: "Blog đã được xoá thành công" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 const adminController = {
   getAllUsers,
   changeRoleUser,
@@ -259,6 +299,9 @@ const adminController = {
   updateClinic,
   deleteClinic,
   toggleClinicStatus,
+  addNewBlog,
+  updateBlog,
+  deleteBlog,
 };
 
 module.exports = adminController;

@@ -43,6 +43,7 @@ import PetEdit from "./pages/Home/PetEdit";
 import ClinicsUserPage from "./pages/Clinic/ClinicsUserPage";
 import ClinicDetailPage from "./pages/Clinic/ClinicsDetailPage";
 import AppointmentsAdminPage from "./pages/Admin/AppointmentsAdminPage";
+import BlogManagement from "./pages/Admin/BlogManagement";
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -175,6 +176,7 @@ const App = () => {
                   path="appointments"
                   element={<AppointmentsAdminPage />}
                 />
+                <Route path="blogs" element={<BlogManagement />} />
               </Route>
             </Routes>
           </Layout>

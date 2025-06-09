@@ -51,7 +51,16 @@ const menuItems = [
   { label: "Danh mục", path: "/admin/categories", icon: <CategoriesIcon /> },
   { label: "Đơn hàng", path: "/admin/orders", icon: <OrdersIcon /> },
   { label: "Phòng khám", path: "/admin/clinics", icon: <PetsIcon /> },
-  { label: "Đơn hàng phòng khám", path: "/admin/appointments", icon: <PetsIcon /> },
+  {
+    label: "Đơn hàng phòng khám",
+    path: "/admin/appointments",
+    icon: <PetsIcon />,
+  },
+  {
+    label: "Blog",
+    path: "/admin/blogs",
+    icon: <PetsIcon />,
+  },
 ];
 
 const SidebarAdmin = ({ open, onClose }) => {

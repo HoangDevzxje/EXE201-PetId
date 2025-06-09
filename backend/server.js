@@ -17,9 +17,8 @@ const orderRoutes = require("./routes/orderRoute");
 const adminRoutes = require("./routes/adminRoute");
 const clinicRoutes = require("./routes/clinicRoute");
 const userRoutes = require("./routes/userRoute");
-const appointmentRoutes = require('./routes/appointmentRoute');
-
-
+const appointmentRoutes = require("./routes/appointmentRoute");
+const blogRoutes = require("./routes/blogRoute");
 
 const DB = require("./config/db");
 const app = express();
@@ -37,6 +36,8 @@ app.use(
 app.use("/auth", authRoutes);
 app.use("/pets", petRoutes);
 app.use("/reminders", reminderRoutes);
+
+
 app.use("/products", productRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/orders", orderRoutes);
@@ -45,8 +46,8 @@ app.use("/admin", adminRoutes);
 app.use("/uploads", express.static("uploads"));
 app.use("/clinics", clinicRoutes);
 app.use("/users", userRoutes);
-app.use('/appointments', appointmentRoutes);
-
+app.use("/appointments", appointmentRoutes);
+app.use("/blogs", blogRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

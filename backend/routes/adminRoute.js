@@ -37,4 +37,9 @@ router.put("/clinics/:id/status", adminController.toggleClinicStatus);
 router.get('/appointments', AppointmentController.getAllAppointments);
 router.delete('/appointments/:id', AppointmentController.deleteAppointment);
 
+// ----- Blog -----
+router.post("/blogs", adminController.addNewBlog);
+router.put("/blogs/:id", adminController.updateBlog);
+router.delete("/blogs/:id", adminController.deleteBlog);
+
 module.exports = router;
