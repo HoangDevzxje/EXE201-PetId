@@ -47,9 +47,12 @@ const BlogDetail = () => {
         )}
         <h2 className="mb-3">{blog.title}</h2>
         {blog.summary && <p className="text-muted">{blog.summary}</p>}
-        <div className="blog-detail-content" style={{ whiteSpace: "pre-line" }}>
-          {blog.description}
-        </div>
+
+        <div
+          className="blog-detail-content"
+          style={{ whiteSpace: "normal" }}
+          dangerouslySetInnerHTML={{ __html: blog.description }}
+        />
       </div>
     </Container>
   );
