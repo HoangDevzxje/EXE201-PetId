@@ -21,6 +21,8 @@ import {
   People as UsersIcon,
   Receipt as OrdersIcon,
   Chat as ChatbotIcon,
+  EventNote as AppointmentIcon,
+  Article as BlogIcon,
 } from "@mui/icons-material";
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
@@ -54,12 +56,12 @@ const menuItems = [
   {
     label: "Đơn hàng phòng khám",
     path: "/admin/appointments",
-    icon: <PetsIcon />,
+    icon: <AppointmentIcon />, // đổi icon
   },
   {
     label: "Blog",
     path: "/admin/blogs",
-    icon: <PetsIcon />,
+    icon: <BlogIcon />, // đổi icon
   },
 ];
 
