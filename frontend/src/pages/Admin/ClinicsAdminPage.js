@@ -4,11 +4,10 @@ import { Button, Form, Table } from 'react-bootstrap';
 import { Switch, Snackbar, Alert } from '@mui/material';
 import api from '../../api/baseApi';
 
-
 const ClinicsAdminPage = () => {
     const [clinics, setClinics] = useState([]);
     const [showBox, setShowBox] = useState(false);
-    const [currentClinic, setCurrentClinic] = useState({ name: '', address: '', phone: '', description: '' });
+    const [currentClinic, setCurrentClinic] = useState({ name: '', address: '', phone: '', description: '', imageUrl: '' });
     const [isEditing, setIsEditing] = useState(false);
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
@@ -25,7 +24,7 @@ const ClinicsAdminPage = () => {
         fetchClinics();
     }, []);
 
-    const openBox = (clinic = { name: '', address: '', phone: '', description: '' }) => {
+    const openBox = (clinic = { name: '', address: '', phone: '', description: '', imageUrl: '' }) => {
         setCurrentClinic(clinic);
         setIsEditing(!!clinic._id);
         setShowBox(true);
@@ -33,7 +32,7 @@ const ClinicsAdminPage = () => {
 
     const closeBox = () => {
         setShowBox(false);
-        setCurrentClinic({ name: '', address: '', phone: '', description: '' });
+        setCurrentClinic({ name: '', address: '', phone: '', description: '', imageUrl: '' });
     };
 
     const saveClinic = async () => {
@@ -95,6 +94,7 @@ const ClinicsAdminPage = () => {
             <Table striped bordered hover responsive>
                 <thead>
                     <tr>
+                        <th>Ảnh</th>
                         <th>Tên</th>
                         <th>Địa chỉ</th>
                         <th>Mô tả</th>
@@ -106,17 +106,23 @@ const ClinicsAdminPage = () => {
                 <tbody>
                     {clinics.map(clinic => (
                         <tr key={clinic._id}>
+                            <td style={{ width: '100px' }}>
+                                {clinic.imageUrl ? (
+                                    <img src={clinic.imageUrl} alt={clinic.name} style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px' }} />
+                                ) : (
+                                    <span>Chưa có ảnh</span>
+                                )}
+                            </td>
                             <td>{clinic.name}</td>
                             <td>{clinic.address}</td>
                             <td>{clinic.description}</td>
-                            <th>{clinic.phone}</th>
+                            <td>{clinic.phone}</td>
                             <td>
                                 <Switch
                                     checked={clinic.isActive}
                                     onChange={() => toggleClinicStatus(clinic._id)}
                                     color="success"
                                 />
-                                {clinic.isActive ? '' : ''}
                             </td>
                             <td>
                                 <Button variant="warning" size="sm" onClick={() => openBox(clinic)}>Sửa</Button>{' '}
@@ -175,11 +181,30 @@ const ClinicsAdminPage = () => {
                             <Form.Group className="mb-3">
                                 <Form.Label>Mô tả</Form.Label>
                                 <Form.Control
-                                    as="textarea" rows={3}
+                                    as="textarea"
+                                    rows={3}
                                     value={currentClinic.description || ''}
                                     onChange={(e) => setCurrentClinic({ ...currentClinic, description: e.target.value })}
                                 />
                             </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>URL Ảnh phòng khám</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Nhập URL ảnh"
+                                    value={currentClinic.imageUrl || ''}
+                                    onChange={(e) => setCurrentClinic({ ...currentClinic, imageUrl: e.target.value })}
+                                />
+                            </Form.Group>
+                            {currentClinic.imageUrl && (
+                                <div className="mb-3 text-center">
+                                    <img
+                                        src={currentClinic.imageUrl}
+                                        alt="Preview"
+                                        style={{ maxWidth: '100%', maxHeight: '150px', borderRadius: '8px' }}
+                                    />
+                                </div>
+                            )}
                         </Form>
                         <div className="d-flex justify-content-end">
                             <Button variant="secondary" onClick={closeBox} className="me-2">Đóng</Button>
