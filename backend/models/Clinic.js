@@ -8,7 +8,7 @@ const clinicSchema = new mongoose.Schema(
     email: { type: String },
     description: { type: String },
     isActive: { type: Boolean, default: true },
-    imageUrl: { type: String }, // Hình ảnh phòng khám
+    imageUrl: { type: String },
   },
   { timestamps: true }
 );

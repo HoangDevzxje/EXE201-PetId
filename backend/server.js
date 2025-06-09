@@ -37,7 +37,6 @@ app.use("/auth", authRoutes);
 app.use("/pets", petRoutes);
 app.use("/reminders", reminderRoutes);
 
-
 app.use("/products", productRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/orders", orderRoutes);

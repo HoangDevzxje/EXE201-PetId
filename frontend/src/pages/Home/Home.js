@@ -13,10 +13,16 @@ import { GiHealthNormal, GiDogBowl } from "react-icons/gi";
 import { MdPets, MdHealthAndSafety } from "react-icons/md";
 import "./Home.css";
 import { AiFillShopping } from "react-icons/ai";
+import { Link } from "react-router-dom";
+
 const Home = () => {
   const [pets, setPets] = useState([]);
   const [loadingPets, setLoadingPets] = useState(true);
   const { token, loading } = useAuth();
+
+  // Thêm state cho blog
+  const [blogs, setBlogs] = useState([]);
+  const [loadingBlogs, setLoadingBlogs] = useState(true);
 
   const bannerImages = [
     {
@@ -100,6 +106,21 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
     };
     fetchPets();
   }, [token, loading]);
+
+  // Fetch blog
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await api.get("/blogs");
+        setBlogs(res.data);
+      } catch (err) {
+        setBlogs([]);
+      } finally {
+        setLoadingBlogs(false);
+      }
+    };
+    fetchBlogs();
+  }, []);
 
   return (
     <div className="home-container">
@@ -210,8 +231,6 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
 
       {/* Pet Health Tips */}
       <section className="care-tips-section mt-5 mb-5 p-4">
-        {" "}
-        {/* Added more padding */}
         <div className="section-header">
           <h2 className="section-title">
             <i className="fas fa-lightbulb me-2"></i>7 Mẹo Chăm Sóc Thú Cưng
@@ -219,39 +238,27 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
           </h2>
         </div>
         <Container className="my-4">
-          {" "}
-          {/* Adjusted margin */}
           <Row className="justify-content-center g-3">
-            {" "}
-            {/* Added g-3 for gap */}
             <Col xs={12} md={6} className="mb-3">
-              {" "}
-              {/* Adjusted margin-bottom */}
               <img
                 src="https://sacomvet.com/upload/filemanager/benh-vien-thu-y-chuyen-nghiep-thu-duc-1.jpeg"
                 alt="Bệnh viện thú y 1"
-                className="img-fluid rounded shadow-sm" // Added shadow-sm
+                className="img-fluid rounded shadow-sm"
                 style={{ height: "300px", objectFit: "cover", width: "100%" }}
               />
             </Col>
             <Col xs={12} md={6} className="mb-3">
-              {" "}
-              {/* Adjusted margin-bottom */}
               <img
                 src="https://media.istockphoto.com/id/529121920/vi/anh/m%C3%A8o-ba-t%C6%B0-v%E1%BB%9Bi-b%C3%A1c-s%C4%A9-th%C3%BA-y.jpg?s=612x612&w=0&k=20&c=Xt0rbXCqwCb1Qa3vTJpLAhh_4kM1ZZYmcMn970INQ2w="
                 alt="Bệnh viện thú y 2"
-                className="img-fluid rounded shadow-sm" // Added shadow-sm
+                className="img-fluid rounded shadow-sm"
                 style={{ height: "300px", objectFit: "cover", width: "100%" }}
               />
             </Col>
           </Row>
         </Container>
         <div className="care-tips-content">
-          {" "}
-          {/* Removed inline whiteSpace style */}
           <p className="lead">
-            {" "}
-            {/* Added lead class for slightly larger text */}
             Thú cưng từ lâu đã trở thành một người bạn tâm giao, một thành viên
             quan trọng không thể thiếu trong cuộc sống bộn bề của nhiều người.
             Chính vì vậy, có rất nhiều thắc mắc xoay quanh vấn đề “phải chăm sóc
@@ -260,8 +267,6 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
             chăm sóc thú cưng được chuyên gia khuyên dùng:
           </p>
           <ol className="list-unstyled">
-            {" "}
-            {/* Changed to unstyled and added custom styling in CSS */}
             <li>
               <i className="fas fa-check-circle me-2 text-success"></i>
               <strong>Tiêm vắc-xin đầy đủ:</strong>Bảo vệ thú cưng khỏi bệnh
@@ -303,6 +308,63 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
             luôn khỏe mạnh và hạnh phúc.
           </p>
         </div>
+      </section>
+
+      {/* Blog Section */}
+      <section className="blog-section mt-5 mb-5">
+        <Container>
+          <div className="section-header">
+            <h2 className="section-title">
+              <i className="fas fa-blog me-2"></i> Góc Blog - Chia Sẻ Kiến Thức
+            </h2>
+          </div>
+          {loadingBlogs ? (
+            <div className="text-center py-4">Đang tải blog...</div>
+          ) : blogs.length === 0 ? (
+            <div className="text-center py-4 text-muted">
+              Chưa có bài viết nào.
+            </div>
+          ) : (
+            <Row className="g-4">
+              {blogs.map((blog) => (
+                <Col md={4} key={blog._id}>
+                  <Link
+                    to={`/blogs/${blog._id}`}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <div
+                      className="blog-card h-100 shadow-sm rounded"
+                      style={{ cursor: "pointer" }}
+                    >
+                      {blog.image && (
+                        <img
+                          src={blog.image}
+                          alt={blog.title}
+                          className="blog-img-top"
+                          style={{
+                            width: "100%",
+                            height: "180px",
+                            objectFit: "cover",
+                            borderRadius: "8px 8px 0 0",
+                          }}
+                        />
+                      )}
+                      <div className="p-3">
+                        <h5 className="blog-title">{blog.title}</h5>
+                        <p
+                          className="blog-desc text-muted"
+                          style={{ minHeight: 60 }}
+                        >
+                          {blog.summary}
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                </Col>
+              ))}
+            </Row>
+          )}
+        </Container>
       </section>
     </div>
   );

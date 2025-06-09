@@ -44,6 +44,7 @@ import ClinicsUserPage from "./pages/Clinic/ClinicsUserPage";
 import ClinicDetailPage from "./pages/Clinic/ClinicsDetailPage";
 import AppointmentsAdminPage from "./pages/Admin/AppointmentsAdminPage";
 import BlogManagement from "./pages/Admin/BlogManagement";
+import BlogDetail from "./pages/Home/BlogDetail";
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -157,6 +158,7 @@ const App = () => {
                 path="/pets/:petId/reminders"
                 element={<PetReminderManager />}
               />
+              <Route path="/blogs/:blogId" element={<BlogDetail />} />
               {/* Admin Routes */}
               <Route
                 path="/admin/*"

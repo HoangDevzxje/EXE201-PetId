@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const adminController = require("../controllers/AdminController");
-const AppointmentController = require('../controllers/AppointmentController');
-
+const AppointmentController = require("../controllers/AppointmentController");
 
 // ----- User -----
 router.get("/users", adminController.getAllUsers);
@@ -34,8 +33,8 @@ router.delete("/clinics/:id", adminController.deleteClinic);
 // Toggle trạng thái hoạt động phòng khám
 router.put("/clinics/:id/status", adminController.toggleClinicStatus);
 
-router.get('/appointments', AppointmentController.getAllAppointments);
-router.delete('/appointments/:id', AppointmentController.deleteAppointment);
+router.get("/appointments", AppointmentController.getAllAppointments);
+router.delete("/appointments/:id", AppointmentController.deleteAppointment);
 
 // ----- Blog -----
 router.post("/blogs", adminController.addNewBlog);
