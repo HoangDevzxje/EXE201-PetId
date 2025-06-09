@@ -356,6 +356,10 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
                           style={{ minHeight: 60 }}
                         >
                           {blog.summary}
+                          <span style={{ color: "#007bff", fontWeight: 500 }}>
+                            {" "}
+                            ...xem thêm
+                          </span>
                         </p>
                       </div>
                     </div>
