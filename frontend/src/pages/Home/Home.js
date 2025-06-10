@@ -57,9 +57,9 @@ const Home = () => {
 Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
 `,
       features: [
-        "🦴 Vòng cổ xịn – boss đeo vào quay đầu 7749 lần",
-        "🧸 Đồ chơi mới – gặm phát là quên đường về",
-        "🛏️ Giường êm – boss nằm mà “sen” cũng thèm",
+        "Vòng cổ xịn – boss đeo vào quay đầu 7749 lần",
+        "Đồ chơi mới – gặm phát là quên đường về",
+        "Giường êm – boss nằm mà “sen” cũng thèm",
       ],
       cta: "Tới PetID+ ngay",
     },
@@ -124,55 +124,6 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
 
   return (
     <div className="home-container">
-      {/* Hero Carousel */}
-      <section className="hero-section">
-        <div className="section-header">
-          <h2>Chào mừng bạn đến với PetID+</h2>
-        </div>
-        <div className="banner-row">
-          {bannerImages.map((slide, index) => (
-            <div className="banner-card" key={index}>
-              <div
-                className="banner-image"
-                style={{ backgroundImage: `url(${slide.url})` }}
-                aria-label={slide.alt}
-              />
-              <div className="banner-content">
-                <h1>{slide.title}</h1>
-                <div className="feature-list">
-                  {slide.features.map((feature, i) => (
-                    <div key={i} className="feature-item">
-                      {feature}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-      {/* Features Section */}
-      <section className="features-section">
-        <Container>
-          <div className="section-header">
-            <h2>Giải pháp toàn diện cho thú cưng của bạn</h2>
-            <p>PetID+ mang đến trải nghiệm chăm sóc thú cưng thời 4.0</p>
-          </div>
-          <Row className="g-3">
-            {features.map((feature, index) => (
-              <Col md={3} sm={6} key={index}>
-                <a href={feature.link} style={{ textDecoration: "none" }}>
-                  <div className="feature-card">
-                    <div className="feature-icon-wrapper">{feature.icon}</div>
-                    <h3>{feature.title}</h3>
-                    <p>{feature.description}</p>
-                  </div>
-                </a>
-              </Col>
-            ))}
-          </Row>
-        </Container>
-      </section>
       {/* Benefit Section */}
       <section className="benefit-section">
         <Container>
@@ -214,19 +165,90 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
               </li>
             </ul>
             <div className="benefit-cta">
-              <p>
-                <strong> Pet ID+ – Chăm Boss Đúng Chất Gen Z!</strong>
+              <p style={{ margin: 0, lineHeight: 1.4 }}>
+                <strong>Pet ID+ – Chăm Boss Đúng Chất Gen Z!</strong>
                 <br />
                 Boss khỏe – Sen nhàn – Cuộc sống mượt mà như lông mèo mới chải!
                 <br />
                 <span role="img" aria-label="arrow">
                   👉
                 </span>{" "}
-                Sử dụng ngay Pet ID+ – Đừng để boss giận vì sen “não cá vàng”
+                Tạo hồ sơ cho thú cưng của bạn tại PetID+ ngay!
+                <br />
+                <Link
+                  to="/pets/manage"
+                  className="btn btn-primary create-pet-btn"
+                  style={{
+                    marginTop: 6,
+                    fontSize: "0.7rem",
+                    padding: "2px 8px",
+                    borderRadius: "10px",
+                    fontWeight: 400,
+                    lineHeight: 1.3,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <i
+                    className="fas fa-plus"
+                    style={{ fontSize: "0.65rem", marginRight: 3 }}
+                  ></i>
+                  Tạo hồ sơ thú cưng
+                </Link>
               </p>
             </div>
           </div>
         </Container>
+      </section>
+      {/* Features Section */}
+      <section className="features-section">
+        <Container>
+          <div className="section-header">
+            <h2>Giải pháp toàn diện cho thú cưng của bạn</h2>
+            <p>PetID+ mang đến trải nghiệm chăm sóc thú cưng thời 4.0</p>
+          </div>
+          <Row className="g-3">
+            {features.map((feature, index) => (
+              <Col md={3} sm={6} key={index}>
+                <a href={feature.link} style={{ textDecoration: "none" }}>
+                  <div className="feature-card">
+                    <div className="feature-icon-wrapper">{feature.icon}</div>
+                    <h3>{feature.title}</h3>
+                    <p>{feature.description}</p>
+                  </div>
+                </a>
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      </section>
+      {/* Hero Carousel */}
+      <section className="hero-section">
+        <div className="section-header">
+          <h2>Chào mừng bạn đến với PetID+</h2>
+        </div>
+        <div className="banner-row">
+          {bannerImages.map((slide, index) => (
+            <div className="banner-card" key={index}>
+              <div
+                className="banner-image"
+                style={{ backgroundImage: `url(${slide.url})` }}
+                aria-label={slide.alt}
+              />
+              <div className="banner-content">
+                <h1>{slide.title}</h1>
+                <div className="feature-list">
+                  {slide.features.map((feature, i) => (
+                    <div key={i} className="feature-item">
+                      {feature}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Pet Health Tips */}

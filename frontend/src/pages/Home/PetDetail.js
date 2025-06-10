@@ -116,6 +116,27 @@ const PetDetail = () => {
               >
                 {pet.name}
               </h1>
+              <Link
+                to={`/pets/${petId}/reminders`}
+                className="btn btn-outline-info btn-sm d-inline-flex align-items-center"
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  minWidth: 90,
+                  fontWeight: 500,
+                  borderRadius: "18px",
+                  padding: "4px 14px",
+                  fontSize: "0.98rem",
+                  gap: 6,
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+                }}
+              >
+                <i
+                  className="far fa-calendar-alt"
+                  style={{ fontSize: "1.05rem", marginRight: 6 }}
+                ></i>
+                Lịch tiêm
+              </Link>
+              <div style={{ marginBottom: 18 }}></div>
               <div className="pet-info">
                 <div className="info-row d-flex mb-3 pb-3 border-bottom">
                   <div className="label-col">Giống:</div>

@@ -66,6 +66,13 @@ export default function PetReminderManager() {
 
   return (
     <div className="pet-reminder-container">
+      <Link
+        to={`/pets`}
+        className="btn btn-secondary mb-3"
+        style={{ minWidth: 30 }}
+      >
+        &larr;
+      </Link>
       <h3 className="title">📅 Quản lý nhắc lịch tiêm</h3>
       {message && <p className="error-message">{message}</p>}
 
