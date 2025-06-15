@@ -19,6 +19,7 @@ const clinicRoutes = require("./routes/clinicRoute");
 const userRoutes = require("./routes/userRoute");
 const appointmentRoutes = require("./routes/appointmentRoute");
 const blogRoutes = require("./routes/blogRoute");
+const emotionLogRoutes = require("./routes/petEmotionLogRoute");
 
 const DB = require("./config/db");
 const app = express();
@@ -47,6 +48,7 @@ app.use("/clinics", clinicRoutes);
 app.use("/users", userRoutes);
 app.use("/appointments", appointmentRoutes);
 app.use("/blogs", blogRoutes);
+app.use("/emotion-logs", emotionLogRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
