@@ -69,6 +69,7 @@ function OrderManagement() {
                 <th>Email</th>
                 <th>Sản phẩm</th>
                 <th>Tổng tiền</th>
+                <th>Thời gian</th>
                 <th>Trạng thái</th>
                 <th>Thao tác</th>
               </tr>
@@ -93,6 +94,9 @@ function OrderManagement() {
                     <strong>
                       {calculateTotalPrice(order.items).toLocaleString()} VNĐ
                     </strong>
+                  </td>
+                  <td>
+                    {new Date(order.createdAt).toLocaleString("vi-VN")}
                   </td>
                   <td>
                     <select
