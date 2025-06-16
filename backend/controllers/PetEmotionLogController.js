@@ -1,28 +1,33 @@
 const PetEmotionLog = require("../models/PetEmotionLog");
 const moment = require("moment");
 
-// Tạo log mới
 const createLog = async (req, res) => {
   try {
-    const { petId, state, note } = req.body;
-
-    const todayStart = moment().startOf("day").toDate();
-    const todayEnd = moment().endOf("day").toDate();
-
+    const { petId, state, note, date } = req.body;
+    const logDate = date ? moment(date).toDate() : new Date();
+    const dayStart = moment(logDate).startOf("day").toDate();
+    const dayEnd = moment(logDate).endOf("day").toDate();
     const exists = await PetEmotionLog.findOne({
       pet: petId,
-      date: { $gte: todayStart, $lte: todayEnd },
+      date: { $gte: dayStart, $lte: dayEnd },
     });
 
     if (exists) {
       return res
         .status(400)
-        .json({ message: "Đã ghi trạng thái cho hôm nay rồi" });
+        .json({ message: "Đã ghi trạng thái cho ngày này rồi" });
     }
 
-    const log = await PetEmotionLog.create({ pet: petId, state, note });
+    const log = await PetEmotionLog.create({
+      pet: petId,
+      state,
+      note,
+      date: logDate,
+    });
+
     res.status(201).json(log);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Lỗi tạo log cảm xúc", error });
   }
 };

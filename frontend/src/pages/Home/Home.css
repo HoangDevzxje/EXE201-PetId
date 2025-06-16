@@ -562,3 +562,11 @@
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(78, 84, 200, 0.06);
 }
+.blink-link {
+  animation: blink 1s steps(2, start) infinite;
+}
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}

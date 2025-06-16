@@ -127,6 +127,32 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
       {/* Benefit Section */}
       <section className="benefit-section">
         <Container>
+          <div className="benefit-cta">
+            <p style={{ margin: 0, lineHeight: 1.4 }}>
+              <strong>Pet ID+ – Chăm Boss Đúng Chất Gen Z!</strong>
+              <br />
+              Boss khỏe – Sen nhàn – Cuộc sống mượt mà như lông mèo mới chải!
+              <br />
+              <span role="img" aria-label="arrow">
+                👉
+              </span>{" "}
+              <Link
+                to="/pets/manage"
+                className="blink-link"
+                style={{
+                  color: "#4E53BE",
+                  fontWeight: 1000,
+                  textDecoration: "none",
+                  cursor: "pointer",
+                  fontSize: "1.04rem",
+                  marginLeft: 2,
+                }}
+              >
+                Ấn vào đây để tạo hồ sơ cho thú cưng ngay tại PetID+!
+              </Link>
+            </p>
+          </div>
+
           <div className="section-header">
             <h3>
               Những Lợi Ích Khi Có Pet ID+ Trong Tay – Nuôi Boss Mượt Như Lan,
@@ -164,40 +190,6 @@ Phụ kiện trendy – từ bé cưng đến “cục nợ” đều hợp!
                 thêm tình yêu thôi nha
               </li>
             </ul>
-            <div className="benefit-cta">
-              <p style={{ margin: 0, lineHeight: 1.4 }}>
-                <strong>Pet ID+ – Chăm Boss Đúng Chất Gen Z!</strong>
-                <br />
-                Boss khỏe – Sen nhàn – Cuộc sống mượt mà như lông mèo mới chải!
-                <br />
-                <span role="img" aria-label="arrow">
-                  👉
-                </span>{" "}
-                Tạo hồ sơ cho thú cưng của bạn tại PetID+ ngay!
-                <br />
-                <Link
-                  to="/pets/manage"
-                  className="btn btn-primary create-pet-btn"
-                  style={{
-                    marginTop: 6,
-                    fontSize: "0.7rem",
-                    padding: "2px 8px",
-                    borderRadius: "10px",
-                    fontWeight: 400,
-                    lineHeight: 1.3,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <i
-                    className="fas fa-plus"
-                    style={{ fontSize: "0.65rem", marginRight: 3 }}
-                  ></i>
-                  Tạo hồ sơ thú cưng
-                </Link>
-              </p>
-            </div>
           </div>
         </Container>
       </section>

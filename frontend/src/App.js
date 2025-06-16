@@ -45,6 +45,7 @@ import ClinicDetailPage from "./pages/Clinic/ClinicsDetailPage";
 import AppointmentsAdminPage from "./pages/Admin/AppointmentsAdminPage";
 import BlogManagement from "./pages/Admin/BlogManagement";
 import BlogDetail from "./pages/Home/BlogDetail";
+import PetEmotion from "./pages/Home/PetEmotion";
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -53,14 +54,20 @@ const Layout = ({ children }) => {
   const isPetEditPage = /^\/pets\/[^/]+\/edit$/.test(location.pathname);
   const isPetManagementPage = location.pathname === "/pets/manage";
   const isProfilePage = location.pathname === "/me";
+
+  const isEmotionPage = /^\/pets\/[^/]+\/emotion$/.test(location.pathname);
+
   if (isAdminRoute) {
     return <>{children}</>;
   }
 
-  // Ẩn các thành phần khi ở trang chi tiết, edit, hoặc quản lý thú cưng
-  const hideFloating = isPetEditPage || isPetManagementPage;
+  const hideFloating = isPetEditPage || isPetManagementPage || isEmotionPage;
   const hideFooter =
-    isPetDetailPage || isPetEditPage || isPetManagementPage || isProfilePage;
+    isPetDetailPage ||
+    isPetEditPage ||
+    isPetManagementPage ||
+    isProfilePage ||
+    isEmotionPage;
 
   return (
     <div className="layout">
@@ -68,13 +75,14 @@ const Layout = ({ children }) => {
       <div className="main-container">
         <div className="content">{children}</div>
       </div>
+
       {!hideFloating && (
         <>
           <ChatBot />
-
           <CreatePetButton />
         </>
       )}
+
       {!hideFooter && (
         <>
           <PetListButton />
@@ -112,6 +120,7 @@ const App = () => {
               <Route path="/search" element={<SearchPage />} />
               <Route path="/product" element={<Product />} />
               <Route path="/pets/:petId" element={<PetDetail />} />
+              <Route path="/pets/:petId/emotion" element={<PetEmotion />} />
               <Route path="/pets/:petId/edit" element={<PetEdit />} />{" "}
               {/* Thêm dòng này */}
               <Route path="/chatbot" element={<ChatBot />} />

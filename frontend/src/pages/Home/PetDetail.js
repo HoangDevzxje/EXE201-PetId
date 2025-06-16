@@ -126,6 +126,7 @@ const PetDetail = () => {
                   borderRadius: "18px",
                   padding: "4px 14px",
                   fontSize: "0.98rem",
+
                   gap: 6,
                   boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
                 }}
@@ -135,6 +136,27 @@ const PetDetail = () => {
                   style={{ fontSize: "1.05rem", marginRight: 6 }}
                 ></i>
                 Lịch tiêm
+              </Link>
+              <Link
+                to={`/pets/${petId}/emotion`}
+                className="btn btn-outline-info btn-sm d-inline-flex align-items-center"
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  minWidth: 90,
+                  fontWeight: 500,
+                  borderRadius: "18px",
+                  padding: "4px 14px",
+                  fontSize: "0.98rem",
+                  gap: 6,
+                  marginLeft: "10px",
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+                }}
+              >
+                <i
+                  className="fas fa-smile"
+                  style={{ fontSize: "1.05rem", marginRight: 6 }}
+                ></i>
+                Nhật kí hoạt động thú cưng
               </Link>
               <div style={{ marginBottom: 18 }}></div>
               <div className="pet-info">
