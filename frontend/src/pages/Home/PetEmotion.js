@@ -225,7 +225,7 @@ export default function PetEmotion() {
 
         <textarea
           className="textarea"
-          placeholder="Ghi chú (không bắt buộc)"
+          placeholder={`Nhật ký thường ngày của ${petInfo?.name || "..."}`}
           value={note}
           onChange={(e) => setNote(e.target.value)}
         />
@@ -302,10 +302,10 @@ export default function PetEmotion() {
 
       {/* Chart Section */}
       <div className="chart">
-        <h3>Biểu đồ cột cảm xúc</h3>
+        <h3>Biểu đồ cảm xúc</h3>
         <svg viewBox="0 -20 360 260" className="chartSvg">
           <defs>
-            <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0%" stopColor="#80b4ff" />
               <stop offset="100%" stopColor="#1a73e8" />
             </linearGradient>
@@ -314,9 +314,6 @@ export default function PetEmotion() {
             const totalWidth = 320;
             const totalHeight = 160;
             const margin = 20;
-            const barAreaWidth = totalWidth;
-            const barWidth = (barAreaWidth / 7) * 0.6;
-            const gap = (barAreaWidth - barWidth * 7) / 6;
             const maxIdx = emotions.length - 1;
             const labels = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
@@ -332,48 +329,41 @@ export default function PetEmotion() {
                 idx !== null
                   ? ((maxIdx - idx) / maxIdx) * (totalHeight - 2 * margin)
                   : 0;
-              const x = margin + i * (barWidth + gap);
+              const x =
+                margin +
+                i * (totalWidth / 7 + (totalWidth - (totalWidth / 7) * 7) / 6);
               const y = margin + (totalHeight - 2 * margin) - heightBar;
-              return [x + barWidth / 2, y];
+              return [x, y];
             });
 
             return (
               <g>
+                {/* đường nối giữa các điểm */}
                 <polyline
                   points={points.map((p) => p.join(",")).join(" ")}
-                  stroke="#1a73e8"
+                  stroke="url(#lineGrad)"
                   strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
                   fill="none"
+                  strokeLinecap="round"
                 />
+
+                {/* các điểm và nhãn trục ngang */}
                 {labels.map((day, i) => {
                   const [cx, cy] = points[i];
-                  const date = moment(selectedWeek).add(i, "days");
-                  const entry = chartData.find((c) =>
-                    moment(c.date).isSame(date, "day")
-                  );
-                  const idx = entry
-                    ? emotions.findIndex((e) => e.value === entry.state)
-                    : null;
-                  const heightBar =
-                    idx !== null
-                      ? ((maxIdx - idx) / maxIdx) * (totalHeight - 2 * margin)
-                      : 0;
-                  const x = margin + i * (barWidth + gap);
-                  const y = margin + (totalHeight - 2 * margin) - heightBar;
                   return (
                     <g key={i}>
-                      <rect
-                        x={x}
-                        y={y}
-                        width={barWidth}
-                        height={heightBar}
-                        rx="6"
-                        fill="url(#barGrad)"
+                      {/* marker điểm */}
+                      <circle
+                        cx={cx}
+                        cy={cy}
+                        r="4"
+                        fill="#fff"
+                        stroke="#1a73e8"
+                        strokeWidth="2"
                       />
+                      {/* nhãn ngày */}
                       <text
-                        x={x + barWidth / 2}
+                        x={cx}
                         y={totalHeight + margin - 4}
                         textAnchor="middle"
                         fontSize="12"
@@ -381,25 +371,34 @@ export default function PetEmotion() {
                       >
                         {day}
                       </text>
-                      {entry && (
-                        <>
-                          <text
-                            x={x + barWidth / 2}
-                            y={y - 10}
-                            textAnchor="middle"
-                            fontSize="18"
-                          >
-                            {emotions[idx].icon}
-                          </text>
-                          <circle
-                            cx={cx}
-                            cy={cy}
-                            r="4"
-                            fill="#fff"
-                            stroke="#1a73e8"
-                            strokeWidth="2"
-                          />
-                        </>
+                      {/* icon cảm xúc trên đường */}
+                      {chartData.find((c) =>
+                        moment(c.date).isSame(
+                          moment(selectedWeek).add(i, "days"),
+                          "day"
+                        )
+                      ) && (
+                        <text
+                          x={cx}
+                          y={cy - 10}
+                          textAnchor="middle"
+                          fontSize="18"
+                        >
+                          {
+                            emotions[
+                              emotions.findIndex(
+                                (e) =>
+                                  e.value ===
+                                  chartData.find((c) =>
+                                    moment(c.date).isSame(
+                                      moment(selectedWeek).add(i, "days"),
+                                      "day"
+                                    )
+                                  ).state
+                              )
+                            ].icon
+                          }
+                        </text>
                       )}
                     </g>
                   );

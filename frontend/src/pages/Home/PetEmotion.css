@@ -77,7 +77,7 @@
 .textarea {
   width: 100%;
   min-height: 200px;
-  padding: 1.5rem 1rem;
+
   border: 1px solid #e0d4d8;
   border-radius: 24px;
   background-color: #fff;
@@ -91,9 +91,13 @@
   );
   background-size: 100% 2.5rem;
   line-height: 2.5rem;
-  font-size: 1rem;
+  font-size: 1.3rem;
   resize: vertical;
   outline: none;
+  text-align: center;
+}
+.textarea::placeholder {
+  text-align: center;
 }
 
 .button {
@@ -169,11 +173,13 @@
   border-radius: 1rem;
   margin-top: 1rem;
 }
+
 .petEmotion .chartSvg {
   width: 100%;
   height: auto;
   display: block;
 }
+
 /* Gói chung lịch sử */
 .historyList {
   margin-top: 2rem;
