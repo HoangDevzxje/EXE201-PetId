@@ -5,8 +5,9 @@ import api from "../../api/baseApi";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import moment from "moment";
+import "moment/locale/vi";
 import "./PetEmotion.css";
-
+moment.locale("vi");
 export default function PetEmotion() {
   const { petId } = useParams();
   const navigate = useNavigate();
@@ -225,9 +226,9 @@ export default function PetEmotion() {
         ← Quay lại
       </button>
 
-      {/* Calendar với icon tháng */}
       <div className="datePickerContainer">
         <Calendar
+          locale="vi-VN" // Thiết lập locale tiếng Việt
           onClickDay={(date) =>
             setSelectedDate(moment(date).format("YYYY-MM-DD"))
           }
@@ -245,6 +246,9 @@ export default function PetEmotion() {
               ? "hasEmotion"
               : null
           }
+          // Tùy chỉnh format hiển thị
+          formatMonthYear={(locale, date) => moment(date).format("MMMM YYYY")}
+          formatShortWeekday={(locale, date) => moment(date).format("dd")}
         />
       </div>
 
@@ -350,9 +354,11 @@ export default function PetEmotion() {
                       setEditNoteValue(log.note || "");
                     }}
                   >
-                    Edit
+                    Sửa ghi chú
                   </button>
-                  <button onClick={() => deleteLog(log._id)}>Delete</button>
+                  <button onClick={() => deleteLog(log._id)}>
+                    Xóa ghi chú
+                  </button>
                 </div>
               )}
             </div>
