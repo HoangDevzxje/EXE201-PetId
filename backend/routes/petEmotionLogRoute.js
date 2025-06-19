@@ -8,5 +8,6 @@ router.get("/:petId/weeks", controller.getWeeksWithLogs);
 router.get("/:petId/chart", controller.getChartData);
 router.put("/note/:logId", controller.updateNote);
 router.delete("/:logId", controller.deleteLog);
+router.get("/:petId/month", controller.getMonthlyLogs);
 
 module.exports = router;

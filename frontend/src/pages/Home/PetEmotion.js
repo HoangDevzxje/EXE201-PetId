@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 import api from "../../api/baseApi";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -19,13 +21,21 @@ export default function PetEmotion() {
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
-  // State cho lịch sử
-  const [weeks, setWeeks] = useState([]); // danh sách tuần
-  const [selectedWeek, setSelectedWeek] = useState(null); // tuần đang chọn
-  const [weeklyLogs, setWeeklyLogs] = useState([]); // log trong tuần
+  // State cho lịch sử tuần
+  const [weeks, setWeeks] = useState([]);
+  const [selectedWeek, setSelectedWeek] = useState(null);
+  const [weeklyLogs, setWeeklyLogs] = useState([]);
+
+  // State cho Calendar (theo tháng)
+  const [allLogs, setAllLogs] = useState([]);
+  const [emotionMap, setEmotionMap] = useState({});
+
+  // State cho chỉnh sửa note
   const [editNoteId, setEditNoteId] = useState(null);
   const [editNoteValue, setEditNoteValue] = useState("");
-  const [showHistory, setShowHistory] = useState(false); // ẩn/hiện lịch sử
+
+  // Toggle lịch sử
+  const [showHistory, setShowHistory] = useState(false);
 
   // State cho chart
   const [chartData, setChartData] = useState([]);
@@ -48,12 +58,12 @@ export default function PetEmotion() {
     setTimeout(() => setAlert({ show: false, type: "", message: "" }), 5000);
   };
 
-  // Gắn token vào axios
+  // Gắn token vào header
   useEffect(() => {
     if (token) api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   }, [token]);
 
-  // Fetch pet info và list tuần
+  // Fetch pet info và các tuần có log
   useEffect(() => {
     (async () => {
       try {
@@ -61,15 +71,13 @@ export default function PetEmotion() {
         setPetInfo(res.data);
 
         const weeksRes = await api.get(`/emotion-logs/${petId}/weeks`);
-        const weekList = weeksRes.data; // mảng "YYYY-MM-DD"
-        setWeeks(weekList);
+        setWeeks(weeksRes.data);
 
-        // Xác định tuần hiện tại (ISO week)
         const currentIsoWeek = moment().startOf("isoWeek").format("YYYY-MM-DD");
-        if (weekList.includes(currentIsoWeek)) {
+        if (weeksRes.data.includes(currentIsoWeek)) {
           setSelectedWeek(currentIsoWeek);
-        } else if (weekList.length > 0) {
-          setSelectedWeek(weekList[0]);
+        } else if (weeksRes.data.length) {
+          setSelectedWeek(weeksRes.data[0]);
         }
       } catch (e) {
         console.error(e);
@@ -77,19 +85,46 @@ export default function PetEmotion() {
     })();
   }, [petId]);
 
-  // Fetch logs & chart khi tuần thay đổi
+  // --- CHỈNH: Fetch logs cho Calendar theo THÁNG ---
+  useEffect(() => {
+    (async () => {
+      try {
+        const monthParam = moment(selectedDate).format("YYYY-MM");
+        const res = await api.get(`/emotion-logs/${petId}/month`, {
+          params: { month: monthParam },
+        });
+        setAllLogs(res.data);
+      } catch (e) {
+        console.error("Lỗi fetch monthly logs:", e);
+      }
+    })();
+  }, [petId, selectedDate]);
+
+  // Map logs tháng → { 'YYYY-MM-DD': icon }
+  useEffect(() => {
+    const map = {};
+    allLogs.forEach((log) => {
+      const key = moment(log.date).format("YYYY-MM-DD");
+      const emoIcon = emotions.find((e) => e.value === log.state)?.icon;
+      if (emoIcon) map[key] = emoIcon;
+    });
+    setEmotionMap(map);
+  }, [allLogs]);
+
+  // Fetch weekly logs & chart khi đổi tuần
   useEffect(() => {
     if (!selectedWeek) return;
     (async () => {
       try {
-        const logsRes = await api.get(`/emotion-logs/${petId}`, {
-          params: { week: selectedWeek },
-        });
+        const [logsRes, chartRes] = await Promise.all([
+          api.get(`/emotion-logs/${petId}`, {
+            params: { week: selectedWeek },
+          }),
+          api.get(`/emotion-logs/${petId}/chart`, {
+            params: { week: selectedWeek },
+          }),
+        ]);
         setWeeklyLogs(logsRes.data);
-
-        const chartRes = await api.get(`/emotion-logs/${petId}/chart`, {
-          params: { week: selectedWeek },
-        });
         setChartData(chartRes.data);
       } catch (e) {
         console.error(e);
@@ -97,7 +132,7 @@ export default function PetEmotion() {
     })();
   }, [selectedWeek, petId]);
 
-  // Submit form
+  // Submit mới 1 log
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedEmotion) return showAlert("warning", "Chọn cảm xúc!");
@@ -112,9 +147,11 @@ export default function PetEmotion() {
       showAlert("success", "Đã lưu cảm xúc");
       setSelectedEmotion("");
       setNote("");
-      // reload data tuần & chart
+      // reload lịch sử tuần và chart
       const [logsRes, chartRes] = await Promise.all([
-        api.get(`/emotion-logs/${petId}`, { params: { week: selectedWeek } }),
+        api.get(`/emotion-logs/${petId}`, {
+          params: { week: selectedWeek },
+        }),
         api.get(`/emotion-logs/${petId}/chart`, {
           params: { week: selectedWeek },
         }),
@@ -122,20 +159,26 @@ export default function PetEmotion() {
       setWeeklyLogs(logsRes.data);
       setChartData(chartRes.data);
     } catch {
-      showAlert("danger", "Lỗi server");
+      showAlert(
+        "success",
+        "Bạn đã ghi chú hôm nay rồi. Hãy nhấn vào “Lịch sử” để thay đổi trạng thái."
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // Cập nhật note
+  // Save note
   const saveNote = async (id) => {
     try {
       await api.put(`/emotion-logs/note/${id}`, { note: editNoteValue });
       showAlert("success", "Cập nhật ghi chú");
       setEditNoteId(null);
+      // reload lại
       const [logsRes, chartRes] = await Promise.all([
-        api.get(`/emotion-logs/${petId}`, { params: { week: selectedWeek } }),
+        api.get(`/emotion-logs/${petId}`, {
+          params: { week: selectedWeek },
+        }),
         api.get(`/emotion-logs/${petId}/chart`, {
           params: { week: selectedWeek },
         }),
@@ -147,14 +190,16 @@ export default function PetEmotion() {
     }
   };
 
-  // Xóa log
+  // Delete log
   const deleteLog = async (id) => {
     if (!window.confirm("Xác nhận xóa?")) return;
     try {
       await api.delete(`/emotion-logs/${id}`);
       showAlert("success", "Đã xóa log");
       const [logsRes, chartRes] = await Promise.all([
-        api.get(`/emotion-logs/${petId}`, { params: { week: selectedWeek } }),
+        api.get(`/emotion-logs/${petId}`, {
+          params: { week: selectedWeek },
+        }),
         api.get(`/emotion-logs/${petId}/chart`, {
           params: { week: selectedWeek },
         }),
@@ -166,7 +211,7 @@ export default function PetEmotion() {
     }
   };
 
-  // Hiển thị ngày đầu-cuối tuần
+  // Tính range hiển thị tuần
   const weekStart = selectedWeek
     ? moment(selectedWeek).format("DD/MM/YYYY")
     : "";
@@ -180,12 +225,26 @@ export default function PetEmotion() {
         ← Quay lại
       </button>
 
+      {/* Calendar với icon tháng */}
       <div className="datePickerContainer">
-        <input
-          type="date"
-          className="datePicker"
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
+        <Calendar
+          onClickDay={(date) =>
+            setSelectedDate(moment(date).format("YYYY-MM-DD"))
+          }
+          value={new Date(selectedDate)}
+          tileContent={({ date, view }) =>
+            view === "month" &&
+            emotionMap[moment(date).format("YYYY-MM-DD")] ? (
+              <span className="calendar-icon">
+                {emotionMap[moment(date).format("YYYY-MM-DD")]}
+              </span>
+            ) : null
+          }
+          tileClassName={({ date, view }) =>
+            view === "month" && emotionMap[moment(date).format("YYYY-MM-DD")]
+              ? "hasEmotion"
+              : null
+          }
         />
       </div>
 
@@ -207,6 +266,7 @@ export default function PetEmotion() {
         </div>
       )}
 
+      {/* Form nhập cảm xúc */}
       <form onSubmit={handleSubmit} className="form">
         <div className="emotionGrid">
           {emotions.map((e) => (
@@ -235,7 +295,7 @@ export default function PetEmotion() {
         </button>
       </form>
 
-      {/* Toggle history */}
+      {/* Toggle lịch sử */}
       <div className="historyToggle">
         <button
           onClick={() => setShowHistory((v) => !v)}
@@ -245,7 +305,7 @@ export default function PetEmotion() {
         </button>
       </div>
 
-      {/* History Section */}
+      {/* Lịch sử tuần */}
       {showHistory && (
         <div className="historyList">
           <h3>
@@ -301,9 +361,14 @@ export default function PetEmotion() {
       )}
 
       {/* Chart Section */}
-      <div className="chart">
+      <div className="chart" style={{ width: "720px", margin: "0 auto" }}>
         <h3>Biểu đồ cảm xúc</h3>
-        <svg viewBox="0 -20 360 260" className="chartSvg">
+        <svg
+          viewBox="0 -40 720 520"
+          width="100%"
+          height="auto"
+          className="chartSvg"
+        >
           <defs>
             <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0%" stopColor="#80b4ff" />
@@ -311,9 +376,9 @@ export default function PetEmotion() {
             </linearGradient>
           </defs>
           {(() => {
-            const totalWidth = 320;
-            const totalHeight = 160;
-            const margin = 20;
+            const totalWidth = 320 * 2;
+            const totalHeight = 160 * 2;
+            const margin = 20 * 2;
             const maxIdx = emotions.length - 1;
             const labels = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
@@ -338,40 +403,34 @@ export default function PetEmotion() {
 
             return (
               <g>
-                {/* đường nối giữa các điểm */}
                 <polyline
                   points={points.map((p) => p.join(",")).join(" ")}
                   stroke="url(#lineGrad)"
-                  strokeWidth="3"
+                  strokeWidth={3 * 2}
                   fill="none"
                   strokeLinecap="round"
                 />
-
-                {/* các điểm và nhãn trục ngang */}
                 {labels.map((day, i) => {
                   const [cx, cy] = points[i];
                   return (
                     <g key={i}>
-                      {/* marker điểm */}
                       <circle
                         cx={cx}
                         cy={cy}
-                        r="4"
+                        r={4 * 2}
                         fill="#fff"
                         stroke="#1a73e8"
-                        strokeWidth="2"
+                        strokeWidth={2 * 2}
                       />
-                      {/* nhãn ngày */}
                       <text
                         x={cx}
-                        y={totalHeight + margin - 4}
+                        y={totalHeight + margin - 4 * 2}
                         textAnchor="middle"
-                        fontSize="12"
+                        fontSize={12 * 2}
                         fill="#444"
                       >
                         {day}
                       </text>
-                      {/* icon cảm xúc trên đường */}
                       {chartData.find((c) =>
                         moment(c.date).isSame(
                           moment(selectedWeek).add(i, "days"),
@@ -380,9 +439,9 @@ export default function PetEmotion() {
                       ) && (
                         <text
                           x={cx}
-                          y={cy - 10}
+                          y={cy - 10 * 2}
                           textAnchor="middle"
-                          fontSize="18"
+                          fontSize={18 * 2}
                         >
                           {
                             emotions[

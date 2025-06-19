@@ -253,3 +253,31 @@
 .historyLog .noteActions {
   justify-self: end;
 }
+
+.datePickerContainer .react-calendar__tile {
+  position: relative;
+}
+
+.datePickerContainer .react-calendar__tile.hasEmotion abbr {
+  visibility: hidden;
+}
+
+.calendar-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  pointer-events: none;
+  line-height: 1;
+}
+
+/* Container */
+.datePickerContainer .react-calendar {
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}

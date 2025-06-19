@@ -135,6 +135,27 @@ const getChartData = async (req, res) => {
     res.status(500).json({ message: "Lỗi lấy dữ liệu biểu đồ", error });
   }
 };
+// Lấy log cảm xúc theo tháng
+const getMonthlyLogs = async (req, res) => {
+  try {
+    const { petId } = req.params;
+    const monthQuery = req.query.month || moment().format("YYYY-MM");
+
+    const targetMonth = moment(monthQuery, "YYYY-MM");
+    const startOfMonth = targetMonth.clone().startOf("month").toDate();
+    const endOfMonth = targetMonth.clone().endOf("month").toDate();
+
+    const logs = await PetEmotionLog.find({
+      pet: petId,
+      date: { $gte: startOfMonth, $lte: endOfMonth },
+    }).sort({ date: 1 });
+
+    res.status(200).json(logs);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Lỗi lấy log theo tháng", error });
+  }
+};
 
 module.exports = {
   createLog,
@@ -143,4 +164,5 @@ module.exports = {
   deleteLog,
   updateNote,
   getChartData,
+  getMonthlyLogs,
 };
