@@ -227,9 +227,8 @@ const ChatBot = ({ userId }) => {
                 {userPets.map((pet) => (
                   <div
                     key={pet._id}
-                    className={`pet-option ${
-                      selectedPet?._id === pet._id ? "selected" : ""
-                    }`}
+                    className={`pet-option ${selectedPet?._id === pet._id ? "selected" : ""
+                      }`}
                     onClick={() => {
                       setSelectedPet(pet);
                       setShowPetSelector(false);
@@ -240,7 +239,7 @@ const ChatBot = ({ userId }) => {
                     {pet.birthDate &&
                       ` - ${Math.floor(
                         (new Date() - new Date(pet.birthDate)) /
-                          (365.25 * 24 * 60 * 60 * 1000)
+                        (365.25 * 24 * 60 * 60 * 1000)
                       )} tuổi`}
                   </div>
                 ))}
@@ -252,9 +251,8 @@ const ChatBot = ({ userId }) => {
                 <div key={index} className={`message ${msg.sender}`}>
                   {msg.text && (
                     <div
-                      className={`message-text ${
-                        msg.isHealthAnalysis ? "health-analysis" : ""
-                      }`}
+                      className={`message-text ${msg.isHealthAnalysis ? "health-analysis" : ""
+                        }`}
                     >
                       {formatMessageText(msg.text)}
                     </div>
@@ -366,7 +364,7 @@ const ChatBot = ({ userId }) => {
       {/* Nút mở/ẩn chatbot */}
       {!isOpen && (
         <button className="chat-toggle-btn" onClick={() => setIsOpen(true)}>
-          Trợ lý AI phân tích thú cưng
+          Tư vấn sức khỏe 24/7
         </button>
       )}
     </>
