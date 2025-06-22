@@ -109,7 +109,7 @@ const PetDetail = () => {
         {/* Phần thông tin */}
         <div className="col-lg-6">
           <div className="card shadow-sm h-100">
-            <div className="card-body p-4">
+            <div className="card-body p-3">
               <h1
                 className="card-title mb-4"
                 style={{ fontSize: "2.5rem", fontWeight: "bold" }}

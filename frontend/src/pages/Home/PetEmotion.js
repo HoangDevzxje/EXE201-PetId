@@ -45,12 +45,12 @@ export default function PetEmotion() {
   const [petInfo, setPetInfo] = useState(null);
 
   const emotions = [
-    { value: "vui vẻ", label: "Vui vẻ", icon: "😊" },
-    { value: "buồn bã", label: "Buồn bã", icon: "😢" },
-    { value: "sợ hãi", label: "Sợ hãi", icon: "😰" },
-    { value: "tức giận", label: "Tức giận", icon: "😠" },
-    { value: "căng thẳng", label: "Căng thẳng", icon: "😤" },
-    { value: "stress", label: "Stress", icon: "😵" },
+    { value: "vui vẻ", label: "Vui vẻ", icon: "🐶" },
+    { value: "ủ rũ", label: "Ủ rũ", icon: "😿" },
+    { value: "hoảng sợ", label: "Hoảng sợ", icon: "🙀" },
+    { value: "cáu kỉnh", label: "Cáu kỉnh", icon: "😾" },
+    { value: "bồn chồn", label: "Bồn chồn", icon: "🐕" },
+    { value: "mệt mỏi", label: "Mệt mỏi", icon: "😿" },
   ];
 
   // Hiển thị alert
@@ -86,7 +86,6 @@ export default function PetEmotion() {
     })();
   }, [petId]);
 
-  // --- CHỈNH: Fetch logs cho Calendar theo THÁNG ---
   useEffect(() => {
     (async () => {
       try {
@@ -226,30 +225,122 @@ export default function PetEmotion() {
         ← Quay lại
       </button>
 
-      <div className="datePickerContainer">
-        <Calendar
-          locale="vi-VN" // Thiết lập locale tiếng Việt
-          onClickDay={(date) =>
-            setSelectedDate(moment(date).format("YYYY-MM-DD"))
-          }
-          value={new Date(selectedDate)}
-          tileContent={({ date, view }) =>
-            view === "month" &&
-            emotionMap[moment(date).format("YYYY-MM-DD")] ? (
-              <span className="calendar-icon">
-                {emotionMap[moment(date).format("YYYY-MM-DD")]}
-              </span>
-            ) : null
-          }
-          tileClassName={({ date, view }) =>
-            view === "month" && emotionMap[moment(date).format("YYYY-MM-DD")]
-              ? "hasEmotion"
-              : null
-          }
-          // Tùy chỉnh format hiển thị
-          formatMonthYear={(locale, date) => moment(date).format("MMMM YYYY")}
-          formatShortWeekday={(locale, date) => moment(date).format("dd")}
-        />
+      <div className="topSection">
+        <div className="chart">
+          <h3>Biểu đồ cảm xúc</h3>
+          <svg
+            viewBox="0 -40 720 520"
+            width="100%"
+            height="auto"
+            className="chartSvg"
+          >
+            <defs>
+              <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#80b4ff" />
+                <stop offset="100%" stopColor="#1a73e8" />
+              </linearGradient>
+            </defs>
+
+            {(() => {
+              const totalWidth = 640;
+              const totalHeight = 320;
+              const margin = 40;
+              const maxIdx = emotions.length - 1;
+              const labels = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
+
+              const points = labels.map((_, i) => {
+                const date = moment(selectedWeek).add(i, "days");
+                const entry = chartData.find((c) =>
+                  moment(c.date).isSame(date, "day")
+                );
+
+                const idx = entry
+                  ? emotions.findIndex((e) => e.value === entry.state)
+                  : null;
+
+                const heightBar =
+                  idx !== null
+                    ? ((maxIdx - idx) / maxIdx) * (totalHeight - 2 * margin)
+                    : 0;
+
+                const x = margin + i * ((totalWidth - 2 * margin) / 6);
+                const y = margin + (totalHeight - 2 * margin) - heightBar;
+
+                return { x, y, entry };
+              });
+
+              return (
+                <g>
+                  <polyline
+                    points={points.map((p) => `${p.x},${p.y}`).join(" ")}
+                    stroke="url(#lineGrad)"
+                    strokeWidth="6"
+                    fill="none"
+                    strokeLinecap="round"
+                  />
+
+                  {points.map(({ x, y, entry }, i) => (
+                    <g key={i}>
+                      <circle
+                        cx={x}
+                        cy={y}
+                        r="8"
+                        fill="#fff"
+                        stroke="#1a73e8"
+                        strokeWidth="4"
+                      />
+                      <text
+                        x={x}
+                        y={totalHeight + margin - 8}
+                        textAnchor="middle"
+                        fontSize="24"
+                        fill="#444"
+                      >
+                        {labels[i]}
+                      </text>
+                      {entry && (
+                        <text
+                          x={x}
+                          y={y - 20}
+                          textAnchor="middle"
+                          fontSize="36"
+                        >
+                          {emotions.find((e) => e.value === entry.state)
+                            ?.icon || ""}
+                        </text>
+                      )}
+                    </g>
+                  ))}
+                </g>
+              );
+            })()}
+          </svg>
+        </div>
+
+        <div className="datePickerContainer">
+          <Calendar
+            locale="vi-VN"
+            onClickDay={(date) =>
+              setSelectedDate(moment(date).format("YYYY-MM-DD"))
+            }
+            value={new Date(selectedDate)}
+            tileContent={({ date, view }) =>
+              view === "month" &&
+              emotionMap[moment(date).format("YYYY-MM-DD")] ? (
+                <span className="calendar-icon">
+                  {emotionMap[moment(date).format("YYYY-MM-DD")]}
+                </span>
+              ) : null
+            }
+            tileClassName={({ date, view }) =>
+              view === "month" && emotionMap[moment(date).format("YYYY-MM-DD")]
+                ? "hasEmotion"
+                : null
+            }
+            formatMonthYear={(locale, date) => moment(date).format("MMMM YYYY")}
+            formatShortWeekday={(locale, date) => moment(date).format("dd")}
+          />
+        </div>
       </div>
 
       <h2 className="header">
@@ -365,114 +456,6 @@ export default function PetEmotion() {
           ))}
         </div>
       )}
-
-      {/* Chart Section */}
-      <div className="chart" style={{ width: "720px", margin: "0 auto" }}>
-        <h3>Biểu đồ cảm xúc</h3>
-        <svg
-          viewBox="0 -40 720 520"
-          width="100%"
-          height="auto"
-          className="chartSvg"
-        >
-          <defs>
-            <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#80b4ff" />
-              <stop offset="100%" stopColor="#1a73e8" />
-            </linearGradient>
-          </defs>
-          {(() => {
-            const totalWidth = 320 * 2;
-            const totalHeight = 160 * 2;
-            const margin = 20 * 2;
-            const maxIdx = emotions.length - 1;
-            const labels = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
-
-            const points = labels.map((_, i) => {
-              const date = moment(selectedWeek).add(i, "days");
-              const entry = chartData.find((c) =>
-                moment(c.date).isSame(date, "day")
-              );
-              const idx = entry
-                ? emotions.findIndex((e) => e.value === entry.state)
-                : null;
-              const heightBar =
-                idx !== null
-                  ? ((maxIdx - idx) / maxIdx) * (totalHeight - 2 * margin)
-                  : 0;
-              const x =
-                margin +
-                i * (totalWidth / 7 + (totalWidth - (totalWidth / 7) * 7) / 6);
-              const y = margin + (totalHeight - 2 * margin) - heightBar;
-              return [x, y];
-            });
-
-            return (
-              <g>
-                <polyline
-                  points={points.map((p) => p.join(",")).join(" ")}
-                  stroke="url(#lineGrad)"
-                  strokeWidth={3 * 2}
-                  fill="none"
-                  strokeLinecap="round"
-                />
-                {labels.map((day, i) => {
-                  const [cx, cy] = points[i];
-                  return (
-                    <g key={i}>
-                      <circle
-                        cx={cx}
-                        cy={cy}
-                        r={4 * 2}
-                        fill="#fff"
-                        stroke="#1a73e8"
-                        strokeWidth={2 * 2}
-                      />
-                      <text
-                        x={cx}
-                        y={totalHeight + margin - 4 * 2}
-                        textAnchor="middle"
-                        fontSize={12 * 2}
-                        fill="#444"
-                      >
-                        {day}
-                      </text>
-                      {chartData.find((c) =>
-                        moment(c.date).isSame(
-                          moment(selectedWeek).add(i, "days"),
-                          "day"
-                        )
-                      ) && (
-                        <text
-                          x={cx}
-                          y={cy - 10 * 2}
-                          textAnchor="middle"
-                          fontSize={18 * 2}
-                        >
-                          {
-                            emotions[
-                              emotions.findIndex(
-                                (e) =>
-                                  e.value ===
-                                  chartData.find((c) =>
-                                    moment(c.date).isSame(
-                                      moment(selectedWeek).add(i, "days"),
-                                      "day"
-                                    )
-                                  ).state
-                              )
-                            ].icon
-                          }
-                        </text>
-                      )}
-                    </g>
-                  );
-                })}
-              </g>
-            );
-          })()}
-        </svg>
-      </div>
     </div>
   );
 }

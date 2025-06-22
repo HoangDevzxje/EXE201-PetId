@@ -1,131 +1,320 @@
 require("dotenv").config();
-const Product = require("../models/Product");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Product = require("../models/Product");
+const Pet = require("../models/Pet");
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-const getSuggestions = async (req, res) => {
-  const { query } = req.body;
+/**
+ * Xây prompt cho Gemini AI
+ */
+const buildPrompt = (petInfo, query, products) => {
+  const productList = products
+    .map(
+      (p) =>
+        `ID: ${p._id}, Tên: ${p.name}, Giá: ${p.price}₫, ${
+          p.tags?.length ? `Tags: ${p.tags.join(", ")}, ` : ""
+        }Mô tả: ${p.description}, Stock: ${p.stock}`
+    )
+    .join("\n");
 
-  if (!query || typeof query !== "string") {
-    return res.status(400).json({ error: "Thiếu hoặc sai định dạng query." });
-  }
+  return `
+Bạn là chuyên gia thú cưng. Dựa trên dữ liệu bên dưới, hãy phân tích và gợi ý sản phẩm phù hợp nhất.
 
-  const lowerMsg = query.toLowerCase();
+THÔNG TIN THÚ CƯNG:
+THÔNG TIN THÚ CƯNG:
+${
+  petInfo
+    ? `- Tên: ${petInfo.name || "Không rõ"}
+- Loài: ${petInfo.species || "Không rõ"}
+- Giống: ${petInfo.breed || "Không rõ"}
+- Giới tính: ${petInfo.gender || "Không rõ"}
+- Ngày sinh: ${
+        petInfo.birthDate
+          ? new Date(petInfo.birthDate).toLocaleDateString("vi-VN")
+          : "Không rõ"
+      }
+- Tuổi: ${
+        petInfo.birthDate
+          ? Math.floor(
+              (new Date() - new Date(petInfo.birthDate)) / 31557600000
+            ) + " tuổi"
+          : "Không rõ"
+      }
+- Cân nặng: ${petInfo.weightKg ? petInfo.weightKg + " kg" : "Không rõ"}
+- Sở thích: ${petInfo.hobbies?.length ? petInfo.hobbies.join(", ") : "Không có"}
+- Sở ghét: ${
+        petInfo.dislikes?.length ? petInfo.dislikes.join(", ") : "Không có"
+      }
+- Kiêng khem: ${
+        petInfo.restrictions?.length
+          ? petInfo.restrictions.join(", ")
+          : "Không có"
+      }
+- Ghi chú: ${petInfo.notes || "Không có"}
+- Lịch sử y tế: ${
+        petInfo.medicalHistory?.length
+          ? petInfo.medicalHistory.map((h) => h.description).join("; ")
+          : "Không có"
+      }
+- Hồ sơ tiêm chủng: ${
+        petInfo.vaccinationRecords?.length
+          ? petInfo.vaccinationRecords
+              .map(
+                (v) =>
+                  `${v.vaccineName} (${new Date(v.date).toLocaleDateString(
+                    "vi-VN"
+                  )}${
+                    v.nextDoseDue
+                      ? `, mũi kế: ${new Date(v.nextDoseDue).toLocaleDateString(
+                          "vi-VN"
+                        )}`
+                      : ""
+                  })`
+              )
+              .join("; ")
+          : "Không có"
+      }`
+    : "Không có thông tin thú cưng"
+}
 
-  // Xử lý câu xã giao
-  if (["cảm ơn", "thank", "thanks"].some((word) => lowerMsg.includes(word))) {
-    return res.json({
-      reply: "Không có gì đâu, rất vui được giúp bạn và bé cưng 🐶🐱!",
-      products: [],
-    });
-  }
+DANH SÁCH SẢN PHẨM:
+${productList}
 
-  if (
-    ["chào", "hi", "hello", "xin chào"].some((word) => lowerMsg.includes(word))
-  ) {
-    return res.json({
-      reply:
-        "Xin chào! Mình là trợ lý ảo PetID+ 🤖. Bạn đang cần tìm sản phẩm gì cho thú cưng vậy nè?",
-      products: [],
-    });
-  }
+YÊU CẦU KHÁCH HÀNG: "${query}"
+
+Trả lời đúng format JSON:
+{
+  "reply": "Lời khuyên chi tiết",
+  "recommendedProductIds": ["id1", "id2"],
+  "analysisNote": "Tóm tắt nhanh"
+}
+`;
+};
+
+/**
+ * Gọi Gemini AI, parse JSON
+ */
+const analyzePetAndRecommendProducts = async (petInfo, query, products) => {
+  const prompt = buildPrompt(petInfo, query, products);
 
   try {
-    const products = await Product.find({ isActive: true });
-
-    if (!products.length) {
-      return res.json({
-        reply: "Hiện tại chưa có sản phẩm nào để gợi ý rồi bạn ơi 😢.",
-        products: [],
-      });
-    }
-
-    // Chuẩn bị danh sách sản phẩm gọn gàng
-    const productListStr = products
-      .map(
-        (p) =>
-          `- ${p.name}, giá: ${p.price}₫${
-            p.tags?.length ? `, loại: ${p.tags.join(", ")}` : ""
-          }, mô tả: ${p.description}`
-      )
-      .join("\n");
-
-    // Prompt AI: thân thiện và chuyên nghiệp
-    const prompt = `
-Một bạn khách vừa hỏi: "${query}"
-
-Dưới đây là danh sách sản phẩm hiện có:
-${productListStr}
-
-Bạn hãy trả lời bằng tiếng Việt, thân thiện và dễ hiểu.
-Nếu có sản phẩm phù hợp, hãy gợi ý tối đa 3 món.
-Nếu không có gì hợp, cứ nhẹ nhàng báo lại giúp mình nha.
-`;
-
     const result = await model.generateContent({
       contents: [{ role: "user", parts: [{ text: prompt }] }],
     });
 
-    const aiReply =
-      result?.response?.text()?.trim() ||
-      "Xin lỗi nha, mình chưa nghĩ ra gợi ý phù hợp 😅.";
+    const responseText = result?.response?.text()?.trim();
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (jsonMatch) return JSON.parse(jsonMatch[0]);
 
-    // Tìm các sản phẩm phù hợp nhất
-    const matchedProducts = await findMatchingProducts(query, products);
+    return {
+      reply: responseText || "Không thể phân tích phản hồi AI",
+      recommendedProductIds: [],
+      analysisNote: "Phản hồi không đúng định dạng JSON",
+    };
+  } catch (error) {
+    console.error("Gemini AI Error:", error);
+    return {
+      reply: "Đã xảy ra lỗi khi xử lý AI",
+      recommendedProductIds: [],
+      analysisNote: "Lỗi hệ thống AI",
+    };
+  }
+};
 
+/**
+ * POST /chatbot/message
+ */
+const handleChatMessage = async (req, res) => {
+  const { query, petId, userId } = req.body;
+  if (!query) return res.status(400).json({ error: "Thiếu query!" });
+
+  const lowerMsg = query.toLowerCase();
+  if (["cảm ơn", "thank", "thanks"].some((w) => lowerMsg.includes(w))) {
     return res.json({
-      reply: aiReply,
-      products: matchedProducts,
+      reply: "Không có gì đâu 🐾",
+      products: [],
+      featuredProducts: [],
+    });
+  }
+  if (["chào", "hi", "hello", "xin chào"].some((w) => lowerMsg.includes(w))) {
+    return res.json({
+      reply:
+        "Xin chào! Mình có thể giúp bạn tìm sản phẩm phù hợp cho bé cưng 🐶🐱",
+      products: [],
+      featuredProducts: [],
+    });
+  }
+
+  try {
+    // Lấy thông tin pet (nếu có)
+    const petInfo = petId
+      ? await Pet.findById(petId)
+      : await Pet.findOne({ owner: userId });
+
+    // Lấy tất cả sản phẩm active, có stock
+    const products = await Product.find({
+      isActive: true,
+      stock: { $gt: 0 },
+    }).populate("category");
+
+    // Lấy sản phẩm "bán chạy" theo flag isFeatured
+    const featured = await Product.find({
+      isActive: true,
+      isFeatured: true,
+      stock: { $gt: 0 },
+    })
+      .populate("category")
+      .limit(4);
+
+    if (!products.length) {
+      return res.json({
+        reply: "Hiện tại chưa có sản phẩm nào để gợi ý 😢",
+        products: [],
+        featuredProducts: featured.map((p) => ({
+          id: p._id,
+          name: p.name,
+          price: p.price,
+          description: p.description,
+          imageUrl: p.imageUrl,
+          category: p.category?.name,
+          tags: p.tags,
+        })),
+      });
+    }
+
+    // Gọi AI để recommend
+    const aiResponse = await analyzePetAndRecommendProducts(
+      petInfo,
+      query,
+      products
+    );
+
+    // Lọc ra những sản phẩm AI gợi ý
+    const matched = products.filter((p) =>
+      aiResponse.recommendedProductIds.includes(p._id.toString())
+    );
+
+    const formattedRecommended = matched.map((p) => ({
+      id: p._id,
+      name: p.name,
+      price: p.price,
+      description: p.description,
+      imageUrl: p.imageUrl,
+      category: p.category?.name,
+      tags: p.tags,
+    }));
+
+    // Format featured
+    const formattedFeatured = featured.map((p) => ({
+      id: p._id,
+      name: p.name,
+      price: p.price,
+      description: p.description,
+      imageUrl: p.imageUrl,
+      category: p.category?.name,
+      tags: p.tags,
+    }));
+
+    // Trả về
+    res.json({
+      reply: aiResponse.reply,
+      products: formattedRecommended,
+      featuredProducts: formattedFeatured,
+      analysisNote: aiResponse.analysisNote,
+      petAnalysis: petInfo
+        ? {
+            petName: petInfo.name,
+            species: petInfo.species,
+            breed: petInfo.breed,
+            age: petInfo.birthDate
+              ? Math.floor(
+                  (new Date() - new Date(petInfo.birthDate)) / 31557600000
+                )
+              : null,
+          }
+        : null,
     });
   } catch (error) {
-    console.error("Lỗi AI:", error);
-    return res.status(500).json({
-      error: "Lỗi khi xử lý AI",
-      reply: "Oops, hệ thống đang bận chút xíu. Bạn thử lại sau nha!",
+    console.error("Chatbot error:", error);
+    res.status(500).json({
+      error: "Lỗi xử lý chatbot",
+      reply: "Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.",
       products: [],
+      featuredProducts: [],
     });
   }
 };
 
-// Hàm tìm sản phẩm phù hợp bằng AI
-async function findMatchingProducts(query, products) {
+const getUserPets = async (req, res) => {
   try {
-    const simplified = products.map((p) => ({
-      id: p._id.toString(),
-      name: p.name,
-      description: p.description,
-      price: p.price,
-      tags: p.tags,
-    }));
+    const { userId } = req.params;
+    const pets = await Pet.find({ owner: userId }).select(
+      "name species breed birthDate weightKg"
+    );
+    res.json({ pets });
+  } catch (err) {
+    console.error("Lỗi lấy danh sách thú cưng:", err);
+    res.status(500).json({ error: "Không thể lấy danh sách thú cưng" });
+  }
+};
+
+const analyzeHealth = async (req, res) => {
+  const { petId, symptoms, concerns } = req.body;
+
+  try {
+    const pet = await Pet.findById(petId);
+    if (!pet) return res.status(404).json({ error: "Không tìm thấy thú cưng" });
 
     const prompt = `
-Dưới đây là danh sách sản phẩm:
-${JSON.stringify(simplified, null, 2)}
+Bạn là bác sĩ thú y. Hãy phân tích sức khỏe thú cưng dưới đây và đưa lời khuyên:
 
-Khách hàng hỏi: "${query}"
+- Tên: ${pet.name}
+- Loài: ${pet.species}
+- Giống: ${pet.breed || "Không rõ"}
+- Tuổi: ${
+      pet.birthDate
+        ? Math.floor((new Date() - new Date(pet.birthDate)) / 31557600000) +
+          " tuổi"
+        : "Không rõ"
+    }
+- Cân nặng: ${pet.weightKg || "Không rõ"}kg
+- Tiền sử bệnh: ${
+      pet.medicalHistory?.map((h) => h.description).join(", ") || "Không có"
+    }
+- Triệu chứng: ${symptoms || "Không có"}
+- Mối quan tâm của chủ: ${concerns || "Không có"}
 
-Bạn hãy chọn tối đa 3 sản phẩm phù hợp nhất.
-Trả về mảng JSON chứa ID, ví dụ: ["id1", "id2"]
-Chỉ trả về mảng JSON, không thêm bất kỳ chữ nào khác nha.
+Yêu cầu:
+1. Đánh giá sơ bộ
+2. Lời khuyên chăm sóc
+3. Khi nào nên đến bác sĩ thú y
+4. Cách phòng ngừa
+
+Lưu ý: Đây là tư vấn sơ bộ, không thay thế cho khám thú y thực tế.
 `;
 
     const result = await model.generateContent({
       contents: [{ role: "user", parts: [{ text: prompt }] }],
     });
 
-    const text = result?.response?.text()?.trim();
-    if (!text || !text.startsWith("[")) return [];
-
-    const matchedIds = JSON.parse(text);
-    return products.filter((p) => matchedIds.includes(p._id.toString()));
+    res.json({
+      analysis: result.response.text(),
+      petInfo: {
+        name: pet.name,
+        species: pet.species,
+        breed: pet.breed,
+      },
+    });
   } catch (err) {
-    console.error("Lỗi khi lọc sản phẩm:", err);
-    return [];
+    console.error("Lỗi phân tích sức khỏe:", err);
+    res.status(500).json({ error: "Lỗi khi phân tích sức khỏe thú cưng" });
   }
-}
+};
 
 module.exports = {
-  getSuggestions,
+  handleChatMessage,
+  getUserPets,
+  analyzeHealth,
 };

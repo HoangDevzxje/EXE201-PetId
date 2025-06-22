@@ -5,7 +5,7 @@ import "./ChatBot.css";
 const ChatBot = ({ userId }) => {
   const [messages, setMessages] = useState([
     {
-      text: "Xin chào! Tôi là trợ lí ảo PetID+ với AI thông minh. Tôi có thể phân tích thông tin thú cưng của bạn và gợi ý sản phẩm phù hợp. Bạn cần tôi giúp gì không?",
+      text: "Xin chào! Tôi là trợ lý ảo PetID+ với AI thông minh. Hãy hỏi tôi bất cứ điều gì về thú cưng nhé 🐶🐱",
       sender: "bot",
       products: [],
     },
@@ -21,7 +21,6 @@ const ChatBot = ({ userId }) => {
   const chatBoxRef = useRef(null);
   const recognitionRef = useRef(null);
 
-  // Fetch user's pets when component mounts
   useEffect(() => {
     if (userId && isOpen) {
       fetchUserPets();
@@ -30,96 +29,99 @@ const ChatBot = ({ userId }) => {
 
   const fetchUserPets = async () => {
     try {
-      const response = await axios.get(
+      const res = await axios.get(
         `http://localhost:9999/chatbot/user-pets/${userId}`
       );
-      setUserPets(response.data.pets);
-      if (response.data.pets.length > 0 && !selectedPet) {
-        setSelectedPet(response.data.pets[0]);
+      setUserPets(res.data.pets);
+      if (res.data.pets.length && !selectedPet) {
+        setSelectedPet(res.data.pets[0]);
       }
-    } catch (error) {
-      console.error("Error fetching pets:", error);
+    } catch (err) {
+      console.error("Lỗi lấy danh sách thú cưng:", err);
     }
   };
 
   useEffect(() => {
-    // Khởi tạo Speech Recognition
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
       recognitionRef.current.lang = "vi-VN";
+      recognitionRef.current.continuous = false;
 
       recognitionRef.current.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        setInputMessage(transcript);
+        setInputMessage(event.results[0][0].transcript);
       };
-
-      recognitionRef.current.onerror = (event) => {
-        console.error("Speech recognition error", event.error);
-        setIsListening(false);
-      };
-
-      recognitionRef.current.onend = () => {
-        setIsListening(false);
-      };
+      recognitionRef.current.onerror = () => setIsListening(false);
+      recognitionRef.current.onend = () => setIsListening(false);
     }
-
     return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
+      recognitionRef.current?.stop();
     };
   }, []);
 
-  useEffect(() => {
-    if (chatBoxRef.current) {
-      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+  const toggleVoiceRecognition = () => {
+    if (!recognitionRef.current) {
+      alert("Trình duyệt không hỗ trợ giọng nói.");
+      return;
     }
-  }, [messages, isOpen]);
+    if (isListening) {
+      recognitionRef.current.stop();
+    } else {
+      recognitionRef.current.start();
+    }
+    setIsListening((prev) => !prev);
+  };
+
+  const speak = (text) => {
+    if ("speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "vi-VN";
+      utterance.rate = 0.95;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    }
+  };
 
   const handleSend = async () => {
     if (!inputMessage.trim()) return;
 
-    const userMessage = {
-      text: inputMessage,
-      sender: "user",
-      products: [],
-    };
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages((prev) => [
+      ...prev,
+      { text: inputMessage, sender: "user", products: [] },
+    ]);
+    const question = inputMessage;
     setInputMessage("");
     setIsLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:9999/chatbot/message",
-        {
-          query: inputMessage,
-          petId: selectedPet?._id,
-          userId: userId,
-        }
-      );
+      const res = await axios.post("http://localhost:9999/chatbot/message", {
+        query: question,
+        petId: selectedPet?._id,
+        userId,
+      });
+
+      const data = res.data;
 
       const botMessage = {
-        text: response.data.reply,
+        text: data.reply,
         sender: "bot",
-        products: response.data.products || [],
-        analysisNote: response.data.analysisNote,
-        petAnalysis: response.data.petAnalysis,
+        products: data.products || [],
+        analysisNote: data.analysisNote,
+        petAnalysis: data.petAnalysis,
       };
 
       setMessages((prev) => [...prev, botMessage]);
 
-      // Auto-speak the response if it's not too long
-      if (response.data.reply.length < 200) {
-        speak(response.data.reply);
+      if (data.reply.length < 200) {
+        speak(data.reply);
       }
-    } catch (error) {
+    } catch (err) {
+      console.error("Chatbot error:", err);
       setMessages((prev) => [
         ...prev,
         {
-          text: "Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.",
+          text: "❌ Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.",
           sender: "bot",
           products: [],
         },
@@ -131,31 +133,8 @@ const ChatBot = ({ userId }) => {
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       handleSend();
-    }
-  };
-
-  const toggleVoiceRecognition = () => {
-    if (!recognitionRef.current) {
-      alert("Trình duyệt của bạn không hỗ trợ nhận dạng giọng nói");
-      return;
-    }
-
-    if (isListening) {
-      recognitionRef.current.stop();
-      setIsListening(false);
-    } else {
-      recognitionRef.current.start();
-      setIsListening(true);
-    }
-  };
-
-  const speak = (text) => {
-    if ("speechSynthesis" in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "vi-VN";
-      utterance.rate = 0.9;
-      window.speechSynthesis.speak(utterance);
     }
   };
 
@@ -163,28 +142,22 @@ const ChatBot = ({ userId }) => {
     const message = `Sản phẩm: ${product.name}\nGiá: ${product.price}₫\nMô tả: ${product.description}`;
     setMessages((prev) => [
       ...prev,
-      {
-        text: message,
-        sender: "user",
-        products: [],
-      },
+      { text: message, sender: "user", products: [] },
     ]);
     speak(`Sản phẩm ${product.name}, giá ${product.price} đồng`);
   };
 
-  const formatMessageText = (text) => {
-    return text
-      .split("\n")
-      .map((line, index) => (
-        <div key={index}>
-          {line.startsWith("**") && line.endsWith("**") ? (
-            <strong>{line.slice(2, -2)}</strong>
-          ) : (
-            line
-          )}
-        </div>
-      ));
-  };
+  const formatMessageText = (text) =>
+    text.split("\n").map((line, i) => <div key={i}>{line}</div>);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (chatBoxRef.current) {
+        chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+      }
+    }, 50);
+    return () => clearTimeout(timeout);
+  }, [messages, isOpen]);
 
   return (
     <>
@@ -193,13 +166,11 @@ const ChatBot = ({ userId }) => {
           <>
             <div className="chatbot-header">
               <div>
-                <h3>AI PetID+</h3>
+                <h3>Tư vấn sức khỏe 24/7</h3>
                 {selectedPet && (
                   <div className="selected-pet-info">
-                    <span>
-                      🐾 Đang tư vấn cho: <strong>{selectedPet.name}</strong> (
-                      {selectedPet.species})
-                    </span>
+                    🐾 Đang tư vấn cho: <strong>{selectedPet.name}</strong> (
+                    {selectedPet.species})
                   </div>
                 )}
               </div>
@@ -208,38 +179,35 @@ const ChatBot = ({ userId }) => {
                   <button
                     className="pet-selector-btn"
                     onClick={() => setShowPetSelector(!showPetSelector)}
-                    title="Chọn thú cưng"
                   >
                     🐾
                   </button>
                 )}
-
                 <button className="close-btn" onClick={() => setIsOpen(false)}>
                   ✖
                 </button>
               </div>
             </div>
 
-            {/* Pet Selector Dropdown */}
             {showPetSelector && (
               <div className="pet-selector-dropdown">
                 <h4>Chọn thú cưng:</h4>
                 {userPets.map((pet) => (
                   <div
                     key={pet._id}
-                    className={`pet-option ${selectedPet?._id === pet._id ? "selected" : ""
-                      }`}
+                    className={`pet-option ${
+                      selectedPet?._id === pet._id ? "selected" : ""
+                    }`}
                     onClick={() => {
                       setSelectedPet(pet);
                       setShowPetSelector(false);
                     }}
                   >
                     <strong>{pet.name}</strong> - {pet.species}
-                    {pet.breed && ` (${pet.breed})`}
+                    {pet.breed && ` (${pet.breed})`} -{" "}
                     {pet.birthDate &&
-                      ` - ${Math.floor(
-                        (new Date() - new Date(pet.birthDate)) /
-                        (365.25 * 24 * 60 * 60 * 1000)
+                      `${Math.floor(
+                        (new Date() - new Date(pet.birthDate)) / 31557600000
                       )} tuổi`}
                   </div>
                 ))}
@@ -250,35 +218,24 @@ const ChatBot = ({ userId }) => {
               {messages.map((msg, index) => (
                 <div key={index} className={`message ${msg.sender}`}>
                   {msg.text && (
-                    <div
-                      className={`message-text ${msg.isHealthAnalysis ? "health-analysis" : ""
-                        }`}
-                    >
+                    <div className="message-text">
                       {formatMessageText(msg.text)}
                     </div>
                   )}
-
                   {msg.petAnalysis && (
                     <div className="pet-analysis-info">
-                      <small>
-                        🔍 Phân tích dựa trên: {msg.petAnalysis.petName}(
-                        {msg.petAnalysis.species}
-                        {msg.petAnalysis.breed && `, ${msg.petAnalysis.breed}`}
-                        {msg.petAnalysis.age && `, ${msg.petAnalysis.age} tuổi`}
-                        )
-                      </small>
+                      🔍 Dựa trên: {msg.petAnalysis.petName} (
+                      {msg.petAnalysis.species}
+                      {msg.petAnalysis.breed && `, ${msg.petAnalysis.breed}`}
+                      {msg.petAnalysis.age && `, ${msg.petAnalysis.age} tuổi`})
                     </div>
                   )}
-
                   {msg.analysisNote && (
-                    <div className="analysis-note">
-                      <small>💡 {msg.analysisNote}</small>
-                    </div>
+                    <div className="analysis-note">💡 {msg.analysisNote}</div>
                   )}
-
                   {msg.products.length > 0 && (
                     <div className="product-suggestions">
-                      <h4>🛍️ Sản phẩm được AI gợi ý:</h4>
+                      <h4>🛍️ Gợi ý sản phẩm:</h4>
                       <div className="product-grid">
                         {msg.products.map((product, idx) => (
                           <div
@@ -295,23 +252,15 @@ const ChatBot = ({ userId }) => {
                             )}
                             <div className="product-info">
                               <h5>{product.name}</h5>
-                              <p className="product-price">
-                                {product.price.toLocaleString()}₫
-                              </p>
-                              {product.category && (
-                                <p className="product-category">
-                                  {product.category}
-                                </p>
-                              )}
-                              {product.tags && product.tags.length > 0 && (
-                                <div className="product-tags">
-                                  {product.tags.map((tag, tagIdx) => (
-                                    <span key={tagIdx} className="tag">
-                                      {tag}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
+                              <p>{product.price.toLocaleString()}₫</p>
+                              <p>{product.category}</p>
+                              <div className="product-tags">
+                                {product.tags?.map((tag, i) => (
+                                  <span key={i} className="tag">
+                                    {tag}
+                                  </span>
+                                ))}
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -349,7 +298,6 @@ const ChatBot = ({ userId }) => {
               <button
                 className={`voice-btn ${isListening ? "active" : ""}`}
                 onClick={toggleVoiceRecognition}
-                title="Ghi âm giọng nói"
               >
                 {isListening ? "🔴" : "🎤"}
               </button>
@@ -361,7 +309,6 @@ const ChatBot = ({ userId }) => {
         )}
       </div>
 
-      {/* Nút mở/ẩn chatbot */}
       {!isOpen && (
         <button className="chat-toggle-btn" onClick={() => setIsOpen(true)}>
           Tư vấn sức khỏe 24/7
