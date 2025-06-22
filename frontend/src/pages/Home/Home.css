@@ -24,7 +24,8 @@
 
 /* Hero Section */
 .hero-section {
-  background: #fefefe; /* Đổi nền trắng */
+  background: #fefefe;
+  /* Đổi nền trắng */
   padding: 0;
   margin-top: 2rem;
   margin-bottom: 2rem;
@@ -138,7 +139,8 @@
 
 .features-section {
   padding: 2rem 0;
-  background: #fff; /* Nền trắng */
+  background: #fff;
+  /* Nền trắng */
   border-radius: 18px;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
   margin-bottom: 2rem;
@@ -190,13 +192,15 @@
 
 /* Health Tips Section */
 .health-tips-section {
-  background: #fff; /* Nền trắng */
+  background: #fff;
+  /* Nền trắng */
   border: 1px solid #e0e0e0;
   padding: 3rem;
   border-radius: 18px;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
   margin-bottom: 2rem;
 }
+
 .tip-card {
   background: var(--white);
   border-radius: var(--border-radius);
@@ -426,6 +430,7 @@
     min-width: 260px;
     max-width: 340px;
   }
+
   .banner-image {
     height: 110px;
   }
@@ -435,14 +440,17 @@
   .banner-row {
     gap: 12px;
   }
+
   .banner-card {
     width: 220px;
     min-width: 180px;
     max-width: 240px;
   }
+
   .banner-image {
     height: 70px;
   }
+
   .banner-content h1 {
     font-size: 1rem;
   }
@@ -453,6 +461,7 @@
     flex-wrap: wrap;
     gap: 10px;
   }
+
   .banner-card {
     width: 100vw;
     min-width: 90vw;
@@ -496,10 +505,12 @@
 .care-tips-content ol {
   padding-left: 0;
 }
+
 .list-unstyled {
   margin-left: 30px;
   margin-right: 30px;
 }
+
 .care-tips-content ol li {
   margin-bottom: 1rem;
   font-size: 1.05rem;
@@ -520,6 +531,7 @@
 .care-tips-content strong {
   color: #007bff;
 }
+
 .benefit-section {
   background: #fff;
   border-radius: 18px;
@@ -562,9 +574,11 @@
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(78, 84, 200, 0.06);
 }
+
 .blink-link {
-  animation: blink 3s steps(2, start) infinite;
+  animation: blink 1s steps(2, start) infinite;
 }
+
 @keyframes blink {
   to {
     visibility: hidden;
