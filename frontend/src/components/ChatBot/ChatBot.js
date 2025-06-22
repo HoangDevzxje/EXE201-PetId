@@ -330,7 +330,7 @@ const ChatBot = ({ userId }) => {
                       <span></span>
                       <span></span>
                     </div>
-                    AI đang phân tích và tìm kiếm sản phẩm phù hợp...
+                    AI đang phân tích...
                   </div>
                 </div>
               )}

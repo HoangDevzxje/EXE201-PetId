@@ -1,119 +1,127 @@
 require("dotenv").config();
 const Product = require("../models/Product");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
 const getSuggestions = async (req, res) => {
   const { query } = req.body;
 
-  if (!query) {
-    return res.status(400).json({ error: "Thiếu query yêu cầu" });
+  if (!query || typeof query !== "string") {
+    return res.status(400).json({ error: "Thiếu hoặc sai định dạng query." });
   }
 
   const lowerMsg = query.toLowerCase();
 
-  // Xử lý xã giao
+  // Xử lý câu xã giao
   if (["cảm ơn", "thank", "thanks"].some((word) => lowerMsg.includes(word))) {
-    return res.json({ reply: "Không có gì, rất vui được giúp bạn!" });
+    return res.json({
+      reply: "Không có gì đâu, rất vui được giúp bạn và bé cưng 🐶🐱!",
+      products: [],
+    });
   }
 
   if (
     ["chào", "hi", "hello", "xin chào"].some((word) => lowerMsg.includes(word))
   ) {
     return res.json({
-      reply: "Xin chào! Tôi là trợ lí ảo PetID+. Bạn cần tôi giúp gì không?",
+      reply:
+        "Xin chào! Mình là trợ lý ảo PetID+ 🤖. Bạn đang cần tìm sản phẩm gì cho thú cưng vậy nè?",
       products: [],
     });
   }
 
   try {
-    const products = await Product.find({});
+    const products = await Product.find({ isActive: true });
 
-    if (products.length === 0) {
+    if (!products.length) {
       return res.json({
-        reply:
-          "Xin lỗi, tôi chưa tìm thấy sản phẩm phù hợp với yêu cầu của bạn.",
+        reply: "Hiện tại chưa có sản phẩm nào để gợi ý rồi bạn ơi 😢.",
         products: [],
       });
     }
 
-    const productList = products
+    // Chuẩn bị danh sách sản phẩm gọn gàng
+    const productListStr = products
       .map(
         (p) =>
-          `- ${p.name}, giá: ${p.price}₫, ${
-            p.tags ? `loại: ${p.tags.join(", ")},` : ""
-          } mô tả: ${p.description}`
+          `- ${p.name}, giá: ${p.price}₫${
+            p.tags?.length ? `, loại: ${p.tags.join(", ")}` : ""
+          }, mô tả: ${p.description}`
       )
       .join("\n");
 
-    const { GoogleGenerativeAI } = require("@google/generative-ai");
-    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
+    // Prompt AI: thân thiện và chuyên nghiệp
     const prompt = `
-Danh sách sản phẩm hiện có:
-${productList}
+Một bạn khách vừa hỏi: "${query}"
 
-Khách hàng hỏi: "${query}"
+Dưới đây là danh sách sản phẩm hiện có:
+${productListStr}
 
-Dựa trên danh sách, hãy đưa ra phản hồi phù hợp và gợi ý các sản phẩm liên quan (nếu có). 
-Trả lời bằng tiếng Việt, thân thiện và chuyên nghiệp.
-Nếu không có sản phẩm phù hợp, hãy nói rõ không có sản phẩm phù hợp.
-    `;
+Bạn hãy trả lời bằng tiếng Việt, thân thiện và dễ hiểu.
+Nếu có sản phẩm phù hợp, hãy gợi ý tối đa 3 món.
+Nếu không có gì hợp, cứ nhẹ nhàng báo lại giúp mình nha.
+`;
 
     const result = await model.generateContent({
       contents: [{ role: "user", parts: [{ text: prompt }] }],
     });
 
-    const text =
-      result.response.text() || "Xin lỗi, tôi chưa có câu trả lời phù hợp.";
+    const aiReply =
+      result?.response?.text()?.trim() ||
+      "Xin lỗi nha, mình chưa nghĩ ra gợi ý phù hợp 😅.";
 
-    // Tìm sản phẩm phù hợp dựa trên query
+    // Tìm các sản phẩm phù hợp nhất
     const matchedProducts = await findMatchingProducts(query, products);
 
     return res.json({
-      reply: text,
+      reply: aiReply,
       products: matchedProducts,
     });
   } catch (error) {
-    console.error("Error calling Gemini API:", error);
-    res.status(500).json({ error: "Lỗi khi gọi AI" });
+    console.error("Lỗi AI:", error);
+    return res.status(500).json({
+      error: "Lỗi khi xử lý AI",
+      reply: "Oops, hệ thống đang bận chút xíu. Bạn thử lại sau nha!",
+      products: [],
+    });
   }
 };
 
+// Hàm tìm sản phẩm phù hợp bằng AI
 async function findMatchingProducts(query, products) {
   try {
-    const { GoogleGenerativeAI } = require("@google/generative-ai");
-    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-    const productList = products.map((p) => ({
+    const simplified = products.map((p) => ({
       id: p._id.toString(),
       name: p.name,
       description: p.description,
       price: p.price,
-      imageUrl: p.imageUrl,
       tags: p.tags,
     }));
 
     const prompt = `
-Danh sách sản phẩm:
-${JSON.stringify(productList)}
+Dưới đây là danh sách sản phẩm:
+${JSON.stringify(simplified, null, 2)}
 
-Tìm các sản phẩm phù hợp với câu hỏi: "${query}"
+Khách hàng hỏi: "${query}"
 
-Trả về một mảng JSON chứa ID của các sản phẩm phù hợp nhất, tối đa 3 sản phẩm.
-Chỉ trả về mảng JSON, không có bất kỳ văn bản nào khác.
-    `;
+Bạn hãy chọn tối đa 3 sản phẩm phù hợp nhất.
+Trả về mảng JSON chứa ID, ví dụ: ["id1", "id2"]
+Chỉ trả về mảng JSON, không thêm bất kỳ chữ nào khác nha.
+`;
 
     const result = await model.generateContent({
       contents: [{ role: "user", parts: [{ text: prompt }] }],
     });
 
-    const responseText = result.response.text();
-    const matchedIds = JSON.parse(responseText);
+    const text = result?.response?.text()?.trim();
+    if (!text || !text.startsWith("[")) return [];
 
+    const matchedIds = JSON.parse(text);
     return products.filter((p) => matchedIds.includes(p._id.toString()));
-  } catch (error) {
-    console.error("Error finding matching products:", error);
+  } catch (err) {
+    console.error("Lỗi khi lọc sản phẩm:", err);
     return [];
   }
 }
