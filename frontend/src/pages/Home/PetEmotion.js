@@ -8,6 +8,7 @@ import moment from "moment";
 import "moment/locale/vi";
 import "./PetEmotion.css";
 moment.locale("vi");
+
 export default function PetEmotion() {
   const { petId } = useParams();
   const navigate = useNavigate();
@@ -43,6 +44,13 @@ export default function PetEmotion() {
 
   // Pet info
   const [petInfo, setPetInfo] = useState(null);
+
+  // State cho thống kê
+  const [showStats, setShowStats] = useState(false);
+  const [weeklyStats, setWeeklyStats] = useState(null);
+  const [monthlyStats, setMonthlyStats] = useState(null);
+  const [statsType, setStatsType] = useState("week"); // "week" hoặc "month"
+  const [statMonth, setStatMonth] = useState(moment().format("YYYY-MM"));
 
   const emotions = [
     { value: "vui vẻ", label: "Vui vẻ", icon: "🐶" },
@@ -132,6 +140,42 @@ export default function PetEmotion() {
     })();
   }, [selectedWeek, petId]);
 
+  // Fetch thống kê theo tuần
+  const fetchWeeklyStats = async (week) => {
+    try {
+      const res = await api.get(`/emotion-logs/${petId}/stats/week`, {
+        params: { week: week || selectedWeek },
+      });
+      setWeeklyStats(res.data);
+    } catch (e) {
+      console.error("Lỗi fetch weekly stats:", e);
+    }
+  };
+
+  // Fetch thống kê theo tháng
+  const fetchMonthlyStats = async (month) => {
+    try {
+      const monthParam = month || statMonth;
+      const res = await api.get(`/emotion-logs/${petId}/stats/month`, {
+        params: { month: monthParam },
+      });
+      setMonthlyStats(res.data);
+    } catch (e) {
+      console.error("Lỗi fetch monthly stats:", e);
+    }
+  };
+
+  // Fetch thống kê khi toggle
+  useEffect(() => {
+    if (showStats) {
+      if (statsType === "week") {
+        fetchWeeklyStats();
+      } else {
+        fetchMonthlyStats();
+      }
+    }
+  }, [showStats, statsType, selectedWeek, statMonth]);
+
   // Submit mới 1 log
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -147,7 +191,8 @@ export default function PetEmotion() {
       showAlert("success", "Đã lưu cảm xúc");
       setSelectedEmotion("");
       setNote("");
-      // reload lịch sử tuần và chart
+
+      // Refresh data
       const [logsRes, chartRes] = await Promise.all([
         api.get(`/emotion-logs/${petId}`, {
           params: { week: selectedWeek },
@@ -158,10 +203,23 @@ export default function PetEmotion() {
       ]);
       setWeeklyLogs(logsRes.data);
       setChartData(chartRes.data);
+
+      // Refresh monthly data
+      const monthParam = moment(selectedDate).format("YYYY-MM");
+      const monthRes = await api.get(`/emotion-logs/${petId}/month`, {
+        params: { month: monthParam },
+      });
+      setAllLogs(monthRes.data);
+
+      // Refresh stats if showing
+      if (showStats) {
+        if (statsType === "week") fetchWeeklyStats();
+        else fetchMonthlyStats();
+      }
     } catch {
       showAlert(
         "success",
-        "Bạn đã ghi chú hôm nay rồi. Hãy nhấn vào “Lịch sử” để thay đổi trạng thái."
+        'Bạn đã ghi chú hôm nay rồi. Hãy nhấn vào "Lịch sử" để thay đổi trạng thái.'
       );
     } finally {
       setLoading(false);
@@ -174,7 +232,8 @@ export default function PetEmotion() {
       await api.put(`/emotion-logs/note/${id}`, { note: editNoteValue });
       showAlert("success", "Cập nhật ghi chú");
       setEditNoteId(null);
-      // reload lại
+
+      // Refresh data
       const [logsRes, chartRes] = await Promise.all([
         api.get(`/emotion-logs/${petId}`, {
           params: { week: selectedWeek },
@@ -185,6 +244,19 @@ export default function PetEmotion() {
       ]);
       setWeeklyLogs(logsRes.data);
       setChartData(chartRes.data);
+
+      // Refresh monthly data
+      const monthParam = moment(selectedDate).format("YYYY-MM");
+      const monthRes = await api.get(`/emotion-logs/${petId}/month`, {
+        params: { month: monthParam },
+      });
+      setAllLogs(monthRes.data);
+
+      // Refresh stats if showing
+      if (showStats) {
+        if (statsType === "week") fetchWeeklyStats();
+        else fetchMonthlyStats();
+      }
     } catch {
       showAlert("danger", "Cập nhật thất bại");
     }
@@ -196,6 +268,8 @@ export default function PetEmotion() {
     try {
       await api.delete(`/emotion-logs/${id}`);
       showAlert("success", "Đã xóa log");
+
+      // Refresh data
       const [logsRes, chartRes] = await Promise.all([
         api.get(`/emotion-logs/${petId}`, {
           params: { week: selectedWeek },
@@ -206,9 +280,185 @@ export default function PetEmotion() {
       ]);
       setWeeklyLogs(logsRes.data);
       setChartData(chartRes.data);
+
+      // Refresh monthly data
+      const monthParam = moment(selectedDate).format("YYYY-MM");
+      const monthRes = await api.get(`/emotion-logs/${petId}/month`, {
+        params: { month: monthParam },
+      });
+      setAllLogs(monthRes.data);
+
+      // Refresh stats if showing
+      if (showStats) {
+        if (statsType === "week") fetchWeeklyStats();
+        else fetchMonthlyStats();
+      }
     } catch {
       showAlert("danger", "Xóa thất bại");
     }
+  };
+
+  // Render thống kê tuần
+  const renderWeeklyStats = () => {
+    if (!weeklyStats) return <div>Đang tải...</div>;
+
+    const { period, overview, dailyBreakdown } = weeklyStats;
+
+    return (
+      <div className="statsContainer">
+        <h3>
+          Thống kê tuần ({period.startDate} - {period.endDate})
+        </h3>
+
+        <div className="statsOverview">
+          <div className="statCard">
+            <h4>Tổng số ghi chú</h4>
+            <span className="statNumber">{overview.totalLogs}</span>
+          </div>
+
+          <div className="statCard">
+            <h4>Trạng thái phổ biến</h4>
+            <span className="statEmotion">
+              {overview.mostCommonState && (
+                <>
+                  {
+                    emotions.find((e) => e.value === overview.mostCommonState)
+                      ?.icon
+                  }
+                  {overview.mostCommonState}
+                </>
+              )}
+            </span>
+          </div>
+        </div>
+
+        <div className="statsDistribution">
+          <h4>Phân bố cảm xúc</h4>
+          <div className="distributionChart">
+            {Object.entries(overview.stateDistribution).map(([state, data]) => (
+              <div key={state} className="distributionItem">
+                <span className="distributionIcon">
+                  {emotions.find((e) => e.value === state)?.icon}
+                </span>
+                <span className="distributionLabel">{state}</span>
+                <span className="distributionCount">{data.count}</span>
+                <span className="distributionPercent">{data.percentage}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="dailyBreakdown">
+          <h4>Theo ngày trong tuần</h4>
+          <div className="dailyGrid">
+            {Object.entries(dailyBreakdown).map(([day, states]) => (
+              <div key={day} className="dailyItem">
+                <div className="dayName">{day}</div>
+                <div className="dayStates">
+                  {Object.entries(states).map(([state, count]) => (
+                    <span key={state} className="dayState">
+                      {emotions.find((e) => e.value === state)?.icon} {count}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Render thống kê tháng
+  const renderMonthlyStats = () => {
+    if (!monthlyStats) return <div>Đang tải...</div>;
+
+    const { period, overview, weeklyBreakdown, periodBreakdown } = monthlyStats;
+
+    return (
+      <div className="statsContainer">
+        <h3>Thống kê tháng {period.monthName}</h3>
+
+        <div className="statsOverview">
+          <div className="statCard">
+            <h4>Tổng số ghi chú</h4>
+            <span className="statNumber">{overview.totalLogs}</span>
+          </div>
+
+          <div className="statCard">
+            <h4>Trung bình/ngày</h4>
+            <span className="statNumber">{overview.logsPerDay}</span>
+          </div>
+
+          <div className="statCard">
+            <h4>Trạng thái phổ biến</h4>
+            <span className="statEmotion">
+              {overview.mostCommonState && (
+                <>
+                  {
+                    emotions.find((e) => e.value === overview.mostCommonState)
+                      ?.icon
+                  }
+                  {overview.mostCommonState}
+                </>
+              )}
+            </span>
+          </div>
+        </div>
+
+        <div className="statsDistribution">
+          <h4>Phân bố cảm xúc</h4>
+          <div className="distributionChart">
+            {Object.entries(overview.stateDistribution).map(([state, data]) => (
+              <div key={state} className="distributionItem">
+                <span className="distributionIcon">
+                  {emotions.find((e) => e.value === state)?.icon}
+                </span>
+                <span className="distributionLabel">{state}</span>
+                <span className="distributionCount">{data.count}</span>
+                <span className="distributionPercent">{data.percentage}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="weeklyBreakdown">
+          <h4>Theo tuần trong tháng</h4>
+          <div className="weeklyGrid">
+            {Object.entries(weeklyBreakdown).map(([week, states]) => (
+              <div key={week} className="weeklyItem">
+                <div className="weekName">{week}</div>
+                <div className="weekStates">
+                  {Object.entries(states).map(([state, count]) => (
+                    <span key={state} className="weekState">
+                      {emotions.find((e) => e.value === state)?.icon} {count}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="periodBreakdown">
+          <h4>Theo giai đoạn</h4>
+          <div className="periodGrid">
+            {Object.entries(periodBreakdown).map(([period, states]) => (
+              <div key={period} className="periodItem">
+                <div className="periodName">{period}</div>
+                <div className="periodStates">
+                  {Object.entries(states).map(([state, count]) => (
+                    <span key={state} className="periodState">
+                      {emotions.find((e) => e.value === state)?.icon} {count}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   // Tính range hiển thị tuần
@@ -343,6 +593,152 @@ export default function PetEmotion() {
         </div>
       </div>
 
+      {/* Toggle buttons */}
+      <div className="toggleButtons">
+        <button
+          onClick={() => setShowHistory((v) => !v)}
+          className={`button toggleBtn ${showHistory ? "active" : ""}`}
+        >
+          {showHistory ? "Ẩn lịch sử" : "Hiện lịch sử"}
+        </button>
+
+        <button
+          onClick={() => setShowStats((v) => !v)}
+          className={`button toggleBtn ${showStats ? "active" : ""}`}
+        >
+          {showStats ? "Ẩn thống kê" : "Hiện thống kê"}
+        </button>
+      </div>
+
+      {/* Thống kê */}
+      {showStats && (
+        <div className="statsSection">
+          <div className="statsTypeSelector">
+            <button
+              onClick={() => setStatsType("week")}
+              className={`button ${statsType === "week" ? "active" : ""}`}
+            >
+              Theo tuần
+            </button>
+            <button
+              onClick={() => setStatsType("month")}
+              className={`button ${statsType === "month" ? "active" : ""}`}
+            >
+              Theo tháng
+            </button>
+          </div>
+
+          {/* Selector controls */}
+          {statsType === "week" ? (
+            <div className="selectorRow">
+              <label>Chọn tuần:</label>
+              <select
+                value={selectedWeek || ""}
+                onChange={(e) => setSelectedWeek(e.target.value)}
+                className="datePicker"
+              >
+                {weeks.map((w) => (
+                  <option key={w} value={w}>
+                    {moment(w).format("DD/MM/YYYY")}
+                  </option>
+                ))}
+              </select>
+              <button onClick={() => fetchWeeklyStats()} className="button">
+                Xem
+              </button>
+            </div>
+          ) : (
+            <div className="selectorRow">
+              <label>Chọn tháng:</label>
+              <select
+                value={statMonth}
+                onChange={(e) => setStatMonth(e.target.value)}
+                className="datePicker"
+              >
+                {Array.from({ length: 12 }, (_, i) => {
+                  const monthValue = moment()
+                    .subtract(i, "months")
+                    .format("YYYY-MM");
+                  const monthName = moment()
+                    .subtract(i, "months")
+                    .format("MMMM YYYY");
+                  return (
+                    <option key={monthValue} value={monthValue}>
+                      {monthName}
+                    </option>
+                  );
+                })}
+              </select>
+              <button onClick={() => fetchMonthlyStats()} className="button">
+                Xem
+              </button>
+            </div>
+          )}
+
+          {statsType === "week" ? renderWeeklyStats() : renderMonthlyStats()}
+        </div>
+      )}
+
+      {/* Lịch sử tuần */}
+      {showHistory && (
+        <div className="historyList">
+          <h3>
+            Lịch sử tuần ({weekStart} – {weekEnd})
+          </h3>
+          <select
+            value={selectedWeek || ""}
+            onChange={(e) => setSelectedWeek(e.target.value)}
+            className="datePicker"
+          >
+            {weeks.map((w) => (
+              <option key={w} value={w}>
+                {moment(w).format("DD/MM/YYYY")}
+              </option>
+            ))}
+          </select>
+          {weeklyLogs.length === 0 ? (
+            <p>Chưa có ghi nhận.</p>
+          ) : (
+            weeklyLogs.map((log) => (
+              <div key={log._id} className="historyLog">
+                <div className="date">
+                  {moment(log.date).format("DD/MM/YYYY")}
+                </div>
+                <div className="state">
+                  {emotions.find((e) => e.value === log.state)?.icon}{" "}
+                  {log.state}
+                </div>
+                {editNoteId === log._id ? (
+                  <div className="editNote">
+                    <input
+                      value={editNoteValue}
+                      onChange={(e) => setEditNoteValue(e.target.value)}
+                    />
+                    <button onClick={() => saveNote(log._id)}>Save</button>
+                    <button onClick={() => setEditNoteId(null)}>Cancel</button>
+                  </div>
+                ) : (
+                  <div className="noteActions">
+                    <div className="noteText">{log.note}</div>
+                    <button
+                      onClick={() => {
+                        setEditNoteId(log._id);
+                        setEditNoteValue(log.note || "");
+                      }}
+                    >
+                      Sửa ghi chú
+                    </button>
+                    <button onClick={() => deleteLog(log._id)}>
+                      Xóa ghi chú
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
       <h2 className="header">
         Ngày hôm nay của {petInfo?.name || "..."} như thế nào?
       </h2>
@@ -389,73 +785,6 @@ export default function PetEmotion() {
           {loading ? "..." : "Lưu"}
         </button>
       </form>
-
-      {/* Toggle lịch sử */}
-      <div className="historyToggle">
-        <button
-          onClick={() => setShowHistory((v) => !v)}
-          className="button toggleBtn"
-        >
-          {showHistory ? "Ẩn lịch sử" : "Hiện lịch sử"}
-        </button>
-      </div>
-
-      {/* Lịch sử tuần */}
-      {showHistory && (
-        <div className="historyList">
-          <h3>
-            Lịch sử tuần ({weekStart} – {weekEnd})
-          </h3>
-          <select
-            value={selectedWeek || ""}
-            onChange={(e) => setSelectedWeek(e.target.value)}
-            className="datePicker"
-          >
-            {weeks.map((w) => (
-              <option key={w} value={w}>
-                {moment(w).format("DD/MM/YYYY")}
-              </option>
-            ))}
-          </select>
-
-          {weeklyLogs.length === 0 && <p>Chưa có ghi nhận.</p>}
-          {weeklyLogs.map((log) => (
-            <div key={log._id} className="historyLog">
-              <div className="date">
-                {moment(log.date).format("DD/MM/YYYY")}
-              </div>
-              <div className="state">
-                {emotions.find((e) => e.value === log.state)?.icon} {log.state}
-              </div>
-              {editNoteId === log._id ? (
-                <div className="editNote">
-                  <input
-                    value={editNoteValue}
-                    onChange={(e) => setEditNoteValue(e.target.value)}
-                  />
-                  <button onClick={() => saveNote(log._id)}>Save</button>
-                  <button onClick={() => setEditNoteId(null)}>Cancel</button>
-                </div>
-              ) : (
-                <div className="noteActions">
-                  <div className="noteText">{log.note}</div>
-                  <button
-                    onClick={() => {
-                      setEditNoteId(log._id);
-                      setEditNoteValue(log.note || "");
-                    }}
-                  >
-                    Sửa ghi chú
-                  </button>
-                  <button onClick={() => deleteLog(log._id)}>
-                    Xóa ghi chú
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
